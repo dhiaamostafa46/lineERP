@@ -3,49 +3,61 @@
     'fnc.safes.index',
     'fnc.bonds.index'
 ])
+<div data-kt-menu-trigger="click" class="menu-item menu-accordion">
+    <span class="menu-link">
+        <span class="menu-bullet">
+            <i class="ki-duotone ki-bank fs-2">
+                <span class="path1"></span>
+                <span class="path2"></span>
+                <span class="path3"></span>
+            </i>
+        </span>
+        <span class="menu-title">@lang('finance::lang.finance')</span>
+        <span class="menu-arrow"></span>
+    </span>
 
-    @php
-        $isFinanceActive = Route::is('fnc.*');
-    @endphp
 
-    <div x-data="{ open: {{ $isFinanceActive ? 'true' : 'false' }} }" class="line-menu-item mb-1">
-        <button type="button" 
-                @click="open = !open" 
-                :class="{ 'active-parent': open || {{ $isFinanceActive ? 'true' : 'false' }} }"
-                class="line-menu-btn">
-            <div class="d-flex align-items-center gap-3">
-                <div class="line-icon-badge icon-finance">
-                    <i class="fas fa-university"></i>
-                </div>
-                <span class="line-menu-title">@lang('finance::lang.finance')</span>
+
+
+    <div class="menu-sub menu-sub-accordion">
+        <!----------------------------------------------Start Basic Data------------------------------------------------------------------------------->
+
+
+
+        @can('fnc.banks.index')
+            <div class="menu-item">
+                <a class="menu-link {{ Route::is('fnc.banks*') ? 'active' : '' }}" href="{{ route('fnc.banks.index') }}">
+                    <span class="menu-bullet">
+                        <i class="nav-icon fas fa-university"></i>
+                    </span>
+                    <span class="menu-title">@lang('finance::models/fnc_bank.plural')</span>
+                </a>
             </div>
-            <i class="fas fa-chevron-down line-menu-arrow" :class="{ 'rotate-180': open }"></i>
-        </button>
+        @endcan
 
-        <div x-show="open" x-collapse x-cloak class="line-submenu">
-            @can('fnc.safes.index')
-                <a class="line-sub-item {{ Route::is('fnc.safes*') ? 'active-sub' : '' }}" 
-                   href="{{ route('fnc.safes.index') }}" wire:navigate>
-                    <span class="line-sub-dot"></span>
-                    <span>@lang('finance::models/fnc_safe.plural')</span>
+         @can('fnc.safes.index')
+            <div class="menu-item">
+                <a class="menu-link {{ Route::is('fnc.safes*') ? 'active' : '' }}" href="{{ route('fnc.safes.index') }}">
+                    <span class="menu-bullet">
+                        <i class="nav-icon fas fa-vault"></i>
+                    </span>
+                    <span class="menu-title">@lang('finance::models/fnc_safe.plural')</span>
                 </a>
-            @endcan
+            </div>
+        @endcan
 
-            @can('fnc.banks.index')
-                <a class="line-sub-item {{ Route::is('fnc.banks*') ? 'active-sub' : '' }}" 
-                   href="{{ route('fnc.banks.index') }}" wire:navigate>
-                    <span class="line-sub-dot"></span>
-                    <span>@lang('finance::models/fnc_bank.plural')</span>
+          @can('fnc.bonds.index')
+            <div class="menu-item">
+                <a class="menu-link {{ Route::is('fnc.bonds*') ? 'active' : '' }}" href="{{ route('fnc.bonds.index') }}">
+                    <span class="menu-bullet">
+                        <i class="nav-icon fas fa-file-invoice-dollar"></i>
+                    </span>
+                    <span class="menu-title">@lang('finance::models/fnc_bond.plural')</span>
                 </a>
-            @endcan
+            </div>
+        @endcan
 
-            @can('fnc.bonds.index')
-                <a class="line-sub-item {{ Route::is('fnc.bonds*') ? 'active-sub' : '' }}" 
-                   href="{{ route('fnc.bonds.index') }}" wire:navigate>
-                    <span class="line-sub-dot"></span>
-                    <span>@lang('finance::models/fnc_bond.plural')</span>
-                </a>
-            @endcan
-        </div>
+
     </div>
+</div>
 @endcanany

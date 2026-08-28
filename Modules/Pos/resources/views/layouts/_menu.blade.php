@@ -1,47 +1,54 @@
 @canany(['pos.index', 'pos.devices.index', 'pos.reports.index'])
+<div data-kt-menu-trigger="click" class="menu-item menu-accordion {{ Route::is('pos.*') ? 'here show' : '' }}">
+    <span class="menu-link">
+        <span class="menu-bullet">
+            <i class="ki-duotone ki-shop fs-2">
+                <span class="path1"></span>
+                <span class="path2"></span>
+                <span class="path3"></span>
+                <span class="path4"></span>
+                <span class="path5"></span>
+            </i>
+        </span>
+        <span class="menu-title">@lang('pos::lang.pos')</span>
+        <span class="menu-arrow"></span>
+    </span>
 
-    @php
-        $isPosActive = Route::is('pos.*');
-    @endphp
-
-    <div x-data="{ open: {{ $isPosActive ? 'true' : 'false' }} }" class="line-menu-item mb-1">
-        <button type="button" 
-                @click="open = !open" 
-                :class="{ 'active-parent': open || {{ $isPosActive ? 'true' : 'false' }} }"
-                class="line-menu-btn">
-            <div class="d-flex align-items-center gap-3">
-                <div class="line-icon-badge icon-pos">
-                    <i class="fas fa-cash-register"></i>
-                </div>
-                <span class="line-menu-title">@lang('pos::lang.pos')</span>
+    <div class="menu-sub menu-sub-accordion">
+        
+        @can('pos.index')
+            <div class="menu-item">
+                <a class="menu-link {{ Route::is('pos.select_device') || Route::is('pos.terminal') ? 'active' : '' }}" href="{{ route('pos.select_device') }}">
+                    <span class="menu-bullet">
+                        <i class="nav-icon fas fa-cash-register"></i>
+                    </span>
+                    <span class="menu-title">@lang('pos::lang.pos_screen')</span>
+                </a>
             </div>
-            <i class="fas fa-chevron-down line-menu-arrow" :class="{ 'rotate-180': open }"></i>
-        </button>
-
-        <div x-show="open" x-collapse x-cloak class="line-submenu">
-            @can('pos.index')
-                <a class="line-sub-item {{ Route::is('pos.select_device') || Route::is('pos.terminal') ? 'active-sub' : '' }}" 
-                   href="{{ route('pos.select_device') }}" wire:navigate>
-                    <span class="line-sub-dot"></span>
-                    <span>@lang('pos::lang.pos_screen')</span>
+        @endcan
+        
+        @can('pos.devices.index')
+            <div class="menu-item">
+                <a class="menu-link {{ Route::is('pos.devices.*') ? 'active' : '' }}" href="{{ route('pos.devices.index') }}">
+                    <span class="menu-bullet">
+                        <i class="nav-icon fas fa-tablet-alt"></i>
+                    </span>
+                    <span class="menu-title">@lang('pos::models/devices.plural')</span>
                 </a>
-            @endcan
-            
-            @can('pos.devices.index')
-                <a class="line-sub-item {{ Route::is('pos.devices.*') ? 'active-sub' : '' }}" 
-                   href="{{ route('pos.devices.index') }}" wire:navigate>
-                    <span class="line-sub-dot"></span>
-                    <span>@lang('pos::models/devices.plural')</span>
+            </div>
+        @endcan
+        
+        @can('pos.reports.index')
+            <div class="menu-item">
+                <a class="menu-link {{ Route::is('pos.reports.*') ? 'active' : '' }}" href="{{ route('pos.reports.index') }}">
+                    <span class="menu-bullet">
+                        <i class="nav-icon fas fa-chart-line"></i>
+                    </span>
+                    <span class="menu-title">@lang('pos::lang.reports')</span>
                 </a>
-            @endcan
-            
-            @can('pos.reports.index')
-                <a class="line-sub-item {{ Route::is('pos.reports.*') ? 'active-sub' : '' }}" 
-                   href="{{ route('pos.reports.index') }}" wire:navigate>
-                    <span class="line-sub-dot"></span>
-                    <span>@lang('pos::lang.reports')</span>
-                </a>
-            @endcan
-        </div>
+            </div>
+        @endcan
+        
     </div>
+</div>
 @endcanany

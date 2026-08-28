@@ -5,53 +5,80 @@
     'basicdata.kitchens.index',
     'basicdata.service_points.index'
 ])
+<div data-kt-menu-trigger="click" class="menu-item menu-accordion">
+    <span class="menu-link">
+        <span class="menu-bullet">
+            <i class="ki-duotone ki-data fs-2">
+                <span class="path1"></span>
+                <span class="path2"></span>
+                <span class="path3"></span>
+            </i>
+        </span>
+        <span class="menu-title">@lang('basicdata::lang.basicdata')</span>
+        <span class="menu-arrow"></span>
+    </span>
 
-    @php
-        $isBasicDataActive = Route::is('basicdata.*');
-    @endphp
 
-    <div class="line-section-header">
-        <span>@lang('basicdata::lang.basicdata')</span>
-    </div>
 
-    <div x-data="{ open: {{ $isBasicDataActive ? 'true' : 'false' }} }" class="line-menu-item mb-1">
-        <button type="button" 
-                @click="open = !open" 
-                :class="{ 'active-parent': open || {{ $isBasicDataActive ? 'true' : 'false' }} }"
-                class="line-menu-btn">
-            <div class="d-flex align-items-center gap-3">
-                <div class="line-icon-badge icon-basicdata">
-                    <i class="fas fa-layer-group"></i>
-                </div>
-                <span class="line-menu-title">@lang('basicdata::lang.basicdata')</span>
+
+    <div class="menu-sub menu-sub-accordion">
+        <!----------------------------------------------Start Basic Data------------------------------------------------------------------------------->
+
+
+
+        @can('basicdata.categories.index')
+            <div class="menu-item">
+                <a class="menu-link {{ Route::is('basicdata.categories*') ? 'active' : '' }}" href="{{ route('basicdata.categories.index') }}">
+                    <span class="menu-bullet">
+                        <i class="nav-icon fas fa-tags"></i>
+                    </span>
+                    <span class="menu-title">@lang('basicdata::models/db_categories.plural')</span>
+                </a>
             </div>
-            <i class="fas fa-chevron-down line-menu-arrow" :class="{ 'rotate-180': open }"></i>
-        </button>
-
-        <div x-show="open" x-collapse x-cloak class="line-submenu">
-            @can('basicdata.categories.index')
-                <a class="line-sub-item {{ Route::is('basicdata.categories*') ? 'active-sub' : '' }}" 
-                   href="{{ route('basicdata.categories.index') }}" wire:navigate>
-                    <span class="line-sub-dot"></span>
-                    <span>@lang('basicdata::models/db_categories.plural')</span>
+        @endcan
+         @can('basicdata.units.index')
+            <div class="menu-item">
+                <a class="menu-link {{ Route::is('basicdata.units*') ? 'active' : '' }}" href="{{ route('basicdata.units.index') }}">
+                    <span class="menu-bullet">
+                        <i class="nav-icon fas fa-balance-scale-left"></i>
+                    </span>
+                    <span class="menu-title">@lang('basicdata::models/db_units.plural')</span>
                 </a>
-            @endcan
-
-            @can('basicdata.units.index')
-                <a class="line-sub-item {{ Route::is('basicdata.units*') ? 'active-sub' : '' }}" 
-                   href="{{ route('basicdata.units.index') }}" wire:navigate>
-                    <span class="line-sub-dot"></span>
-                    <span>@lang('basicdata::models/db_units.plural')</span>
+            </div>
+        @endcan
+         @can('basicdata.products.index')
+            <div class="menu-item">
+                <a class="menu-link {{ Route::is('basicdata.products*') ? 'active' : '' }}" href="{{ route('basicdata.products.index') }}">
+                    <span class="menu-bullet">
+                        <i class="nav-icon fas fa-box-open"></i>
+                    </span>
+                    <span class="menu-title">@lang('basicdata::models/db_products.plural')</span>
                 </a>
-            @endcan
-
-            @can('basicdata.products.index')
-                <a class="line-sub-item {{ Route::is('basicdata.products*') ? 'active-sub' : '' }}" 
-                   href="{{ route('basicdata.products.index') }}" wire:navigate>
-                    <span class="line-sub-dot"></span>
-                    <span>@lang('basicdata::models/db_products.plural')</span>
+            </div>
+        @endcan
+{{-- 
+         @can('basicdata.kitchens.index')
+            <div class="menu-item">
+                <a class="menu-link {{ Route::is('basicdata.kitchens*') ? 'active' : '' }}" href="{{ route('basicdata.kitchens.index') }}">
+                    <span class="menu-bullet">
+                        <i class="nav-icon fas fa-utensils"></i>
+                    </span>
+                    <span class="menu-title">@lang('basicdata::models/db_kitchens.plural')</span>
                 </a>
-            @endcan
-        </div>
+            </div>
+        @endcan
+
+         @can('basicdata.service_points.index')
+            <div class="menu-item">
+                <a class="menu-link {{ Route::is('basicdata.service_points*') ? 'active' : '' }}" href="{{ route('basicdata.service_points.index') }}">
+                    <span class="menu-bullet">
+                        <i class="nav-icon fas fa-concierge-bell"></i>
+                    </span>
+                    <span class="menu-title">@lang('basicdata::models/db_service_points.plural')</span>
+                </a>
+            </div>
+        @endcan --}}
+
     </div>
+</div>
 @endcanany
