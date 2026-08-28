@@ -148,7 +148,7 @@
 
 
         <!-- ============================================================== -->
-        <!-- 3. END ZONE: Fullscreen + Notifications + User Profile (Themes & Lang inside) -->
+        <!-- 3. END ZONE: Fullscreen + Notifications + User Menu (Metronic Native) -->
         <!-- ============================================================== -->
         <div class="d-flex align-items-center gap-2">
             
@@ -170,132 +170,156 @@
             @endcan
             <!--end::Notifications Bell-->
 
-            <!--begin::User Profile Account (Containing Theme Modes & Language Switcher)-->
+            <!--begin::User Menu (Metronic Native Pro Engine)-->
             @auth('web')
-                <div class="dropdown">
-                    <div class="cursor-pointer d-flex align-items-center gap-2 p-1 rounded-2" data-bs-toggle="dropdown" aria-expanded="false">
-                        <div class="symbol symbol-30px symbol-circle">
-                            <div class="symbol-label fw-bold fs-7 text-white" style="background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);">
-                                {{ mb_substr($user->name ?? 'U', 0, 1, 'utf-8') }}
-                            </div>
+                <div class="app-navbar-item" id="kt_header_user_menu_toggle">
+                    <!--begin::User avatar trigger-->
+                    <div class="cursor-pointer symbol symbol-30px symbol-circle"
+                        data-kt-menu-trigger="{default: 'click', lg: 'hover'}" 
+                        data-kt-menu-attach="parent"
+                        data-kt-menu-placement="bottom-end">
+                        <div class="symbol-label bg-light-primary text-primary fw-bold fs-7">
+                            {{ mb_substr($user->name ?? 'U', 0, 1, 'utf-8') }}
                         </div>
-                        <div class="d-none d-lg-flex flex-column text-start">
-                            <span class="fs-8 fw-bold text-gray-900" style="line-height: 1.1;">{{ $user->name }}</span>
-                            <span class="fs-9 text-muted">{{ $user->roles->first()?->name ?? 'Admin' }}</span>
-                        </div>
-                        <i class="fas fa-chevron-down fs-9 text-muted d-none d-lg-inline ms-1" style="font-size: 8px !important;"></i>
                     </div>
+                    <!--end::User avatar trigger-->
 
-                    <ul class="dropdown-menu dropdown-menu-end shadow-sm py-2 rounded-2 border-0 w-240px" style="border: 1px solid #e2e8f0 !important;">
+                    <!--begin::User account menu-->
+                    <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-800 menu-state-bg menu-state-color fw-semibold py-3 fs-7 w-260px"
+                        data-kt-menu="true">
                         
-                        <!-- User Info Header -->
-                        <li class="px-3 py-2 border-bottom">
-                            <div class="d-flex align-items-center gap-2">
-                                <div class="symbol symbol-32px symbol-circle">
-                                    <div class="symbol-label fw-bold fs-7 text-white" style="background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);">
+                        <!--begin::Menu item (User Info)-->
+                        <div class="menu-item px-3">
+                            <div class="menu-content d-flex align-items-center px-3">
+                                <!--begin::Avatar-->
+                                <div class="symbol symbol-40px symbol-circle me-3">
+                                    <div class="symbol-label bg-light-primary text-primary fw-bold fs-6">
                                         {{ mb_substr($user->name ?? 'U', 0, 1, 'utf-8') }}
                                     </div>
                                 </div>
+                                <!--end::Avatar-->
+                                <!--begin::Username-->
                                 <div class="d-flex flex-column text-truncate">
-                                    <div class="fw-bold fs-8 text-gray-900 text-truncate">{{ $user->name }}</div>
-                                    <div class="fs-9 text-muted text-truncate">{{ $user->email }}</div>
-                                    <span class="badge badge-light-success fs-9 fw-bold px-1 py-0 mt-1 align-self-start" style="font-size: 9px !important;">
-                                        {{ $user->roles->first()?->name ?? 'Super Admin' }}
+                                    <div class="fw-bold d-flex align-items-center fs-7 text-gray-900 text-truncate">
+                                        {{ $user->name }}
+                                    </div>
+                                    <span class="text-muted fs-8 text-truncate">{{ $user->email }}</span>
+                                    <span class="badge badge-light-success fw-bold fs-9 px-2 py-0 mt-1 align-self-start">
+                                        {{ $user->getRoleNames()->first() ?? 'Super Admin' }}
                                     </span>
                                 </div>
+                                <!--end::Username-->
                             </div>
-                        </li>
+                        </div>
+                        <!--end::Menu item-->
 
-                        <!-- Theme Mode Switcher -->
-                        <li class="px-3 pt-2 pb-1">
-                            <div class="text-muted fs-9 fw-bold px-1 pb-1 text-uppercase d-flex align-items-center justify-content-between" style="font-size: 10px !important;">
-                                <span>المظهر (Themes)</span>
-                                <i class="fas fa-palette fs-9 text-primary"></i>
-                            </div>
-                            <div class="d-flex align-items-center justify-content-between p-1 rounded-2 bg-light border">
-                                <a href="#" 
-                                   class="btn btn-xs btn-icon flex-grow-1 h-24px rounded-1 d-flex align-items-center justify-content-center gap-1 text-gray-700 active" 
-                                   data-kt-element="mode" data-kt-value="light" title="Light Mode">
-                                    <i class="fas fa-sun text-warning fs-9"></i>
-                                    <span class="fs-9 fw-semibold">فاتح</span>
-                                </a>
-                                <a href="#" 
-                                   class="btn btn-xs btn-icon flex-grow-1 h-24px rounded-1 d-flex align-items-center justify-content-center gap-1 text-gray-700" 
-                                   data-kt-element="mode" data-kt-value="dark" title="Dark Mode">
-                                    <i class="fas fa-moon text-info fs-9"></i>
-                                    <span class="fs-9 fw-semibold">داكن</span>
-                                </a>
-                                <a href="#" 
-                                   class="btn btn-xs btn-icon flex-grow-1 h-24px rounded-1 d-flex align-items-center justify-content-center gap-1 text-gray-700" 
-                                   data-kt-element="mode" data-kt-value="system" title="System Mode">
-                                    <i class="fas fa-desktop text-gray-600 fs-9"></i>
-                                    <span class="fs-9 fw-semibold">تلقائي</span>
-                                </a>
-                            </div>
-                        </li>
+                        <div class="separator my-2"></div>
 
-                        <li><hr class="dropdown-divider my-1" style="border-color: #e2e8f0;"></li>
-
-                        <!-- Language Switcher -->
-                        <li class="px-3 py-1">
-                            <div class="text-muted fs-9 fw-bold px-1 pb-1 text-uppercase d-flex align-items-center justify-content-between" style="font-size: 10px !important;">
-                                <span>@lang('lang.language')</span>
-                                <i class="fas fa-globe fs-9 text-primary"></i>
+                        <!--begin::Menu item (Theme Mode)-->
+                        <div class="menu-item px-5" data-kt-menu-trigger="{default: 'click', lg: 'hover'}"
+                            data-kt-menu-placement="left-start" data-kt-menu-offset="-10px, 0">
+                            <a href="#" class="menu-link px-5">
+                                <span class="menu-title position-relative">
+                                    المظهر (Theme)
+                                    <span class="fs-8 rounded bg-light px-2 py-1 position-absolute translate-middle-y top-50 end-0">
+                                        <i class="ki-duotone ki-night-day fs-4 theme-light-show text-warning"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span><span class="path5"></span><span class="path6"></span><span class="path7"></span><span class="path8"></span><span class="path9"></span><span class="path10"></span></i>
+                                        <i class="ki-duotone ki-moon fs-4 theme-dark-show text-info"><span class="path1"></span><span class="path2"></span></i>
+                                    </span>
+                                </span>
+                            </a>
+                            <!--begin::Menu sub-->
+                            <div class="menu-sub menu-sub-dropdown menu-column menu-rounded menu-title-gray-700 menu-icon-gray-500 menu-active-bg menu-state-color fw-semibold py-2 fs-7 w-150px"
+                                data-kt-menu="true" data-kt-element="theme-mode-menu">
+                                <div class="menu-item px-3 my-0">
+                                    <a href="#" class="menu-link px-3 py-2" data-kt-element="mode" data-kt-value="light">
+                                        <span class="menu-icon" data-kt-element="icon">
+                                            <i class="ki-duotone ki-night-day fs-4"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span><span class="path5"></span><span class="path6"></span><span class="path7"></span><span class="path8"></span><span class="path9"></span><span class="path10"></span></i>
+                                        </span>
+                                        <span class="menu-title fs-8">فاتح (Light)</span>
+                                    </a>
+                                </div>
+                                <div class="menu-item px-3 my-0">
+                                    <a href="#" class="menu-link px-3 py-2" data-kt-element="mode" data-kt-value="dark">
+                                        <span class="menu-icon" data-kt-element="icon">
+                                            <i class="ki-duotone ki-moon fs-4"><span class="path1"></span><span class="path2"></span></i>
+                                        </span>
+                                        <span class="menu-title fs-8">داكن (Dark)</span>
+                                    </a>
+                                </div>
+                                <div class="menu-item px-3 my-0">
+                                    <a href="#" class="menu-link px-3 py-2" data-kt-element="mode" data-kt-value="system">
+                                        <span class="menu-icon" data-kt-element="icon">
+                                            <i class="ki-duotone ki-screen fs-4"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span></i>
+                                        </span>
+                                        <span class="menu-title fs-8">تلقائي (System)</span>
+                                    </a>
+                                </div>
                             </div>
-                            <div class="d-flex flex-column gap-1">
-                                <a href="{{ route('switchLang', 'ar') }}" 
-                                   class="d-flex align-items-center justify-content-between py-1 px-2 rounded-1 fs-8 text-decoration-none {{ app()->getLocale() == 'ar' ? 'bg-light-primary text-primary fw-bold' : 'text-gray-700' }}"
-                                   style="{{ app()->getLocale() == 'ar' ? 'background: #f1faff;' : '' }}">
-                                    <div class="d-flex align-items-center gap-2">
-                                        <img class="w-14px h-14px rounded-circle" src="{{ asset('admin_assets') }}/media/flags/saudi-arabia.svg" alt="AR" />
-                                        <span>العربية (Arabic)</span>
-                                    </div>
-                                    @if(app()->getLocale() == 'ar')
-                                        <i class="fas fa-check fs-9 text-primary"></i>
+                            <!--end::Menu sub-->
+                        </div>
+                        <!--end::Menu item-->
+
+                        <!--begin::Menu item (Language)-->
+                        <div class="menu-item px-5" data-kt-menu-trigger="{default: 'click', lg: 'hover'}"
+                            data-kt-menu-placement="left-start" data-kt-menu-offset="-10px, 0">
+                            <a href="#" class="menu-link px-5">
+                                <span class="menu-title position-relative">
+                                    @lang('lang.language')
+                                    @if (app()->getLocale() == 'en')
+                                        <span class="fs-8 rounded bg-light px-2 py-1 position-absolute translate-middle-y top-50 end-0">
+                                            EN <img class="w-12px h-12px rounded-circle ms-1" src="{{ asset('admin_assets') }}/media/flags/united-states.svg" alt="" />
+                                        </span>
+                                    @else
+                                        <span class="fs-8 rounded bg-light px-2 py-1 position-absolute translate-middle-y top-50 end-0">
+                                            العربية <img class="w-12px h-12px rounded-circle ms-1" src="{{ asset('admin_assets') }}/media/flags/saudi-arabia.svg" alt="" />
+                                        </span>
                                     @endif
-                                </a>
-                                <a href="{{ route('switchLang', 'en') }}" 
-                                   class="d-flex align-items-center justify-content-between py-1 px-2 rounded-1 fs-8 text-decoration-none {{ app()->getLocale() == 'en' ? 'bg-light-primary text-primary fw-bold' : 'text-gray-700' }}"
-                                   style="{{ app()->getLocale() == 'en' ? 'background: #f1faff;' : '' }}">
-                                    <div class="d-flex align-items-center gap-2">
-                                        <img class="w-14px h-14px rounded-circle" src="{{ asset('admin_assets') }}/media/flags/united-states.svg" alt="EN" />
-                                        <span>English (الإنجليزية)</span>
-                                    </div>
-                                    @if(app()->getLocale() == 'en')
-                                        <i class="fas fa-check fs-9 text-primary"></i>
-                                    @endif
-                                </a>
+                                </span>
+                            </a>
+                            <!--begin::Menu sub-->
+                            <div class="menu-sub menu-sub-dropdown w-160px py-2">
+                                <div class="menu-item px-3">
+                                    <a href="{{ route('switchLang', 'ar') }}" class="menu-link d-flex px-3 {{ app()->getLocale() == 'ar' ? 'active' : '' }}">
+                                        <span class="symbol symbol-15px me-3">
+                                            <img class="rounded-circle" src="{{ asset('admin_assets') }}/media/flags/saudi-arabia.svg" alt="" />
+                                        </span>
+                                        <span class="fs-8">@lang('lang.arabic')</span>
+                                    </a>
+                                </div>
+                                <div class="menu-item px-3">
+                                    <a href="{{ route('switchLang', 'en') }}" class="menu-link d-flex px-3 {{ app()->getLocale() == 'en' ? 'active' : '' }}">
+                                        <span class="symbol symbol-15px me-3">
+                                            <img class="rounded-circle" src="{{ asset('admin_assets') }}/media/flags/united-states.svg" alt="" />
+                                        </span>
+                                        <span class="fs-8">@lang('lang.english')</span>
+                                    </a>
+                                </div>
                             </div>
-                        </li>
+                            <!--end::Menu sub-->
+                        </div>
+                        <!--end::Menu item-->
 
-                        <li><hr class="dropdown-divider my-1" style="border-color: #e2e8f0;"></li>
-
-                        <!-- Settings Link -->
                         @can('settings.edit')
-                            <li class="px-2">
-                                <a href="{{ route('settings.edit', 1) }}" class="d-flex align-items-center gap-2 py-1 px-2 rounded-1 fs-8 text-gray-700 text-decoration-none" wire:navigate>
-                                    <i class="fas fa-cog fs-9 text-muted"></i>
-                                    <span>@lang('lang.settings')</span>
+                            <div class="menu-item px-5 my-1">
+                                <a href="{{ route('settings.edit', 1) }}" class="menu-link px-5 fs-7" wire:navigate>
+                                    @lang('lang.settings')
                                 </a>
-                            </li>
+                            </div>
                         @endcan
 
-                        <!-- Logout Button -->
-                        <li class="px-2 pt-1">
-                            <a href="{{ route('logout') }}" 
-                               onclick="event.preventDefault(); document.getElementById('header-logout-form').submit();"
-                               class="d-flex align-items-center gap-2 py-1 px-2 rounded-1 fs-8 text-danger text-decoration-none">
-                                <i class="fas fa-power-off fs-9 text-danger"></i>
-                                <span>@lang('lang.logout')</span>
+                        <div class="separator my-1"></div>
+
+                        <div class="menu-item px-5">
+                            <a href="{{ route('logout') }}" class="menu-link px-5 text-danger fs-7">
+                                @lang('lang.logout')
                             </a>
-                            <form id="header-logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                                @csrf
-                            </form>
-                        </li>
-                    </ul>
+                        </div>
+
+                    </div>
+                    <!--end::User account menu-->
                 </div>
             @endauth
-            <!--end::User Profile Account-->
+            <!--end::User Menu-->
 
         </div>
         <!-- ============================================================== -->
