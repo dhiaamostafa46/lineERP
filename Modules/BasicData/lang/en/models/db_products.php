@@ -2,11 +2,13 @@
 
 return [
 
-    // 'singular' => 'Product',
-    // 'plural'   => 'Products',
     'singular' => 'Product and Service',
     'plural'   => 'Products and Services',
-    'sizes'   => 'Sizes',
+    'product'  => 'Product',
+    'service'  => 'Service',
+    'products' => 'Products',
+    'services' => 'Services',
+    'sizes'    => 'Sizes',
     'fields'   => [
         'id'                => 'ID',
         'name'              => 'Product Name',

@@ -16,10 +16,10 @@
                             </div>
                             <div>
                                 <h5 class="modal-title fw-bold text-gray-900 mb-0 fs-5">
-                                    {{ $is_edit ? __('crud.edit') : __('crud.add_new') }} {{ $type == 2 ? __('basicdata::models/db_products.fields.service') : __('basicdata::models/db_products.fields.product') }}
+                                    {{ $is_edit ? __('crud.edit') : __('crud.add_new') }} {{ $type == 2 ? __('basicdata::models/db_products.service') : __('basicdata::models/db_products.product') }}
                                 </h5>
                                 <span class="text-muted fs-8">
-                                    {{ $type == 2 ? __('basicdata::models/db_products.fields.details') : __('basicdata::models/db_products.singular') }}
+                                    {{ $type == 2 ? __('basicdata::models/db_products.service') : __('basicdata::models/db_products.singular') }}
                                 </span>
                             </div>
                         </div>
