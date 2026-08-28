@@ -78,6 +78,28 @@
         }
     }
 
+    /* Sidebar Accordion Display States */
+    .menu-item.menu-accordion.show > .menu-sub,
+    .menu-item.menu-accordion.hover > .menu-sub,
+    .menu-item.menu-accordion.here > .menu-sub,
+    .menu-item.menu-accordion.show > .menu-sub-accordion,
+    .menu-item.menu-accordion.hover > .menu-sub-accordion,
+    .menu-item.menu-accordion.here > .menu-sub-accordion {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+    .menu-item.menu-accordion:not(.show):not(.hover):not(.here) > .menu-sub,
+    .menu-item.menu-accordion:not(.show):not(.hover):not(.here) > .menu-sub-accordion {
+        display: none !important;
+    }
+    .menu-item.menu-accordion.show > .menu-link .menu-arrow,
+    .menu-item.menu-accordion.hover > .menu-link .menu-arrow,
+    .menu-item.menu-accordion.here > .menu-link .menu-arrow {
+        transform: rotate(90deg) !important;
+        transition: transform 0.2s ease !important;
+    }
+
     body {
         background-color: var(--bs-body-bg);
         color: var(--bs-text-primary);

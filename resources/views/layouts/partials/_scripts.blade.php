@@ -779,6 +779,42 @@
                 });
             }
         });
+
+        // 4. Dedicated Bulletproof Sidebar Accordion Toggle
+        document.addEventListener('click', function(e) {
+            var menuLink = e.target.closest('#kt_app_sidebar_menu .menu-accordion > .menu-link, #kt_app_sidebar .menu-accordion > .menu-link');
+            if (!menuLink) return;
+
+            var accordion = menuLink.closest('.menu-accordion');
+            if (!accordion) return;
+
+            // If it's a link without a real URL (just a dropdown trigger), prevent default
+            var anchor = e.target.closest('a');
+            if (anchor) {
+                var href = anchor.getAttribute('href');
+                if (!href || href === '#' || href.startsWith('javascript:')) {
+                    e.preventDefault();
+                }
+            }
+
+            var isCurrentlyShown = accordion.classList.contains('show') || accordion.classList.contains('hover');
+
+            if (isCurrentlyShown) {
+                accordion.classList.remove('show', 'hover', 'here');
+            } else {
+                // Close other non-active sibling accordions
+                var parent = accordion.parentElement;
+                if (parent) {
+                    var siblings = parent.querySelectorAll(':scope > .menu-accordion');
+                    siblings.forEach(function(sib) {
+                        if (sib !== accordion && !sib.querySelector('.menu-link.active')) {
+                            sib.classList.remove('show', 'hover', 'here');
+                        }
+                    });
+                }
+                accordion.classList.add('show', 'hover');
+            }
+        });
     })();
 
     // Livewire 3 SPA Navigation Lifecycle Handler
@@ -821,7 +857,7 @@
         // 3. Highlight and open active menu item in sidebar
         if (typeof $ !== 'undefined') {
             try {
-                $('.menu-link.active').parents('.menu-accordion').addClass('hover show');
+                $('.menu-link.active').parents('.menu-accordion').addClass('show hover');
                 $('div.alert').not('.alert-important').delay(3500).fadeOut(350);
 
                 if ($.fn.select2) {
