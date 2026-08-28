@@ -48,9 +48,10 @@ class DbProductController extends AppBaseController
         $data['types'] = $this->dbProductRepository->types();
 
         // Front Dashboard Top KPI Stats
-        $data['totalProductsCount'] = $this->dbProductRepository->getModel()->count();
-        $data['activeProductsCount'] = $this->dbProductRepository->getModel()->where('status', 1)->count();
-        $data['servicesCount'] = $this->dbProductRepository->getModel()->where('type', 2)->count();
+        $productModel = \App\Models\BasicDataApp\Product::class;
+        $data['totalProductsCount'] = $productModel::count();
+        $data['activeProductsCount'] = $productModel::where('status', 1)->count();
+        $data['servicesCount'] = $productModel::where('type', 2)->count();
         $data['categoriesCount'] = count($data['categories']);
 
         return view('basicdata::products.index', $data);
