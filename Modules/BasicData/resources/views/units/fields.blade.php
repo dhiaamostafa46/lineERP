@@ -1,31 +1,23 @@
 <div class="row">
-    @foreach (config('langs') as $locale => $language)
+    @foreach (config('langs', ['ar' => 'العربية', 'en' => 'English']) as $locale => $language)
         <!-- Name Field -->
         <div class="form-group col-sm-6 mb-3">
-            {!! Form::label($locale . '[name]', $language . ' ' . __('basicdata::models/db_units.fields.name') . ':') !!}
+            {!! Form::label($locale . '[name]', $language . ' ' . __('basicdata::models/db_units.fields.name') . ':', ['class' => 'form-label fw-bold']) !!}
             {!! Form::text($locale . '[name]', isset($unit) ? $unit->translate($locale)->name : null, [
                 'class' => 'form-control',
+                'placeholder' => __('basicdata::models/db_units.fields.name'),
             ]) !!}
         </div>
     @endforeach
 </div>
 
+<!-- Hidden Conversion Factor Field -->
+<input type="hidden" name="conversion_factor" value="{{ old('conversion_factor', isset($unit) ? $unit->conversion_factor : 1) }}">
 
 <div class="row">
-    <!-- Conversion Factor Field -->
     <div class="form-group col-sm-6 mb-3">
-        {!! Form::label('conversion_factor', __('basicdata::models/db_units.fields.conversion_factor') . ':') !!}
-        {!! Form::number('conversion_factor', old('conversion_factor', isset($unit) ? $unit->conversion_factor : 1), ['class' => 'form-control', 'min' => 0, 'step' => 'any']) !!}
-    </div>
-
-    <div class="form-group col-sm-6 mb-3">
-        {!! Form::label('status', __('basicdata::models/db_units.fields.status') . ':') !!}
-        <x-select2-input name="status" :placeholder="__('hr::lang.select_status')" :list="$statuses" :selected_id="old('status', @optional($unit)->status ?? 0)">
+        {!! Form::label('status', __('basicdata::models/db_units.fields.status') . ':', ['class' => 'form-label fw-bold']) !!}
+        <x-select2-input name="status" :placeholder="__('basicdata::lang.select')" :list="$statuses" :selected_id="old('status', @optional($unit)->status ?? 1)">
         </x-select2-input>
     </div>
-
 </div>
-
-
-
-
