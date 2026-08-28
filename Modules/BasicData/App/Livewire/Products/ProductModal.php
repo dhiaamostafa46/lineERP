@@ -12,8 +12,6 @@ class ProductModal extends Component
 {
     use WithFileUploads, HasModalForm;
 
-    public string $activeTab = 'basic'; // 'basic', 'sizes', 'units', 'other'
-
     // 1. Basic Info
     public string $barcode = '';
     public string $category_id = '';
@@ -76,8 +74,8 @@ class ProductModal extends Component
 
         if ($this->have_sizes) {
             foreach ($this->sizes as $idx => $size) {
-                $rules["sizes.$idx.ar.name"] = 'required|string|max:255';
-                $rules["sizes.$idx.sale_price"] = 'required|numeric|min:0';
+                $rules["sizes.$idx.ar.name"] = 'nullable|string|max:255';
+                $rules["sizes.$idx.sale_price"] = 'nullable|numeric|min:0';
                 $rules["sizes.$idx.cost_price"] = 'nullable|numeric|min:0';
             }
         }
@@ -95,7 +93,6 @@ class ProductModal extends Component
         $this->resetModalState();
         $this->initTranslations();
         
-        $this->activeTab = 'basic';
         $this->details = [];
         foreach (config('langs', ['ar' => 'Arabic', 'en' => 'English']) as $locale => $name) {
             $this->details[$locale] = '';
@@ -114,7 +111,15 @@ class ProductModal extends Component
         $this->existing_img = null;
 
         $this->have_sizes = false;
-        $this->sizes = [];
+        $this->sizes = [
+            [
+                'ar' => ['name' => ''],
+                'en' => ['name' => ''],
+                'cost_price' => 0.00,
+                'sale_price' => 0.00,
+                'barcode' => '',
+            ]
+        ];
 
         $this->units = [
             [
@@ -131,26 +136,27 @@ class ProductModal extends Component
         $this->work_days = ['sat', 'sun', 'mon', 'tue', 'wed', 'thu', 'fri'];
     }
 
-    public function setTab(string $tab): void
-    {
-        $this->activeTab = $tab;
-    }
-
     public function addSizeRow(): void
     {
-        $this->sizes[] = [
-            'ar' => ['name' => ''],
-            'en' => ['name' => ''],
+        $newSize = [
             'cost_price' => 0.00,
             'sale_price' => 0.00,
             'barcode' => '',
         ];
+        foreach (config('langs', ['ar' => 'Arabic', 'en' => 'English']) as $locale => $name) {
+            $newSize[$locale] = ['name' => ''];
+        }
+        $this->sizes[] = $newSize;
+        $this->have_sizes = true;
     }
 
     public function removeSizeRow(int $index): void
     {
         unset($this->sizes[$index]);
         $this->sizes = array_values($this->sizes);
+        if (empty($this->sizes)) {
+            $this->have_sizes = false;
+        }
     }
 
     public function addUnitRow(): void
@@ -205,15 +211,27 @@ class ProductModal extends Component
             $this->sizes = [];
             if ($product->sizes && $product->sizes->count() > 0) {
                 foreach ($product->sizes as $size) {
-                    $this->sizes[] = [
+                    $sizeItem = [
                         'id' => $size->id,
-                        'ar' => ['name' => $size->translate('ar')?->name ?? ''],
-                        'en' => ['name' => $size->translate('en')?->name ?? ''],
                         'cost_price' => (float)$size->cost_price,
                         'sale_price' => (float)$size->sale_price,
                         'barcode' => $size->barcode,
                     ];
+                    foreach (config('langs', ['ar' => 'Arabic', 'en' => 'English']) as $locale => $name) {
+                        $sizeItem[$locale] = ['name' => $size->translate($locale)?->name ?? ''];
+                    }
+                    $this->sizes[] = $sizeItem;
                 }
+            } else {
+                $this->sizes = [
+                    [
+                        'ar' => ['name' => ''],
+                        'en' => ['name' => ''],
+                        'cost_price' => 0.00,
+                        'sale_price' => 0.00,
+                        'barcode' => '',
+                    ]
+                ];
             }
 
             $this->units = [];
@@ -299,9 +317,10 @@ class ProductModal extends Component
     {
         return view('basicdata::livewire.products.product-modal', [
             'categories' => $this->repository->categories(),
-            'availableUnits' => $this->repository->units(),
+            'unitsList' => $this->repository->units(),
             'kitchens' => $this->repository->kitchens(),
-            'taxes' => $this->repository->vats(),
+            'vats' => $this->repository->vats(),
+            'statuses' => $this->repository->statuses(),
         ]);
     }
 }
