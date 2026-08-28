@@ -4,6 +4,11 @@ namespace Modules\BasicData\App\Providers;
 
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
+use Livewire\Livewire;
+use Modules\BasicData\App\Livewire\Categories\CategoryModal;
+use Modules\BasicData\App\Livewire\Units\UnitModal;
+use Modules\BasicData\App\Livewire\Kitchens\KitchenModal;
+use Modules\BasicData\App\Livewire\ServicePoints\ServicePointModal;
 use Nwidart\Modules\Traits\PathNamespace;
 
 class BasicDataServiceProvider extends ServiceProvider
@@ -25,6 +30,14 @@ class BasicDataServiceProvider extends ServiceProvider
         $this->registerConfig();
         $this->registerViews();
         $this->loadMigrationsFrom(module_path($this->moduleName, 'database/migrations'));
+
+        // Register BasicData Livewire Components
+        if (class_exists(Livewire::class)) {
+            Livewire::component('basicdata::categories.category-modal', CategoryModal::class);
+            Livewire::component('basicdata::units.unit-modal', UnitModal::class);
+            Livewire::component('basicdata::kitchens.kitchen-modal', KitchenModal::class);
+            Livewire::component('basicdata::service-points.service-point-modal', ServicePointModal::class);
+        }
     }
 
     /**
