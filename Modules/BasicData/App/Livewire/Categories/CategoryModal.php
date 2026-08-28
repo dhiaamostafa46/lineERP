@@ -126,7 +126,8 @@ class CategoryModal extends Component
         }
 
         $this->closeModal();
-        return redirect()->route('basicdata.categories.index');
+        flash()->success($this->is_edit ? 'تم تعديل التصنيف بنجاح!' : 'تم إضافة التصنيف بنجاح!');
+        return $this->redirect(route('basicdata.categories.index'), navigate: true);
     }
 
     public function render()

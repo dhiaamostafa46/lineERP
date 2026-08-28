@@ -101,7 +101,8 @@ class KitchenModal extends Component
         }
 
         $this->closeModal();
-        return redirect()->route('basicdata.kitchens.index');
+        flash()->success($this->is_edit ? 'تم تعديل المطبخ بنجاح!' : 'تم إضافة المطبخ بنجاح!');
+        return $this->redirect(route('basicdata.kitchens.index'), navigate: true);
     }
 
     public function render()

@@ -96,7 +96,8 @@ class UnitModal extends Component
         }
 
         $this->closeModal();
-        return redirect()->route('basicdata.units.index');
+        flash()->success($this->is_edit ? 'تم تعديل الوحدة بنجاح!' : 'تم إضافة الوحدة بنجاح!');
+        return $this->redirect(route('basicdata.units.index'), navigate: true);
     }
 
     public function render()

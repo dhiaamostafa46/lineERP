@@ -106,7 +106,8 @@ class ServicePointModal extends Component
         }
 
         $this->closeModal();
-        return redirect()->route('basicdata.service_points.index');
+        flash()->success($this->is_edit ? 'تم تعديل نقطة الخدمة بنجاح!' : 'تم إضافة نقطة الخدمة بنجاح!');
+        return $this->redirect(route('basicdata.service_points.index'), navigate: true);
     }
 
     public function render()
