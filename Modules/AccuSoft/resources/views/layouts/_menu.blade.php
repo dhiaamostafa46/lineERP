@@ -12,6 +12,12 @@
 
     @php
         $isAccuSoftActive = Route::is('accusoft.*');
+        $pendingCount = \Illuminate\Support\Facades\Cache::remember('accusoft_menu_pending_journals', 60, function() {
+            if (class_exists('\App\Models\AccuSoft\JournalEntry')) {
+                return \App\Models\AccuSoft\JournalEntry::where('status', \App\Models\AccuSoft\JournalEntry::STATUS_PENDING ?? 1)->count();
+            }
+            return 0;
+        });
     @endphp
 
     <div x-data="{ open: {{ $isAccuSoftActive ? 'true' : 'false' }} }" class="line-menu-item mb-1">
