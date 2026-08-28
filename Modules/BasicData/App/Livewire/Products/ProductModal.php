@@ -15,8 +15,6 @@ class ProductModal extends Component
     // 1. Basic Info
     public string $barcode = '';
     public string $category_id = '';
-    public string $kitchen_id = '';
-    public string $base_unit_id = '';
     public string $tax_id = '';
     public int $type = 1; // 1 = Product, 2 = Service
     public float $cost_price = 0.00;
@@ -24,21 +22,14 @@ class ProductModal extends Component
     public int $status = 1;
     public $img;
     public $existing_img = null;
+    public array $details = [];
 
-    // 2. Sizes
-    public bool $have_sizes = false;
-    public array $sizes = [];
-
-    // 3. Multiple Units
+    // 2. Units
     public array $units = [];
 
-    // 4. Other Info & Schedule
-    public array $details = [];
-    public float $min_quantity = 0;
-    public float $calories = 0;
-    public $s_from = null;
-    public $s_to = null;
-    public array $work_days = [];
+    // 3. Sizes
+    public bool $have_sizes = false;
+    public array $sizes = [];
 
     protected $repository;
 
@@ -52,8 +43,6 @@ class ProductModal extends Component
         $rules = [
             'barcode' => 'nullable|string|max:100',
             'category_id' => 'required',
-            'kitchen_id' => 'nullable',
-            'base_unit_id' => 'nullable',
             'tax_id' => 'nullable',
             'type' => 'required|in:1,2',
             'cost_price' => 'nullable|numeric|min:0',
@@ -61,10 +50,6 @@ class ProductModal extends Component
             'status' => 'required|in:0,1',
             'img' => 'nullable|image|max:2048',
             'have_sizes' => 'boolean',
-            'min_quantity' => 'nullable|numeric|min:0',
-            'calories' => 'nullable|numeric|min:0',
-            's_from' => 'nullable',
-            's_to' => 'nullable',
         ];
 
         foreach (config('langs', ['ar' => 'Arabic', 'en' => 'English']) as $locale => $name) {
@@ -99,10 +84,16 @@ class ProductModal extends Component
         }
         
         $this->barcode = '';
-        $this->category_id = '';
-        $this->kitchen_id = '';
-        $this->base_unit_id = '';
-        $this->tax_id = '';
+        
+        $categoriesList = $this->repository ? $this->repository->categories() : [];
+        $this->category_id = !empty($categoriesList) ? (string)array_key_first($categoriesList) : '';
+
+        $vatsList = $this->repository ? $this->repository->vats() : [];
+        $this->tax_id = !empty($vatsList) ? (string)array_key_first($vatsList) : '';
+
+        $unitsList = $this->repository ? $this->repository->units() : [];
+        $firstUnitId = !empty($unitsList) ? (string)array_key_first($unitsList) : '';
+
         $this->type = 1;
         $this->cost_price = 0.00;
         $this->prod_price = 0.00;
@@ -111,29 +102,15 @@ class ProductModal extends Component
         $this->existing_img = null;
 
         $this->have_sizes = false;
-        $this->sizes = [
-            [
-                'ar' => ['name' => ''],
-                'en' => ['name' => ''],
-                'cost_price' => 0.00,
-                'sale_price' => 0.00,
-                'barcode' => '',
-            ]
-        ];
+        $this->sizes = [];
 
         $this->units = [
             [
-                'unit_id' => '',
+                'unit_id' => $firstUnitId,
                 'conversion_factor' => 1,
                 'is_base' => 1,
             ]
         ];
-
-        $this->min_quantity = 0;
-        $this->calories = 0;
-        $this->s_from = null;
-        $this->s_to = null;
-        $this->work_days = ['sat', 'sun', 'mon', 'tue', 'wed', 'thu', 'fri'];
     }
 
     public function addSizeRow(): void
@@ -161,8 +138,9 @@ class ProductModal extends Component
 
     public function addUnitRow(): void
     {
+        $unitsList = $this->repository->units();
         $this->units[] = [
-            'unit_id' => '',
+            'unit_id' => !empty($unitsList) ? (string)array_key_first($unitsList) : '',
             'conversion_factor' => 1,
             'is_base' => 0,
         ];
@@ -179,6 +157,19 @@ class ProductModal extends Component
     {
         $this->resetFields();
         $this->type = in_array((int)$type, [1, 2]) ? (int)$type : 1;
+        
+        $unitsList = $this->repository->units();
+        if (!empty($unitsList)) {
+            $this->units[0]['unit_id'] = (string)array_key_first($unitsList);
+            $this->units[0]['conversion_factor'] = 1;
+            $this->units[0]['is_base'] = 1;
+        }
+
+        $vatsList = $this->repository->vats();
+        if (!empty($vatsList)) {
+            $this->tax_id = (string)array_key_first($vatsList);
+        }
+
         $this->openModal();
     }
 
@@ -196,11 +187,9 @@ class ProductModal extends Component
                 $this->details[$locale] = $product->translate($locale)?->details ?? '';
             }
 
-            $this->barcode = (string)$product->barcode;
+            $this->barcode = (string)($product->barcode ?? '');
             $this->category_id = (string)$product->category_id;
-            $this->kitchen_id = (string)$product->kitchen_id;
-            $this->base_unit_id = (string)$product->base_unit_id;
-            $this->tax_id = (string)$product->tax_id;
+            $this->tax_id = (string)($product->tax_id ?? '');
             $this->type = (int)($product->type ?? 1);
             $this->cost_price = (float)$product->cost_price;
             $this->prod_price = (float)$product->prod_price;
@@ -222,40 +211,25 @@ class ProductModal extends Component
                     }
                     $this->sizes[] = $sizeItem;
                 }
-            } else {
-                $this->sizes = [
-                    [
-                        'ar' => ['name' => ''],
-                        'en' => ['name' => ''],
-                        'cost_price' => 0.00,
-                        'sale_price' => 0.00,
-                        'barcode' => '',
-                    ]
-                ];
             }
 
             $this->units = [];
             if ($product->units && $product->units->count() > 0) {
                 foreach ($product->units as $unit) {
                     $this->units[] = [
-                        'unit_id' => $unit->unit_id,
+                        'unit_id' => (string)$unit->unit_id,
                         'conversion_factor' => $unit->conversion_factor,
                         'is_base' => $unit->is_base ? 1 : 0,
                     ];
                 }
             } else {
+                $unitsList = $this->repository->units();
                 $this->units[] = [
-                    'unit_id' => $product->base_unit_id ?? '',
+                    'unit_id' => (string)($product->base_unit_id ?: (array_key_first($unitsList) ?? '')),
                     'conversion_factor' => 1,
                     'is_base' => 1,
                 ];
             }
-
-            $this->min_quantity = (float)($product->min_quantity ?? 0);
-            $this->calories = (float)($product->calories ?? 0);
-            $this->s_from = $product->s_from;
-            $this->s_to = $product->s_to;
-            $this->work_days = is_array($product->work_days) ? $product->work_days : ['sat', 'sun', 'mon', 'tue', 'wed', 'thu', 'fri'];
 
             $this->openModal();
         }
@@ -269,19 +243,12 @@ class ProductModal extends Component
             $data = [
                 'barcode' => $this->barcode ?: null,
                 'category_id' => $this->category_id,
-                'kitchen_id' => $this->kitchen_id ?: null,
-                'base_unit_id' => $this->base_unit_id ?: null,
                 'tax_id' => $this->tax_id ?: null,
                 'type' => $this->type,
                 'cost_price' => $this->cost_price ?: 0,
                 'prod_price' => $this->prod_price ?: 0,
                 'status' => $this->status,
                 'have_sizes' => $this->have_sizes ? 1 : 0,
-                'min_quantity' => $this->min_quantity ?: 0,
-                'calories' => $this->calories ?: 0,
-                's_from' => $this->s_from ?: null,
-                's_to' => $this->s_to ?: null,
-                'work_days' => $this->work_days,
                 'units' => $this->units,
                 'sizes' => $this->sizes,
             ];
@@ -299,10 +266,10 @@ class ProductModal extends Component
 
             if ($this->is_edit && $this->model_id) {
                 $this->repository->updateWithRelations($data, $this->model_id);
-                flash()->success($this->type == 2 ? 'تم تعديل الخدمة بنجاح!' : 'تم تعديل المنتج بنجاح!');
+                flash()->success(__('messages.updated', ['model' => __('basicdata::models/db_products.singular')]));
             } else {
                 $this->repository->createWithRelations($data);
-                flash()->success($this->type == 2 ? 'تم إضافة الخدمة بنجاح!' : 'تم إضافة المنتج بنجاح!');
+                flash()->success(__('messages.saved', ['model' => __('basicdata::models/db_products.singular')]));
             }
 
             $this->closeModal();
@@ -318,7 +285,6 @@ class ProductModal extends Component
         return view('basicdata::livewire.products.product-modal', [
             'categories' => $this->repository->categories(),
             'unitsList' => $this->repository->units(),
-            'kitchens' => $this->repository->kitchens(),
             'vats' => $this->repository->vats(),
             'statuses' => $this->repository->statuses(),
         ]);

@@ -19,7 +19,7 @@
                                     {{ $is_edit ? __('crud.edit') : __('crud.add_new') }} {{ $type == 2 ? __('basicdata::models/db_products.services') : __('basicdata::models/db_products.singular') }}
                                 </h5>
                                 <span class="text-muted fs-8">
-                                    {{ $type == 2 ? 'بيانات الخدمة، المواعيد، والتسعير' : 'بيانات المنتج، المقاسات، الوحدات المتعددة، والتسعير' }}
+                                    {{ $type == 2 ? 'إدارة تفاصيل وبيانات الخدمة والتسعير' : 'إدارة بيانات الصنف، الوحدات المتعددة، المقاسات والتسعير' }}
                                 </span>
                             </div>
                         </div>
@@ -28,12 +28,12 @@
                         </button>
                     </div>
 
-                    <!-- Navigation Tabs Bar (تابات حديثة وأنيقة) -->
+                    <!-- Navigation Tabs Bar (تابات حديثة) -->
                     <div class="px-5 pt-3 border-bottom bg-white">
                         <ul class="nav nav-pills nav-pills-custom gap-2 border-0" role="tablist">
                             <!-- Tab 1: Basic Info -->
                             <li class="nav-item" role="presentation">
-                                <a class="nav-link px-3 py-2 fs-7 fw-bold d-flex align-items-center gap-2 rounded-2 cursor-pointer border"
+                                <a class="nav-link px-4 py-2 fs-7 fw-bold d-flex align-items-center gap-2 rounded-2 cursor-pointer border"
                                    :class="activeTab === 'basic' ? 'active bg-primary text-white border-primary shadow-xs' : 'bg-light text-gray-700 border-transparent hover-bg-light-primary'"
                                    @click="activeTab = 'basic'">
                                     <i class="fa-solid fa-circle-info fs-7" :class="activeTab === 'basic' ? 'text-white' : 'text-primary'"></i>
@@ -43,7 +43,7 @@
 
                             <!-- Tab 2: Multiple Units -->
                             <li class="nav-item" role="presentation">
-                                <a class="nav-link px-3 py-2 fs-7 fw-bold d-flex align-items-center gap-2 rounded-2 cursor-pointer border"
+                                <a class="nav-link px-4 py-2 fs-7 fw-bold d-flex align-items-center gap-2 rounded-2 cursor-pointer border"
                                    :class="activeTab === 'units' ? 'active bg-primary text-white border-primary shadow-xs' : 'bg-light text-gray-700 border-transparent hover-bg-light-primary'"
                                    @click="activeTab = 'units'">
                                     <i class="fa-solid fa-layer-group fs-7" :class="activeTab === 'units' ? 'text-white' : 'text-success'"></i>
@@ -56,7 +56,7 @@
 
                             <!-- Tab 3: Sizes & Variations -->
                             <li class="nav-item" role="presentation">
-                                <a class="nav-link px-3 py-2 fs-7 fw-bold d-flex align-items-center gap-2 rounded-2 cursor-pointer border"
+                                <a class="nav-link px-4 py-2 fs-7 fw-bold d-flex align-items-center gap-2 rounded-2 cursor-pointer border"
                                    :class="activeTab === 'sizes' ? 'active bg-primary text-white border-primary shadow-xs' : 'bg-light text-gray-700 border-transparent hover-bg-light-primary'"
                                    @click="activeTab = 'sizes'">
                                     <i class="fa-solid fa-ruler-combined fs-7" :class="activeTab === 'sizes' ? 'text-white' : 'text-danger'"></i>
@@ -66,26 +66,6 @@
                                             {{ count($sizes) }}
                                         </span>
                                     @endif
-                                </a>
-                            </li>
-
-                            <!-- Tab 4: VAT & Kitchen -->
-                            <li class="nav-item" role="presentation">
-                                <a class="nav-link px-3 py-2 fs-7 fw-bold d-flex align-items-center gap-2 rounded-2 cursor-pointer border"
-                                   :class="activeTab === 'vat' ? 'active bg-primary text-white border-primary shadow-xs' : 'bg-light text-gray-700 border-transparent hover-bg-light-primary'"
-                                   @click="activeTab = 'vat'">
-                                    <i class="fa-solid fa-receipt fs-7" :class="activeTab === 'vat' ? 'text-white' : 'text-warning'"></i>
-                                    <span>{{ __('basicdata::models/db_products.sections.vat_info') }}</span>
-                                </a>
-                            </li>
-
-                            <!-- Tab 5: Other Info & Schedule -->
-                            <li class="nav-item" role="presentation">
-                                <a class="nav-link px-3 py-2 fs-7 fw-bold d-flex align-items-center gap-2 rounded-2 cursor-pointer border"
-                                   :class="activeTab === 'other' ? 'active bg-primary text-white border-primary shadow-xs' : 'bg-light text-gray-700 border-transparent hover-bg-light-primary'"
-                                   @click="activeTab = 'other'">
-                                    <i class="fa-solid fa-clock fs-7" :class="activeTab === 'other' ? 'text-white' : 'text-info'"></i>
-                                    <span>{{ __('basicdata::models/db_products.sections.other_info') }}</span>
                                 </a>
                             </li>
                         </ul>
@@ -191,6 +171,19 @@
                                             @error('cost_price') <div class="text-danger fs-8 mt-1">{{ $message }}</div> @enderror
                                         </div>
 
+                                        <!-- Tax / VAT -->
+                                        <div class="col-md-6">
+                                            <label class="form-label fw-bold fs-7 text-gray-700 mb-1">
+                                                {{ __('basicdata::models/db_products.fields.vat') }}
+                                            </label>
+                                            <select wire:model="tax_id" class="form-select form-select-solid fs-7">
+                                                <option value="">-- @lang('basicdata::lang.select') --</option>
+                                                @foreach($vats as $vId => $vName)
+                                                    <option value="{{ $vId }}">{{ $vName }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+
                                         <!-- Status -->
                                         <div class="col-md-6">
                                             <label class="form-label fw-bold fs-7 text-gray-700 mb-2 d-block">
@@ -207,7 +200,7 @@
                                         </div>
 
                                         <!-- Image -->
-                                        <div class="col-md-6">
+                                        <div class="col-md-12">
                                             <label class="form-label fw-bold fs-7 text-gray-700 mb-1">
                                                 {{ __('basicdata::models/db_products.fields.img') }}
                                             </label>
@@ -226,6 +219,19 @@
                                             </div>
                                             @error('img') <div class="text-danger fs-8 mt-1">{{ $message }}</div> @enderror
                                         </div>
+
+                                        <!-- Multilingual Details -->
+                                        @foreach (config('langs', ['ar' => 'العربية', 'en' => 'English']) as $locale => $language)
+                                            <div class="col-md-6">
+                                                <label class="form-label fw-bold fs-7 text-gray-700 mb-1">
+                                                    {{ $language }} - {{ __('basicdata::models/db_products.fields.details') }}
+                                                </label>
+                                                <textarea wire:model="details.{{ $locale }}" 
+                                                          class="form-control form-control-solid fs-7" 
+                                                          rows="2" 
+                                                          placeholder="{{ __('basicdata::models/db_products.placeholders.details') }} ({{ $language }})"></textarea>
+                                            </div>
+                                        @endforeach
                                     </div>
                                 </div>
                             </div>
@@ -236,7 +242,7 @@
                                     <div class="d-flex justify-content-between align-items-center mb-3">
                                         <div>
                                             <h6 class="fw-bold text-gray-900 mb-1 fs-7">الوحدات ومعاملات التحويل</h6>
-                                            <span class="text-muted fs-8">أضف وحدات قياس متعددة مع تحديد معامل التحويل للوحدة الأساسية</span>
+                                            <span class="text-muted fs-8">تم تفعيل الوحدة الأساسية تلقائياً بمعامل 1، ويمكنك إضافة وحدات أخرى</span>
                                         </div>
                                         <button type="button" class="btn btn-sm btn-light-primary font-weight-bold" wire:click="addUnitRow">
                                             <i class="fas fa-plus fs-8 me-1"></i> {{ __('basicdata::models/db_products.sections.add_unit') }}
@@ -373,97 +379,6 @@
                                             <p class="fs-7 mb-0">قم بتفعيل خيار المقاسات لإضافة أحجام متعددة للصنف بأسعار وباركودات مختلفة.</p>
                                         </div>
                                     @endif
-                                </div>
-                            </div>
-
-                            <!-- TAB 4: VAT & KITCHEN -->
-                            <div x-show="activeTab === 'vat'" x-transition.opacity.duration.200ms style="display: none;">
-                                <div class="bg-white p-4 rounded-3 border shadow-xs">
-                                    <div class="row g-4">
-                                        <div class="col-md-6">
-                                            <label class="form-label fw-bold fs-7 text-gray-700 mb-1">{{ __('basicdata::models/db_products.fields.vat') }}:</label>
-                                            <select wire:model="tax_id" class="form-select form-select-solid fs-7">
-                                                <option value="">-- @lang('basicdata::lang.select') --</option>
-                                                @foreach($vats as $vId => $vName)
-                                                    <option value="{{ $vId }}">{{ $vName }}</option>
-                                                @endforeach
-                                            </select>
-                                            <span class="text-muted fs-8 mt-1 d-block">حساب الضريبة المطبق على عمليات بيع هذا الصنف.</span>
-                                        </div>
-
-                                        <div class="col-md-6">
-                                            <label class="form-label fw-bold fs-7 text-gray-700 mb-1">{{ __('basicdata::models/db_products.fields.kitchen_id') }}:</label>
-                                            <select wire:model="kitchen_id" class="form-select form-select-solid fs-7">
-                                                <option value="">-- @lang('basicdata::lang.select') --</option>
-                                                @foreach($kitchens as $kId => $kName)
-                                                    <option value="{{ $kId }}">{{ $kName }}</option>
-                                                @endforeach
-                                            </select>
-                                            <span class="text-muted fs-8 mt-1 d-block">المطبخ أو قسم التحضير الذي تُطبع أو تُرسل إليه الطلبات.</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- TAB 5: OTHER INFO & SCHEDULE -->
-                            <div x-show="activeTab === 'other'" x-transition.opacity.duration.200ms style="display: none;">
-                                <div class="bg-white p-4 rounded-3 border shadow-xs">
-                                    <div class="row g-3">
-                                        @foreach (config('langs', ['ar' => 'العربية', 'en' => 'English']) as $locale => $language)
-                                            <div class="col-md-6">
-                                                <label class="form-label fw-bold fs-7 text-gray-700 mb-1">
-                                                    {{ $language }} - {{ __('basicdata::models/db_products.fields.details') }}:
-                                                </label>
-                                                <textarea wire:model="details.{{ $locale }}" 
-                                                          class="form-control form-control-solid fs-7" 
-                                                          rows="3" 
-                                                          placeholder="{{ __('basicdata::models/db_products.placeholders.details') }} ({{ $language }})"></textarea>
-                                            </div>
-                                        @endforeach
-
-                                        @if ($type != 2)
-                                            <div class="col-md-6">
-                                                <label class="form-label fw-bold fs-7 text-gray-700 mb-1">{{ __('basicdata::models/db_products.fields.min_quantity') }}:</label>
-                                                <input type="number" 
-                                                       step="0.01" 
-                                                       min="0" 
-                                                       wire:model="min_quantity" 
-                                                       class="form-control form-control-solid fs-7" 
-                                                       placeholder="0.00" />
-                                            </div>
-                                        @endif
-
-                                        <div class="col-md-3">
-                                            <label class="form-label fw-bold fs-7 text-gray-700 mb-1">{{ __('basicdata::models/db_products.fields.s_from') }}:</label>
-                                            <input type="time" wire:model="s_from" class="form-control form-control-solid fs-7" />
-                                        </div>
-
-                                        <div class="col-md-3">
-                                            <label class="form-label fw-bold fs-7 text-gray-700 mb-1">{{ __('basicdata::models/db_products.fields.s_to') }}:</label>
-                                            <input type="time" wire:model="s_to" class="form-control form-control-solid fs-7" />
-                                        </div>
-
-                                        <!-- Days of Week -->
-                                        <div class="col-md-12 mt-3">
-                                            <label class="form-label fw-bold fs-7 text-gray-700 mb-2">{{ __('basicdata::models/db_products.fields.work_days') }}:</label>
-                                            <div class="d-flex flex-wrap gap-2">
-                                                @foreach (config('week_days', [
-                                                    'sat' => 'السبت',
-                                                    'sun' => 'الأحد',
-                                                    'mon' => 'الاثنين',
-                                                    'tue' => 'الثلاثاء',
-                                                    'wed' => 'الأربعاء',
-                                                    'thu' => 'الخميس',
-                                                    'fri' => 'الجمعة',
-                                                ]) as $key => $day)
-                                                    <label class="d-flex align-items-center gap-2 p-2 px-3 rounded-2 border bg-light cursor-pointer hover-bg-light-primary" style="transition: all 0.2s;">
-                                                        <input class="form-check-input mt-0" type="checkbox" wire:model="work_days" value="{{ $key }}" id="day_{{ $key }}">
-                                                        <span class="fs-8 text-gray-800 fw-medium">{{ $day }}</span>
-                                                    </label>
-                                                @endforeach
-                                            </div>
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
 
