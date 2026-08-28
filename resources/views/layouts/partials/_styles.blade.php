@@ -72,6 +72,7 @@
             opacity: 0.88;
             transform: translateY(3px);
         }
+
         to {
             opacity: 1;
             transform: translateY(0);
@@ -98,6 +99,7 @@
             margin-right: 240px !important;
             margin-left: 0 !important;
         }
+
         [dir="ltr"] .app-sidebar-fixed .app-wrapper {
             margin-left: 240px !important;
             margin-right: 0 !important;
@@ -121,9 +123,21 @@
     }
 
     @keyframes livePulse {
-        0% { transform: scale(0.95); opacity: 0.7; }
-        50% { transform: scale(1.2); opacity: 1; box-shadow: 0 0 6px #10B981; }
-        100% { transform: scale(0.95); opacity: 0.7; }
+        0% {
+            transform: scale(0.95);
+            opacity: 0.7;
+        }
+
+        50% {
+            transform: scale(1.2);
+            opacity: 1;
+            box-shadow: 0 0 6px #10B981;
+        }
+
+        100% {
+            transform: scale(0.95);
+            opacity: 0.7;
+        }
     }
 
     /* Custom Sleek Ultra-Thin Scrollbar */
@@ -174,7 +188,8 @@
         background: linear-gradient(90deg, #cbdfe6, transparent);
     }
 
-    .line-menu-btn, .line-menu-link {
+    .line-menu-btn,
+    .line-menu-link {
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -192,12 +207,14 @@
         user-select: none;
     }
 
-    .line-menu-btn:hover, .line-menu-link:hover {
+    .line-menu-btn:hover,
+    .line-menu-link:hover {
         background: rgba(203, 223, 230, 0.4);
         color: #1B325B;
     }
 
-    .line-menu-link.active-root, .line-menu-btn.active-parent {
+    .line-menu-link.active-root,
+    .line-menu-btn.active-parent {
         background: linear-gradient(135deg, #cbdfe6 0%, #eef5f7 100%) !important;
         border: 1px solid #b2d3dc !important;
         color: #1B325B !important;
@@ -219,15 +236,41 @@
     }
 
     /* Standard Distinct Tints */
-    .icon-dashboard { color: #0284C7; }
-    .icon-invoices { color: #059669; }
-    .icon-store { color: #D97706; }
-    .icon-pos { color: #E11D48; }
-    .icon-accounting { color: #4F46E5; }
-    .icon-finance { color: #0891B2; }
-    .icon-hr { color: #7C3AED; }
-    .icon-basicdata { color: #8B5CF6; }
-    .icon-settings { color: #475569; }
+    .icon-dashboard {
+        color: #0284C7;
+    }
+
+    .icon-invoices {
+        color: #059669;
+    }
+
+    .icon-store {
+        color: #D97706;
+    }
+
+    .icon-pos {
+        color: #E11D48;
+    }
+
+    .icon-accounting {
+        color: #4F46E5;
+    }
+
+    .icon-finance {
+        color: #0891B2;
+    }
+
+    .icon-hr {
+        color: #7C3AED;
+    }
+
+    .icon-basicdata {
+        color: #8B5CF6;
+    }
+
+    .icon-settings {
+        color: #475569;
+    }
 
     .line-menu-link.active-root .line-icon-badge,
     .line-menu-btn.active-parent .line-icon-badge,
@@ -344,7 +387,8 @@
         font-family: 'Cairo', sans-serif !important;
     }
 
-    body, html {
+    body,
+    html {
         font-family: 'Cairo', sans-serif !important;
     }
 
@@ -370,7 +414,7 @@
     }
 
     :root:not([data-bs-theme="dark"]) [data-kt-app-layout=dark-sidebar] .app-sidebar .menu .menu-item .menu-link.active,
-    :root:not([data-bs-theme="dark"]) [data-kt-app-layout=dark-sidebar] .app-sidebar .menu .menu-item.hover > .menu-link {
+    :root:not([data-bs-theme="dark"]) [data-kt-app-layout=dark-sidebar] .app-sidebar .menu .menu-item.hover>.menu-link {
         background-color: var(--bs-primary-active) !important;
         color: #ffffff !important;
         border-radius: 8px;
@@ -596,19 +640,23 @@
     :root:not([data-bs-theme="dark"]) .select2-container--default .select2-dropdown .select2-results__options .select2-results__option {
         color: var(--bs-primary-active) !important;
     }
+
     :root:not([data-bs-theme="dark"]) .select2-container--default .select2-dropdown .select2-results__options .select2-results__option--highlighted,
     :root:not([data-bs-theme="dark"]) .select2-container--bootstrap5 .select2-dropdown .select2-results__options .select2-results__option--highlighted {
         background-color: #6A669D !important;
         color: white !important;
     }
+
     :root:not([data-bs-theme="dark"]) .select2-container--default .select2-dropdown .select2-results__options .select2-results__option--selected,
     :root:not([data-bs-theme="dark"]) .select2-container--bootstrap5 .select2-dropdown .select2-results__options .select2-results__option--selected {
         background-color: #6A669D !important;
         color: white !important;
     }
+
     :root:not([data-bs-theme="dark"]) .select2-container--default .select2-selection--single .select2-selection__rendered {
         color: var(--bs-primary-active) !important;
     }
+
     :root:not([data-bs-theme="dark"]) .select2-container--default .select2-selection__placeholder {
         color: var(--bs-primary-active) !important;
     }
@@ -1186,7 +1234,14 @@
 
     /* Print Styles */
     @media print {
-        .btn, .icon-btn, .card-footer, .no-print, button, #card-filter, .table-action {
+
+        .btn,
+        .icon-btn,
+        .card-footer,
+        .no-print,
+        button,
+        #card-filter,
+        .table-action {
             display: none !important;
         }
     }
@@ -1223,7 +1278,8 @@
         vertical-align: middle;
     }
 
-    table th, table td {
+    table th,
+    table td {
         white-space: normal;
         vertical-align: middle;
     }
@@ -1261,6 +1317,7 @@
 
     /* Small & Medium Screens (< 992px) */
     @media (max-width: 991.98px) {
+
         .app-container,
         .container-xxl,
         .container-fluid,
@@ -1324,7 +1381,8 @@
         }
 
         /* Table font size scaling */
-        table th, table td {
+        table th,
+        table td {
             font-size: 0.825rem !important;
             padding: 0.5rem 0.4rem !important;
         }
