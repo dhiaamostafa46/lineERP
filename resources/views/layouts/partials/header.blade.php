@@ -149,7 +149,7 @@
 
 
         <!-- ============================================================== -->
-        <!-- 3. END ZONE: Fullscreen + Notifications + Language + Profile -->
+        <!-- 3. END ZONE: Fullscreen + Notifications + User Profile (Themes & Lang inside) -->
         <!-- ============================================================== -->
         <div class="d-flex align-items-center gap-2 gap-md-3">
             
@@ -171,40 +171,7 @@
             @endcan
             <!--end::Notifications Bell-->
 
-            <!--begin::Language Switcher Dropdown-->
-            <div class="dropdown">
-                <button type="button" 
-                        class="btn btn-sm d-flex align-items-center gap-2 px-3 py-2 rounded-3 border"
-                        style="background: #f8fafc; border-color: #e2e8f0 !important; color: #1e293b; height: 38px;"
-                        data-bs-toggle="dropdown" 
-                        aria-expanded="false">
-                    @if (app()->getLocale() == 'en')
-                        <img class="w-18px h-18px rounded-circle" src="{{ asset('admin_assets') }}/media/flags/united-states.svg" alt="EN" />
-                        <span class="fs-8 fw-bold">EN</span>
-                    @else
-                        <img class="w-18px h-18px rounded-circle" src="{{ asset('admin_assets') }}/media/flags/saudi-arabia.svg" alt="AR" />
-                        <span class="fs-8 fw-bold">العربية</span>
-                    @endif
-                    <i class="fas fa-chevron-down fs-9 text-muted ms-1"></i>
-                </button>
-                <ul class="dropdown-menu dropdown-menu-end shadow-lg py-2 rounded-3 border-0" style="min-width: 150px; border: 1px solid #e2e8f0 !important;">
-                    <li>
-                        <a href="{{ route('switchLang', 'ar') }}" class="dropdown-item d-flex align-items-center gap-2 py-2 px-3 fs-7 {{ app()->getLocale() == 'ar' ? 'active bg-light-primary text-primary fw-bold' : 'text-gray-700' }}">
-                            <img class="w-18px h-18px rounded-circle" src="{{ asset('admin_assets') }}/media/flags/saudi-arabia.svg" alt="AR" />
-                            <span>العربية</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('switchLang', 'en') }}" class="dropdown-item d-flex align-items-center gap-2 py-2 px-3 fs-7 {{ app()->getLocale() == 'en' ? 'active bg-light-primary text-primary fw-bold' : 'text-gray-700' }}">
-                            <img class="w-18px h-18px rounded-circle" src="{{ asset('admin_assets') }}/media/flags/united-states.svg" alt="EN" />
-                            <span>English</span>
-                        </a>
-                    </li>
-                </ul>
-            </div>
-            <!--end::Language Switcher Dropdown-->
-
-            <!--begin::User Profile Account-->
+            <!--begin::User Profile Account (Containing Theme Modes & Language Switcher)-->
             @auth('web')
                 <div class="dropdown">
                     <div class="cursor-pointer d-flex align-items-center gap-2 p-1 rounded-3" data-bs-toggle="dropdown" aria-expanded="false">
@@ -220,25 +187,106 @@
                         <i class="fas fa-chevron-down fs-9 text-muted d-none d-lg-inline ms-1"></i>
                     </div>
 
-                    <ul class="dropdown-menu dropdown-menu-end shadow-lg py-2 rounded-3 border-0 w-240px" style="border: 1px solid #e2e8f0 !important;">
+                    <ul class="dropdown-menu dropdown-menu-end shadow-lg py-2 rounded-3 border-0 w-275px" style="border: 1px solid #e2e8f0 !important;">
+                        
+                        <!-- User Info Header -->
                         <li class="px-4 py-3 border-bottom">
-                            <div class="fw-bold fs-7 text-gray-900">{{ $user->name }}</div>
-                            <div class="fs-8 text-muted text-truncate">{{ $user->email }}</div>
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="symbol symbol-40px symbol-circle">
+                                    <div class="symbol-label fw-bold fs-6 text-white" style="background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);">
+                                        {{ mb_substr($user->name ?? 'U', 0, 1, 'utf-8') }}
+                                    </div>
+                                </div>
+                                <div class="d-flex flex-column text-truncate">
+                                    <div class="fw-bold fs-7 text-gray-900 text-truncate">{{ $user->name }}</div>
+                                    <div class="fs-9 text-muted text-truncate">{{ $user->email }}</div>
+                                    <span class="badge badge-light-success fs-9 fw-bold px-2 py-0 mt-1 align-self-start">
+                                        {{ $user->roles->first()?->name ?? 'Super Admin' }}
+                                    </span>
+                                </div>
+                            </div>
                         </li>
+
+                        <!-- Theme Mode Switcher -->
+                        <li class="px-3 pt-3 pb-2">
+                            <div class="text-muted fs-9 fw-bold px-1 pb-2 text-uppercase d-flex align-items-center justify-content-between">
+                                <span>المظهر (Themes)</span>
+                                <i class="fas fa-palette fs-8 text-primary"></i>
+                            </div>
+                            <div class="d-flex align-items-center justify-content-between p-1 rounded-2 bg-light border">
+                                <a href="#" 
+                                   class="btn btn-xs btn-icon flex-grow-1 h-30px rounded-2 d-flex align-items-center justify-content-center gap-1 text-gray-700 active" 
+                                   data-kt-element="mode" data-kt-value="light" title="Light Mode">
+                                    <i class="fas fa-sun text-warning fs-8"></i>
+                                    <span class="fs-9 fw-semibold">فاتح</span>
+                                </a>
+                                <a href="#" 
+                                   class="btn btn-xs btn-icon flex-grow-1 h-30px rounded-2 d-flex align-items-center justify-content-center gap-1 text-gray-700" 
+                                   data-kt-element="mode" data-kt-value="dark" title="Dark Mode">
+                                    <i class="fas fa-moon text-info fs-8"></i>
+                                    <span class="fs-9 fw-semibold">داكن</span>
+                                </a>
+                                <a href="#" 
+                                   class="btn btn-xs btn-icon flex-grow-1 h-30px rounded-2 d-flex align-items-center justify-content-center gap-1 text-gray-700" 
+                                   data-kt-element="mode" data-kt-value="system" title="System Mode">
+                                    <i class="fas fa-desktop text-gray-600 fs-8"></i>
+                                    <span class="fs-9 fw-semibold">تلقائي</span>
+                                </a>
+                            </div>
+                        </li>
+
+                        <li><hr class="dropdown-divider my-2" style="border-color: #e2e8f0;"></li>
+
+                        <!-- Language Switcher -->
+                        <li class="px-3 py-1">
+                            <div class="text-muted fs-9 fw-bold px-1 pb-2 text-uppercase d-flex align-items-center justify-content-between">
+                                <span>@lang('lang.language')</span>
+                                <i class="fas fa-globe fs-8 text-primary"></i>
+                            </div>
+                            <div class="d-flex flex-column gap-1">
+                                <a href="{{ route('switchLang', 'ar') }}" 
+                                   class="d-flex align-items-center justify-content-between py-2 px-3 rounded-2 fs-7 text-decoration-none {{ app()->getLocale() == 'ar' ? 'bg-light-primary text-primary fw-bold' : 'text-gray-700' }}"
+                                   style="{{ app()->getLocale() == 'ar' ? 'background: #f1faff;' : '' }}">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <img class="w-18px h-18px rounded-circle" src="{{ asset('admin_assets') }}/media/flags/saudi-arabia.svg" alt="AR" />
+                                        <span>العربية (Arabic)</span>
+                                    </div>
+                                    @if(app()->getLocale() == 'ar')
+                                        <i class="fas fa-check fs-8 text-primary"></i>
+                                    @endif
+                                </a>
+                                <a href="{{ route('switchLang', 'en') }}" 
+                                   class="d-flex align-items-center justify-content-between py-2 px-3 rounded-2 fs-7 text-decoration-none {{ app()->getLocale() == 'en' ? 'bg-light-primary text-primary fw-bold' : 'text-gray-700' }}"
+                                   style="{{ app()->getLocale() == 'en' ? 'background: #f1faff;' : '' }}">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <img class="w-18px h-18px rounded-circle" src="{{ asset('admin_assets') }}/media/flags/united-states.svg" alt="EN" />
+                                        <span>English (الإنجليزية)</span>
+                                    </div>
+                                    @if(app()->getLocale() == 'en')
+                                        <i class="fas fa-check fs-8 text-primary"></i>
+                                    @endif
+                                </a>
+                            </div>
+                        </li>
+
+                        <li><hr class="dropdown-divider my-2" style="border-color: #e2e8f0;"></li>
+
+                        <!-- Settings Link -->
                         @can('settings.edit')
-                            <li>
-                                <a href="{{ route('settings.edit', 1) }}" class="dropdown-item d-flex align-items-center gap-2 py-2 px-4 fs-7 text-gray-700" wire:navigate>
-                                    <i class="fas fa-cog fs-8 text-muted"></i>
+                            <li class="px-2">
+                                <a href="{{ route('settings.edit', 1) }}" class="d-flex align-items-center gap-2 py-2 px-3 rounded-2 fs-7 text-gray-700 text-decoration-none" wire:navigate>
+                                    <i class="fas fa-cog fs-7 text-muted"></i>
                                     <span>@lang('lang.settings')</span>
                                 </a>
                             </li>
                         @endcan
-                        <li><hr class="dropdown-divider my-1" style="border-color: #e2e8f0;"></li>
-                        <li>
+
+                        <!-- Logout Button -->
+                        <li class="px-2 pt-1">
                             <a href="{{ route('logout') }}" 
                                onclick="event.preventDefault(); document.getElementById('header-logout-form').submit();"
-                               class="dropdown-item d-flex align-items-center gap-2 py-2 px-4 fs-7 text-danger">
-                                <i class="fas fa-power-off fs-8 text-danger"></i>
+                               class="d-flex align-items-center gap-2 py-2 px-3 rounded-2 fs-7 text-danger text-decoration-none">
+                                <i class="fas fa-power-off fs-7 text-danger"></i>
                                 <span>@lang('lang.logout')</span>
                             </a>
                             <form id="header-logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
