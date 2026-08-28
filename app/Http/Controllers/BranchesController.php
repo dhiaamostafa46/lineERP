@@ -140,4 +140,22 @@ class BranchesController extends Controller
 
         return redirect(route('Branches.index'));
     }
+
+    /**
+     * Switch active branch for authenticated user.
+     */
+    public function switchBranch($branchId)
+    {
+        $branch = \App\Models\Branch::findOrFail($branchId);
+
+        $user = auth()->user();
+        if ($user) {
+            $user->branch_id = $branch->id;
+            $user->save();
+            session(['current_branch_id' => $branch->id]);
+        }
+
+        flash(__('messages.updated', ['model' => __('models/Branches.singular')]))->success();
+        return redirect()->back();
+    }
 }

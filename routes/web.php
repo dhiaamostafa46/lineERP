@@ -153,6 +153,9 @@ Route::get('/RecordEmployeePresence', function () {
 // switch language
 Route::get('language/switch/{locale}', [LanguageController::class, 'switchLang'])->name('switchLang');
 
+// switch branch
+Route::get('branches/switch/{branchId}', [BranchesController::class, 'switchBranch'])->name('branches.switch')->middleware('auth');
+
 Route::view('/privacy', 'pages.privacy')->name('privacy');
 
 // //Mobile App login

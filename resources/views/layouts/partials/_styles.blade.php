@@ -109,6 +109,23 @@
         border-bottom: 1px solid #cbdfe6 !important;
     }
 
+    /* Header Live Clock Badge & Pulsing Indicator */
+    .badge-dot-live {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: #10B981;
+        display: inline-block;
+        box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
+        animation: livePulse 2s infinite ease-in-out;
+    }
+
+    @keyframes livePulse {
+        0% { transform: scale(0.95); opacity: 0.7; }
+        50% { transform: scale(1.2); opacity: 1; box-shadow: 0 0 8px #10B981; }
+        100% { transform: scale(0.95); opacity: 0.7; }
+    }
+
     /* Custom Sleek Ultra-Thin Scrollbar */
     .line-custom-scroll {
         scrollbar-width: thin;
