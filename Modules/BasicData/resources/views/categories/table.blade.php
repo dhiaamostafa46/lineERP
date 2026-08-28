@@ -32,7 +32,8 @@
                                 <span class="text-muted ms-3">↳</span>
                             @endif
                             <a href="javascript:void(0)" 
-                               onclick="Livewire.dispatch('openEditModal', { id: {{ $category->id }} })"
+                               x-on:click="$dispatch('openEditModal', { id: {{ $category->id }} })"
+                               onclick="if(window.Livewire) Livewire.dispatch('openEditModal', { id: {{ $category->id }} })"
                                class="text-gray-900 fw-bold text-hover-primary text-decoration-none fs-7">
                                 {{ $category->name }}
                             </a>

@@ -26,7 +26,8 @@
                     <!-- Name -->
                     <td class="ps-2">
                         <a href="javascript:void(0)" 
-                           onclick="Livewire.dispatch('openEditModal', { id: {{ $unit->id }} })"
+                           x-on:click="$dispatch('openEditModal', { id: {{ $unit->id }} })"
+                           onclick="if(window.Livewire) Livewire.dispatch('openEditModal', { id: {{ $unit->id }} })"
                            class="text-gray-900 fw-bold text-hover-primary text-decoration-none fs-7">
                             {{ $unit->name }}
                         </a>

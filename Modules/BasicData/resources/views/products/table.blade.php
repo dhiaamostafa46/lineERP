@@ -39,9 +39,10 @@
                                 @endif
                             </div>
                             <div class="d-flex flex-column">
-                                <a href="{{ route('basicdata.products.show', [$product->id]) }}" 
-                                   class="text-gray-900 fw-bold text-hover-primary text-decoration-none fs-7 mb-0" 
-                                   wire:navigate>
+                                <a href="javascript:void(0)" 
+                                   x-on:click="$dispatch('openEditModal', { id: {{ $product->id }} })"
+                                   onclick="if(window.Livewire) Livewire.dispatch('openEditModal', { id: {{ $product->id }} })"
+                                   class="text-gray-900 fw-bold text-hover-primary text-decoration-none fs-7 mb-0">
                                     {{ $product->name }}
                                 </a>
                                 <span class="text-muted fs-8 font-monospace">{{ $product->barcode ?? '—' }}</span>
