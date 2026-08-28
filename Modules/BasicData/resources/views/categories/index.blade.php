@@ -20,6 +20,8 @@
                         </a>
                     </li>
                     <li class="breadcrumb-item"><span class="bullet bg-gray-400 w-4px h-1px mx-2"></span></li>
+                    <li class="breadcrumb-item text-muted">@lang('basicdata::lang.basicdata')</li>
+                    <li class="breadcrumb-item"><span class="bullet bg-gray-400 w-4px h-1px mx-2"></span></li>
                     <li class="breadcrumb-item text-muted">@lang('basicdata::models/db_categories.plural')</li>
                 </ul>
             </div>
@@ -27,10 +29,10 @@
             <!-- Header Actions -->
             <div class="d-flex align-items-center gap-2">
                 @can('basicdata.categories.create')
-                    <a class="btn btn-sm front-btn-primary" href="{{ route('basicdata.categories.create') }}" wire:navigate>
+                    <button type="button" class="btn btn-sm front-btn-primary" onclick="Livewire.dispatch('openCreateModal')">
                         <i class="fa-solid fa-plus fs-8"></i>
                         @lang('crud.add_new')
-                    </a>
+                    </button>
                 @endcan
             </div>
 
@@ -46,21 +48,21 @@
             <div class="row g-3 g-lg-4 mb-4">
                 <div class="col-sm-6 col-xl-3">
                     <div class="front-stat-card">
-                        <span class="front-stat-title">إجمالي الفئات (TOTAL CATEGORIES)</span>
+                        <span class="front-stat-title">@lang('basicdata::models/db_categories.plural')</span>
                         <div class="d-flex align-items-center justify-content-between mt-1">
                             <span class="front-stat-value">{{ $totalCategoriesCount ?? 0 }}</span>
-                            <span class="badge bg-light-primary text-primary front-stat-badge">الكل</span>
+                            <span class="badge bg-light-primary text-primary front-stat-badge">@lang('basicdata::lang.all')</span>
                         </div>
                     </div>
                 </div>
 
                 <div class="col-sm-6 col-xl-3">
                     <div class="front-stat-card">
-                        <span class="front-stat-title">الفئات النشطة (ACTIVE)</span>
+                        <span class="front-stat-title">@lang('basicdata::lang.active')</span>
                         <div class="d-flex align-items-center justify-content-between mt-1">
                             <span class="front-stat-value text-success">{{ $activeCategoriesCount ?? 0 }}</span>
                             <span class="badge bg-light-success text-success front-stat-badge">
-                                <span class="front-legend-indicator bg-success"></span> نشط
+                                <span class="front-legend-indicator bg-success"></span> @lang('basicdata::lang.active')
                             </span>
                         </div>
                     </div>
@@ -68,7 +70,7 @@
 
                 <div class="col-sm-6 col-xl-3">
                     <div class="front-stat-card">
-                        <span class="front-stat-title">الفئات الرئيسية (MAIN)</span>
+                        <span class="front-stat-title">@lang('basicdata::models/db_categories.fields.parent_id')</span>
                         <div class="d-flex align-items-center justify-content-between mt-1">
                             <span class="front-stat-value text-primary">{{ $mainCategoriesCount ?? 0 }}</span>
                             <span class="badge bg-light-info text-info front-stat-badge">رئيسية</span>
@@ -78,7 +80,7 @@
 
                 <div class="col-sm-6 col-xl-3">
                     <div class="front-stat-card">
-                        <span class="front-stat-title">الفئات الفرعية (SUB)</span>
+                        <span class="front-stat-title">فرعية</span>
                         <div class="d-flex align-items-center justify-content-between mt-1">
                             <span class="front-stat-value text-dark">{{ $subCategoriesCount ?? 0 }}</span>
                             <span class="badge bg-light-dark text-gray-700 front-stat-badge">فرعية</span>
@@ -99,7 +101,7 @@
                                    name="name" 
                                    value="{{ request('name') }}" 
                                    class="form-control front-search-input" 
-                                   placeholder="البحث باسم الفئة..." 
+                                   placeholder="@lang('basicdata::models/db_categories.fields.name')..." 
                                    onchange="document.getElementById('frontSearchCatForm').submit()" />
                         {!! Form::close() !!}
                     </div>
@@ -149,14 +151,14 @@
                             <div class="dropdown-menu dropdown-menu-end front-filter-dropdown shadow-lg">
                                 {!! Form::open(['route' => 'basicdata.categories.index', 'method' => 'GET']) !!}
                                     <div class="d-flex align-items-center justify-content-between pb-3 mb-3 border-bottom">
-                                        <h5 class="front-filter-title">Filter categories</h5>
+                                        <h5 class="front-filter-title">Filter @lang('basicdata::models/db_categories.plural')</h5>
                                         <button type="button" class="btn btn-sm btn-icon btn-ghost-secondary p-0" onclick="this.closest('.dropdown-menu').classList.remove('show')">
                                             <i class="fa-solid fa-xmark text-muted fs-6"></i>
                                         </button>
                                     </div>
 
                                     <div class="mb-3">
-                                        <span class="front-filter-section-title">STATUS</span>
+                                        <span class="front-filter-section-title">@lang('basicdata::models/db_categories.fields.status')</span>
                                         <x-select2-input name="status" :placeholder="__('hr::lang.select_status')" :list="$statuses" :selected_id="request('status')"></x-select2-input>
                                     </div>
 
@@ -187,6 +189,9 @@
 
     <!-- Floating Bulk Actions Bar -->
     <x-bulk-action-bar route="{{ route('basicdata.categories.bulkDelete') }}" />
+
+    <!-- Livewire Category Modal -->
+    @livewire('basicdata::categories.category-modal')
 
 </div>
 @endsection

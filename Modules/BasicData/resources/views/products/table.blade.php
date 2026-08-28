@@ -7,13 +7,13 @@
                         <input class="form-check-input bulk-check-all" type="checkbox" id="checkAllProducts" title="تحديد الكل" />
                     </div>
                 </th>
-                <th class="ps-2"><x-table-sort column="name" title="NAME" /></th>
-                <th><x-table-sort column="category_id" title="CATEGORY" /></th>
-                <th><x-table-sort column="type" title="TYPE" /></th>
-                <th><x-table-sort column="cost_price" title="COST PRICE" /></th>
-                <th><x-table-sort column="prod_price" title="SALE PRICE" /></th>
-                <th><x-table-sort column="status" title="STATUS" /></th>
-                <th class="pe-4 text-end">ACTION</th>
+                <th class="ps-2"><x-table-sort column="name" :title="__('basicdata::models/db_products.fields.name')" /></th>
+                <th><x-table-sort column="category_id" :title="__('basicdata::models/db_products.fields.category_id')" /></th>
+                <th><x-table-sort column="type" :title="__('basicdata::models/db_products.fields.type')" /></th>
+                <th><x-table-sort column="cost_price" :title="__('basicdata::models/db_products.fields.cost_price')" /></th>
+                <th><x-table-sort column="prod_price" :title="__('basicdata::models/db_products.fields.prod_price')" /></th>
+                <th><x-table-sort column="status" :title="__('basicdata::models/db_products.fields.status')" /></th>
+                <th class="pe-4 text-end">@lang('crud.action')</th>
             </tr>
         </thead>
         <tbody>
@@ -93,7 +93,7 @@
                                    style="font-size: 12px; height: 28px;"
                                    wire:navigate>
                                     <i class="fa-solid fa-pen fs-9 text-muted"></i>
-                                    <span>Edit</span>
+                                    <span>@lang('crud.edit')</span>
                                 </a>
                             @endcan
 
@@ -103,7 +103,7 @@
                                         'type' => 'submit',
                                         'class' => 'btn btn-sm btn-icon btn-white border rounded-2 w-28px h-28px',
                                         'title' => __('crud.delete'),
-                                        'onclick' => "return confirm('هل أنت متأكد من الحذف؟')",
+                                        'onclick' => "return confirm('" . __('basicdata::lang.are_you_sure') . "')",
                                     ]) !!}
                                 {!! Form::close() !!}
                             @endcan
@@ -115,7 +115,7 @@
                     <td colspan="8" class="text-center py-10">
                         <div class="d-flex flex-column align-items-center justify-content-center text-muted">
                             <i class="fa-solid fa-inbox fs-2tx mb-2 text-gray-300"></i>
-                            <span class="fs-7 fw-semibold">No records found</span>
+                            <span class="fs-7 fw-semibold">@lang('basicdata::lang.no_data')</span>
                         </div>
                     </td>
                 </tr>
@@ -128,7 +128,7 @@
 @if(method_exists($products, 'hasPages') && $products->hasPages())
     <div class="front-card-footer">
         <div class="fs-8 text-muted">
-            Showing <span class="fw-bold text-gray-800">{{ $products->firstItem() ?? 0 }}</span> to <span class="fw-bold text-gray-800">{{ $products->lastItem() ?? 0 }}</span> of <span class="fw-bold text-gray-800">{{ $products->total() }}</span> entries
+            @lang('crud.showing') <span class="fw-bold text-gray-800">{{ $products->firstItem() ?? 0 }}</span> @lang('crud.to') <span class="fw-bold text-gray-800">{{ $products->lastItem() ?? 0 }}</span> @lang('crud.of') <span class="fw-bold text-gray-800">{{ $products->total() }}</span> @lang('crud.entries')
         </div>
         <div>
             @include('adminlte-templates::common.paginate', ['records' => $products])

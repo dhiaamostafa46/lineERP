@@ -20,6 +20,8 @@
                         </a>
                     </li>
                     <li class="breadcrumb-item"><span class="bullet bg-gray-400 w-4px h-1px mx-2"></span></li>
+                    <li class="breadcrumb-item text-muted">@lang('basicdata::lang.basicdata')</li>
+                    <li class="breadcrumb-item"><span class="bullet bg-gray-400 w-4px h-1px mx-2"></span></li>
                     <li class="breadcrumb-item text-muted">@lang('basicdata::models/db_products.plural')</li>
                 </ul>
             </div>

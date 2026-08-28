@@ -20,6 +20,8 @@
                         </a>
                     </li>
                     <li class="breadcrumb-item"><span class="bullet bg-gray-400 w-4px h-1px mx-2"></span></li>
+                    <li class="breadcrumb-item text-muted">@lang('basicdata::lang.basicdata')</li>
+                    <li class="breadcrumb-item"><span class="bullet bg-gray-400 w-4px h-1px mx-2"></span></li>
                     <li class="breadcrumb-item text-muted">@lang('basicdata::models/db_units.plural')</li>
                 </ul>
             </div>
@@ -27,10 +29,10 @@
             <!-- Header Actions -->
             <div class="d-flex align-items-center gap-2">
                 @can('basicdata.units.create')
-                    <a class="btn btn-sm front-btn-primary" href="{{ route('basicdata.units.create') }}" wire:navigate>
+                    <button type="button" class="btn btn-sm front-btn-primary" onclick="Livewire.dispatch('openCreateModal')">
                         <i class="fa-solid fa-plus fs-8"></i>
                         @lang('crud.add_new')
-                    </a>
+                    </button>
                 @endcan
             </div>
 
@@ -46,21 +48,21 @@
             <div class="row g-3 g-lg-4 mb-4">
                 <div class="col-sm-6">
                     <div class="front-stat-card">
-                        <span class="front-stat-title">إجمالي الوحدات (TOTAL UNITS)</span>
+                        <span class="front-stat-title">@lang('basicdata::models/db_units.plural')</span>
                         <div class="d-flex align-items-center justify-content-between mt-1">
                             <span class="front-stat-value">{{ $totalUnitsCount ?? 0 }}</span>
-                            <span class="badge bg-light-primary text-primary front-stat-badge">الكل</span>
+                            <span class="badge bg-light-primary text-primary front-stat-badge">@lang('basicdata::lang.all')</span>
                         </div>
                     </div>
                 </div>
 
                 <div class="col-sm-6">
                     <div class="front-stat-card">
-                        <span class="front-stat-title">الوحدات النشطة (ACTIVE UNITS)</span>
+                        <span class="front-stat-title">@lang('basicdata::lang.active')</span>
                         <div class="d-flex align-items-center justify-content-between mt-1">
                             <span class="front-stat-value text-success">{{ $activeUnitsCount ?? 0 }}</span>
                             <span class="badge bg-light-success text-success front-stat-badge">
-                                <span class="front-legend-indicator bg-success"></span> نشط
+                                <span class="front-legend-indicator bg-success"></span> @lang('basicdata::lang.active')
                             </span>
                         </div>
                     </div>
@@ -79,7 +81,7 @@
                                    name="name" 
                                    value="{{ request('name') }}" 
                                    class="form-control front-search-input" 
-                                   placeholder="البحث باسم الوحدة..." 
+                                   placeholder="@lang('basicdata::models/db_units.fields.name')..." 
                                    onchange="document.getElementById('frontSearchUnitForm').submit()" />
                         {!! Form::close() !!}
                     </div>
@@ -129,14 +131,14 @@
                             <div class="dropdown-menu dropdown-menu-end front-filter-dropdown shadow-lg">
                                 {!! Form::open(['route' => 'basicdata.units.index', 'method' => 'GET']) !!}
                                     <div class="d-flex align-items-center justify-content-between pb-3 mb-3 border-bottom">
-                                        <h5 class="front-filter-title">Filter units</h5>
+                                        <h5 class="front-filter-title">Filter @lang('basicdata::models/db_units.plural')</h5>
                                         <button type="button" class="btn btn-sm btn-icon btn-ghost-secondary p-0" onclick="this.closest('.dropdown-menu').classList.remove('show')">
                                             <i class="fa-solid fa-xmark text-muted fs-6"></i>
                                         </button>
                                     </div>
 
                                     <div class="mb-3">
-                                        <span class="front-filter-section-title">STATUS</span>
+                                        <span class="front-filter-section-title">@lang('basicdata::models/db_units.fields.status')</span>
                                         <x-select2-input name="status" :placeholder="__('hr::lang.select_status')" :list="$statuses" :selected_id="request('status')"></x-select2-input>
                                     </div>
 
@@ -167,6 +169,9 @@
 
     <!-- Floating Bulk Actions Bar -->
     <x-bulk-action-bar route="{{ route('basicdata.units.bulkDelete') }}" />
+
+    <!-- Livewire Unit Modal -->
+    @livewire('basicdata::units.unit-modal')
 
 </div>
 @endsection

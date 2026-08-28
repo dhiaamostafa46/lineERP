@@ -7,12 +7,12 @@
                         <input class="form-check-input bulk-check-all" type="checkbox" id="checkAllSP" title="تحديد الكل" />
                     </div>
                 </th>
-                <th class="ps-2"><x-table-sort column="name" title="NAME" /></th>
-                <th><x-table-sort column="code" title="CODE" /></th>
-                <th><x-table-sort column="type" title="TYPE" /></th>
-                <th><x-table-sort column="status" title="STATUS" /></th>
-                <th><x-table-sort column="created_at" title="CREATED AT" /></th>
-                <th class="pe-4 text-end">ACTION</th>
+                <th class="ps-2"><x-table-sort column="name" :title="__('basicdata::models/db_service_points.fields.name')" /></th>
+                <th><x-table-sort column="code" :title="__('basicdata::models/db_service_points.fields.code')" /></th>
+                <th><x-table-sort column="type" :title="__('basicdata::models/db_service_points.fields.type')" /></th>
+                <th><x-table-sort column="status" :title="__('basicdata::models/db_service_points.fields.status')" /></th>
+                <th><x-table-sort column="created_at" :title="__('basicdata::models/db_service_points.fields.created_at')" /></th>
+                <th class="pe-4 text-end">@lang('crud.action')</th>
             </tr>
         </thead>
         <tbody>
@@ -27,9 +27,9 @@
 
                     <!-- Name -->
                     <td class="ps-2">
-                        <a href="{{ route('basicdata.service_points.show', [$servicePoint->id]) }}" 
-                           class="text-gray-900 fw-bold text-hover-primary text-decoration-none fs-7" 
-                           wire:navigate>
+                        <a href="javascript:void(0)" 
+                           onclick="Livewire.dispatch('openEditModal', { id: {{ $servicePoint->id }} })"
+                           class="text-gray-900 fw-bold text-hover-primary text-decoration-none fs-7">
                             {{ $servicePoint->name }}
                         </a>
                     </td>
@@ -68,13 +68,13 @@
                     <td class="pe-4 text-end">
                         <div class="d-inline-flex align-items-center justify-content-end gap-2">
                             @can('basicdata.service_points.edit')
-                                <a href="{{ route('basicdata.service_points.edit', [$servicePoint->id]) }}" 
+                                <button type="button"
+                                   onclick="Livewire.dispatch('openEditModal', { id: {{ $servicePoint->id }} })"
                                    class="btn btn-sm btn-white text-gray-700 py-1 px-2 border rounded-2 d-inline-flex align-items-center gap-1 text-hover-primary" 
-                                   style="font-size: 12px; height: 28px;"
-                                   wire:navigate>
+                                   style="font-size: 12px; height: 28px;">
                                     <i class="fa-solid fa-pen fs-9 text-muted"></i>
-                                    <span>Edit</span>
-                                </a>
+                                    <span>@lang('crud.edit')</span>
+                                </button>
                             @endcan
 
                             @can('basicdata.service_points.destroy')
@@ -83,7 +83,7 @@
                                         'type' => 'submit',
                                         'class' => 'btn btn-sm btn-icon btn-white border rounded-2 w-28px h-28px',
                                         'title' => __('crud.delete'),
-                                        'onclick' => "return confirm('هل أنت متأكد من الحذف؟')",
+                                        'onclick' => "return confirm('" . __('basicdata::lang.are_you_sure') . "')",
                                     ]) !!}
                                 {!! Form::close() !!}
                             @endcan
@@ -95,7 +95,7 @@
                     <td colspan="7" class="text-center py-10">
                         <div class="d-flex flex-column align-items-center justify-content-center text-muted">
                             <i class="fa-solid fa-desktop fs-2tx mb-2 text-gray-300"></i>
-                            <span class="fs-7 fw-semibold">No records found</span>
+                            <span class="fs-7 fw-semibold">@lang('basicdata::lang.no_data')</span>
                         </div>
                     </td>
                 </tr>
@@ -108,7 +108,7 @@
 @if(method_exists($servicePoints, 'hasPages') && $servicePoints->hasPages())
     <div class="front-card-footer">
         <div class="fs-8 text-muted">
-            Showing <span class="fw-bold text-gray-800">{{ $servicePoints->firstItem() ?? 0 }}</span> to <span class="fw-bold text-gray-800">{{ $servicePoints->lastItem() ?? 0 }}</span> of <span class="fw-bold text-gray-800">{{ $servicePoints->total() }}</span> entries
+            @lang('crud.showing') <span class="fw-bold text-gray-800">{{ $servicePoints->firstItem() ?? 0 }}</span> @lang('crud.to') <span class="fw-bold text-gray-800">{{ $servicePoints->lastItem() ?? 0 }}</span> @lang('crud.of') <span class="fw-bold text-gray-800">{{ $servicePoints->total() }}</span> @lang('crud.entries')
         </div>
         <div>
             @include('adminlte-templates::common.paginate', ['records' => $servicePoints])

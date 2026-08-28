@@ -25,6 +25,14 @@
         </button>
 
         <div x-show="open" x-collapse x-cloak class="line-submenu">
+            @can('basicdata.products.index')
+                <a class="line-sub-item {{ Route::is('basicdata.products*') ? 'active-sub' : '' }}" 
+                   href="{{ route('basicdata.products.index') }}" wire:navigate>
+                    <span class="line-sub-dot"></span>
+                    <span>@lang('basicdata::models/db_products.plural')</span>
+                </a>
+            @endcan
+
             @can('basicdata.categories.index')
                 <a class="line-sub-item {{ Route::is('basicdata.categories*') ? 'active-sub' : '' }}" 
                    href="{{ route('basicdata.categories.index') }}" wire:navigate>
@@ -41,11 +49,19 @@
                 </a>
             @endcan
 
-            @can('basicdata.products.index')
-                <a class="line-sub-item {{ Route::is('basicdata.products*') ? 'active-sub' : '' }}" 
-                   href="{{ route('basicdata.products.index') }}" wire:navigate>
+            @can('basicdata.kitchens.index')
+                <a class="line-sub-item {{ Route::is('basicdata.kitchens*') ? 'active-sub' : '' }}" 
+                   href="{{ route('basicdata.kitchens.index') }}" wire:navigate>
                     <span class="line-sub-dot"></span>
-                    <span>@lang('basicdata::models/db_products.plural')</span>
+                    <span>@lang('basicdata::models/db_kitchens.plural')</span>
+                </a>
+            @endcan
+
+            @can('basicdata.service_points.index')
+                <a class="line-sub-item {{ Route::is('basicdata.service_points*') ? 'active-sub' : '' }}" 
+                   href="{{ route('basicdata.service_points.index') }}" wire:navigate>
+                    <span class="line-sub-dot"></span>
+                    <span>@lang('basicdata::models/db_service_points.plural')</span>
                 </a>
             @endcan
         </div>
