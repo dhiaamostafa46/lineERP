@@ -33,21 +33,21 @@
        #1B325B (LineERP Navy) | #6A669D (LineERP Purple) | #9ABF80 (LineERP Green)
        ========================================================================== */
     :root {
-        --bs-primary: #6A669D;
-        --bs-primary-active: #1B325B;
-        --bs-secondary: #9ABF80;
-        --bs-card: #E5E3D4;
-        --bs-text-primary: #1E2B50;
-        --bs-alert: #F59E0B;
+        --bs-primary: #2563eb;
+        --bs-primary-active: #1d4ed8;
+        --bs-secondary: #10b981;
+        --bs-card: #f8fafc;
+        --bs-text-primary: #0f172a;
+        --bs-alert: #ef4444;
         --bs-link-hover-color: var(--bs-primary-active);
-        --bs-body-bg: #F3F5F8;
+        --bs-body-bg: #f8fafc;
 
-        --evix-navy: #1B325B;
-        --evix-navy-light: #2C436F;
-        --evix-purple: #6A669D;
-        --evix-purple-light: #8E84BF;
-        --evix-green: #9ABF80;
-        --evix-green-dark: #2D6A4F;
+        --evix-navy: #0f172a;
+        --evix-navy-light: #1e293b;
+        --evix-purple: #2563eb;
+        --evix-purple-light: #3b82f6;
+        --evix-green: #10b981;
+        --evix-green-dark: #047857;
     }
 
     /* Livewire SPA Top Navigation Bar */
@@ -139,16 +139,16 @@
         color: var(--bs-primary);
     }
 
-    /* Action Toolbar Buttons (.icon-btn & .btn-btc) */
+    /* ── Action Toolbar Buttons (.icon-btn & .btn-btc) ──────────────── */
     .icon-btn,
     .btn-btc {
-        background-color: transparent !important;
-        border: 1px solid #cbd5e0 !important;
-        color: #4a5568 !important;
-        border-radius: 6px !important;
-        padding: 8px 10px !important;
+        background-color: #ffffff !important;
+        border: 1px solid #e2e8f0 !important;
+        color: #475569 !important;
+        border-radius: 8px !important;
+        padding: 6px 10px !important;
         cursor: pointer !important;
-        transition: all 0.3s ease !important;
+        transition: all 0.2s ease !important;
         display: inline-flex !important;
         align-items: center !important;
         justify-content: center !important;
@@ -161,36 +161,39 @@
     .icon-btn svg,
     .btn-btc i,
     .btn-btc svg {
-        color: #4a5568 !important;
-        font-size: 14px !important;
-        transition: color 0.3s ease !important;
+        color: #64748b !important;
+        font-size: 13px !important;
+        transition: color 0.2s ease !important;
     }
 
     .icon-btn:hover,
     .btn-btc:hover {
-        background-color: #f1f5f9 !important;
-        border-color: var(--bs-primary, #6A669D) !important;
-        color: var(--bs-primary, #6A669D) !important;
+        background-color: #f8fafc !important;
+        border-color: #cbd5e1 !important;
+        color: #2563eb !important;
         transform: translateY(-1px);
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
     }
 
     .icon-btn:hover i,
     .icon-btn:hover svg,
     .btn-btc:hover i,
     .btn-btc:hover svg {
-        color: var(--bs-primary, #6A669D) !important;
+        color: #2563eb !important;
     }
 
-    /* Buttons: Text & Icons MUST be crisp white */
+    /* ── Buttons: Text & Icons ───────────────────────────────────────── */
     .btn-primary,
     a.btn-primary {
-        background-color: var(--bs-primary, #6A669D) !important;
-        border-color: var(--bs-primary, #6A669D) !important;
+        background-color: #2563eb !important;
+        border-color: #2563eb !important;
         color: #ffffff !important;
+        font-weight: 600 !important;
+        border-radius: 8px !important;
         display: inline-flex !important;
         align-items: center !important;
         gap: 0.4rem !important;
+        transition: all 0.15s ease !important;
     }
 
     .btn-primary *,
@@ -205,9 +208,10 @@
 
     .btn-primary:hover,
     a.btn-primary:hover {
-        background-color: var(--bs-primary-active, #1B325B) !important;
-        border-color: var(--bs-primary-active, #1B325B) !important;
+        background-color: #1d4ed8 !important;
+        border-color: #1d4ed8 !important;
         color: #ffffff !important;
+        box-shadow: 0 2px 8px rgba(37, 99, 235, 0.25) !important;
     }
 
     .btn-primary:hover i,
@@ -217,85 +221,196 @@
         color: #ffffff !important;
     }
 
-    .btn-secondary,
-    .btn-secondary *,
+    /* Search & Reset Buttons in Filter Cards */
     .btn-search,
     .btn-search * {
-        background-color: var(--bs-alert) !important;
-        border-color: var(--bs-alert) !important;
+        background-color: #2563eb !important;
+        border-color: #2563eb !important;
         color: #ffffff !important;
+        font-weight: 600 !important;
+        border-radius: 8px !important;
     }
 
-    .badge-success {
-        background-color: var(--bs-secondary) !important;
-        border-color: var(--bs-secondary) !important;
-        color: #ffffff !important;
+    .btn-search:hover {
+        background-color: #1d4ed8 !important;
+        border-color: #1d4ed8 !important;
     }
 
-    .badge-danger {
-        background-color: var(--bs-alert) !important;
-        border-color: var(--bs-alert) !important;
-        color: #ffffff !important;
+    .btn-secondary,
+    .btn-secondary * {
+        background-color: #f1f5f9 !important;
+        border-color: #cbd5e1 !important;
+        color: #475569 !important;
+        font-weight: 600 !important;
+        border-radius: 8px !important;
     }
 
-    /* Sidebar Icons & Bullets */
-    :root:not([data-bs-theme="dark"]) [data-kt-app-layout=dark-sidebar] .app-sidebar .menu-icon,
-    :root:not([data-bs-theme="dark"]) [data-kt-app-layout=dark-sidebar] .app-sidebar .menu-icon i,
-    :root:not([data-bs-theme="dark"]) [data-kt-app-layout=dark-sidebar] .app-sidebar .menu-icon svg {
-        color: #ffffff !important;
+    .btn-secondary:hover {
+        background-color: #e2e8f0 !important;
+        color: #1e293b !important;
     }
 
-    :root:not([data-bs-theme="dark"]) [data-kt-app-layout=dark-sidebar] .app-sidebar .menu-bullet .bullet {
+    /* ── High-End Cards & Search Filter Boxes ───────────────────────── */
+    .card {
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 12px !important;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03) !important;
         background-color: #ffffff !important;
     }
 
-    :root:not([data-bs-theme="dark"]) .nav-tabs .nav-item:has(.active) {
-        background-color: var(--bs-primary) !important;
-        border-color: var(--bs-primary) !important;
-        color: white !important;
-        padding: .5rem 1rem;
-        border-radius: .375rem;
-        font-weight: 500;
+    #card-filter {
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 12px !important;
+        overflow: hidden !important;
     }
 
-    :root:not([data-bs-theme="dark"]) .nav-tabs .nav-item .active,
-    :root:not([data-bs-theme="dark"]) .nav-tabs .nav-item:has(.active) * {
-        color: white !important;
-        text-align: center !important;
+    #card-filter .card-header {
+        background-color: #f8fafc !important;
+        border-bottom: 1px solid #e2e8f0 !important;
+        padding: 12px 20px !important;
+        cursor: pointer;
     }
 
-    :root:not([data-bs-theme="dark"]) .card-header,
+    #card-filter .card-title,
+    #card-filter .card-title * {
+        font-size: 13.5px !important;
+        font-weight: 700 !important;
+        color: #1e293b !important;
+    }
+
+    #card-filter .card-title i {
+        color: #2563eb !important;
+    }
+
+    #card-filter .card-body {
+        background-color: #ffffff !important;
+        padding: 20px !important;
+    }
+
+    #card-filter .card-footer {
+        background-color: #f8fafc !important;
+        border-top: 1px solid #e2e8f0 !important;
+        padding: 12px 20px !important;
+    }
+
+    /* ── High-End Tables ────────────────────────────────────────────── */
+    .table-responsive {
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 10px !important;
+        overflow: hidden !important;
+        background: #ffffff !important;
+    }
+
+    table thead tr,
+    table thead th,
     :root:not([data-bs-theme="dark"]) table thead th {
-        background-color: var(--bs-card) !important;
-        border-bottom: 1px solid #e2e8f0;
-        color: var(--bs-primary-active) !important;
-        font-weight: 700;
+        background-color: #f8fafc !important;
+        border-bottom: 2px solid #e2e8f0 !important;
+        color: #475569 !important;
+        font-size: 12px !important;
+        font-weight: 700 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.5px !important;
+        padding: 12px 16px !important;
+        vertical-align: middle !important;
     }
 
-    :root:not([data-bs-theme="dark"]) .card-body,
-    :root:not([data-bs-theme="dark"]) .card-footer {
-        background-color: #ffffff;
+    table tbody tr {
+        border-bottom: 1px solid #f1f5f9 !important;
+        transition: background-color 0.15s ease !important;
     }
 
-    :root:not([data-bs-theme="dark"]) .form-control,
-    :root:not([data-bs-theme="dark"]) .form-select {
-        border-color: #CED4DA;
-        background-color: #ffffff;
-        color: var(--bs-primary-active);
+    table tbody tr:hover {
+        background-color: #f8fafc !important;
     }
 
-    :root:not([data-bs-theme="dark"]) .form-control:focus,
-    :root:not([data-bs-theme="dark"]) .form-select:focus,
-    :root:not([data-bs-theme="dark"]) input:focus,
-    :root:not([data-bs-theme="dark"]) select:focus,
-    :root:not([data-bs-theme="dark"]) textarea:focus {
-        border-color: #6A669D !important;
-        box-shadow: 0 0 0 0.2rem rgba(106, 102, 157, 0.2) !important;
+    table tbody td {
+        padding: 14px 16px !important;
+        font-size: 13px !important;
+        color: #1e293b !important;
+        vertical-align: middle !important;
+        border-bottom: 1px solid #f1f5f9 !important;
     }
 
-    :root:not([data-bs-theme="dark"]) .form-control.form-control-solid:focus {
+    /* Table Action Buttons */
+    .table-action .btn-group {
+        display: inline-flex;
+        gap: 4px;
+    }
+
+    .table-action .btn {
+        border-radius: 6px !important;
+        padding: 6px 10px !important;
+        font-size: 12px !important;
+    }
+
+    /* Status Badges */
+    .badge {
+        font-weight: 600 !important;
+        padding: 4px 10px !important;
+        border-radius: 20px !important;
+        font-size: 11px !important;
+    }
+
+    .badge.badge-success,
+    .badge.badge-light-success,
+    .badge-success {
+        background-color: #dcfce7 !important;
+        color: #15803d !important;
+        border: 1px solid #bbf7d0 !important;
+    }
+
+    .badge.badge-danger,
+    .badge.badge-light-danger,
+    .badge-danger {
+        background-color: #fee2e2 !important;
+        color: #b91c1c !important;
+        border: 1px solid #fecaca !important;
+    }
+
+    .badge.badge-warning,
+    .badge.badge-light-warning,
+    .badge-warning {
+        background-color: #fef3c7 !important;
+        color: #b45309 !important;
+        border: 1px solid #fde68a !important;
+    }
+
+    .badge.badge-primary,
+    .badge.badge-light-primary,
+    .badge-primary {
+        background-color: #eff6ff !important;
+        color: #1d4ed8 !important;
+        border: 1px solid #bfdbfe !important;
+    }
+
+    /* ── Form Controls & Inputs ─────────────────────────────────────── */
+    .form-control,
+    .form-select {
+        border: 1px solid #cbd5e1 !important;
+        border-radius: 8px !important;
+        padding: 8px 12px !important;
+        font-size: 13px !important;
+        color: #1e293b !important;
         background-color: #ffffff !important;
-        border-color: #6A669D !important;
+        transition: all 0.2s ease !important;
+    }
+
+    .form-control:focus,
+    .form-select:focus,
+    input:focus,
+    select:focus,
+    textarea:focus {
+        border-color: #2563eb !important;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12) !important;
+        background-color: #ffffff !important;
+    }
+
+    .form-group label {
+        font-size: 12.5px !important;
+        font-weight: 600 !important;
+        color: #334155 !important;
+        margin-bottom: 6px !important;
     }
 
     :root:not([data-bs-theme="dark"]) .border-primary {

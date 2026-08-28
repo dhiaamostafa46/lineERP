@@ -40,20 +40,23 @@
                             <span class="badge {{ $product->status_badge }}">{{ $product->status_text }}</span>
                         </td>
 
-                        <td style="width: 120px" class="table-action">
+                        <td style="width: 130px" class="table-action">
                             {!! Form::open(['route' => ['basicdata.products.destroy', $product->id], 'method' => 'delete']) !!}
-                            <div class='btn-group'>
+                            <div class='d-inline-flex align-items-center gap-1'>
                                 <a href="{{ route('basicdata.products.show', [$product->id]) }}"
-                                    class='btn btn-sm btn-primary float-right'>
-                                    <i class="fa-solid fa-eye"></i>
+                                    class='btn btn-icon btn-sm btn-light-primary w-30px h-30px rounded-2'
+                                    title="@lang('crud.view')">
+                                    <i class="fa-solid fa-eye fs-7"></i>
                                 </a>
                                 <a href="{{ route('basicdata.products.edit', [$product->id]) }}"
-                                    class='btn btn-sm btn-primary float-right mx-1'>
-                                    <i class="fa-solid fa-edit"></i>
+                                    class='btn btn-icon btn-sm btn-light-success w-30px h-30px rounded-2'
+                                    title="@lang('crud.edit')">
+                                    <i class="fa-solid fa-pen-to-square fs-7"></i>
                                 </a>
-                                {!! Form::button('<i class="fa-solid fa-trash"></i>', [
+                                {!! Form::button('<i class="fa-solid fa-trash-can fs-7 text-danger"></i>', [
                                     'type' => 'submit',
-                                    'class' => 'btn btn-sm btn-primary float-right',
+                                    'class' => 'btn btn-icon btn-sm btn-light-danger w-30px h-30px rounded-2',
+                                    'title' => __('crud.delete'),
                                     'onclick' => "return confirm('Are you sure?')",
                                 ]) !!}
                             </div>

@@ -114,50 +114,51 @@
 
                 <div class="clearfix"></div>
                 @if (true)
-                    <div class="card shadow-sm my-3 " id="card-filter">
-                        <div class="card-header collapsible cursor-pointer rotate collapsed" data-bs-toggle="collapse"
-                            data-bs-target="#kt_docs_card_collapsible" aria-expanded="false">
-                            <h3 class="card-title">
-                                <i class="fa-solid fa-filter fs-2 me-2"></i>
-                                @lang('crud.search')
+                    <div class="card shadow-xs my-3 border" id="card-filter">
+                        <div class="card-header collapsible cursor-pointer rotate d-flex align-items-center justify-content-between py-3 px-5" 
+                             data-bs-toggle="collapse"
+                             data-bs-target="#kt_docs_card_collapsible" aria-expanded="true">
+                            <h3 class="card-title d-flex align-items-center gap-2 m-0">
+                                <i class="fa-solid fa-filter fs-5 text-primary"></i>
+                                <span class="fw-bold fs-6 text-gray-900">@lang('crud.search')</span>
                             </h3>
                             <div class="card-toolbar rotate-180">
-                                <i class="ki-duotone ki-down fs-1"></i>
+                                <i class="ki-duotone ki-down fs-3 text-gray-600"></i>
                             </div>
                         </div>
-                        <div id="kt_docs_card_collapsible" class="collapse">
+                        <div id="kt_docs_card_collapsible" class="collapse show">
                             {!! Form::open(['route' => 'basicdata.products.index', 'method' => 'GET']) !!}
-                            <div class="card-body">
-                                <div class="row">
+                            <div class="card-body p-5">
+                                <div class="row g-3">
                                     <!-- Name Field -->
                                     <div class="form-group col-sm-4">
-                                        {!! Form::label('name', __('basicdata::models/db_products.fields.name') . ':') !!}
-                                        {!! Form::text('name', request('name'), ['class' => 'form-control']) !!}
+                                        {!! Form::label('name', __('basicdata::models/db_products.fields.name') . ':', ['class' => 'fw-semibold text-gray-700 fs-7 mb-1']) !!}
+                                        {!! Form::text('name', request('name'), ['class' => 'form-control fs-7', 'placeholder' => __('basicdata::models/db_products.fields.name')]) !!}
                                     </div>
 
-                                    <div class="form-group col-md-4 mb-3">
-                                        {!! Form::label('status', __('basicdata::models/db_products.fields.status') . ':') !!}
+                                    <div class="form-group col-md-4">
+                                        {!! Form::label('status', __('basicdata::models/db_products.fields.status') . ':', ['class' => 'fw-semibold text-gray-700 fs-7 mb-1']) !!}
                                         <x-select2-input name="status" :placeholder="__('hr::lang.select_status')" :list="$statuses"
                                             :selected_id="old('status')">
                                         </x-select2-input>
                                     </div>
                                     <!-- pagination Field -->
                                     <div class="form-group col-sm-4">
-                                        {!! Form::label('pagination', __('crud.pagination') . ':') !!}
+                                        {!! Form::label('pagination', __('crud.pagination') . ':', ['class' => 'fw-semibold text-gray-700 fs-7 mb-1']) !!}
                                         {!! Form::select('pagination', config('statusSystem.pagination'), request('pagination') ?? null, [
-                                            'class' => 'form-control',
+                                            'class' => 'form-select fs-7',
                                         ]) !!}
                                     </div>
                                 </div>
                             </div>
-                            <div class="card-footer py-4">
-                                <button type="submit" class="btn btn-sm btn-search">
-                                    <i class="fa-solid fa-magnifying-glass"></i>
+                            <div class="card-footer d-flex align-items-center justify-content-end gap-2 py-3 px-5 border-top">
+                                <button type="submit" class="btn btn-sm btn-primary">
+                                    <i class="fa-solid fa-magnifying-glass fs-8"></i>
                                     @lang('crud.search')
                                 </button>
-                                <a class="btn btn-sm btn-primary float-right"
+                                <a class="btn btn-sm btn-secondary"
                                     href="{{ route('basicdata.products.index') }}">
-                                    <i class="fa-solid fa-circle-xmark"></i>
+                                    <i class="fa-solid fa-rotate-left fs-8"></i>
                                     @lang('crud.reset')
                                 </a>
                             </div>
