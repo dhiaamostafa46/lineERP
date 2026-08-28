@@ -79,65 +79,66 @@
     }
 
     /* ==========================================================================
-       LineERP Dark Luxury Pro Sidebar & Reactive Navigation Design System
+       LineERP Standard Compact Accounting & ERP Design System (#cbdfe6 & #ffffff)
        ========================================================================== */
     #kt_app_sidebar {
-        background: #111827 !important;
-        border-inline-end: 1px solid rgba(255, 255, 255, 0.07) !important;
-        box-shadow: 4px 0 24px rgba(0, 0, 0, 0.35) !important;
+        background: #ffffff !important;
+        border-inline-end: 1px solid #cbdfe6 !important;
+        box-shadow: 0 4px 20px rgba(203, 223, 230, 0.35) !important;
+        width: 240px !important;
     }
 
     .line-sidebar-header {
-        background: #0B0F19 !important;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important;
-        padding: 0.85rem 1.25rem;
+        background: #ffffff !important;
+        border-bottom: 1px solid #cbdfe6 !important;
     }
 
-    .line-search-wrapper {
-        background: rgba(255, 255, 255, 0.04);
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        border-radius: 0.65rem;
-        transition: all 0.2s ease;
+    /* Custom Sleek Ultra-Thin Scrollbar */
+    .line-custom-scroll {
+        scrollbar-width: thin;
+        scrollbar-color: #cbdfe6 transparent;
     }
 
-    .line-search-wrapper:focus-within {
-        background: rgba(255, 255, 255, 0.07);
-        border-color: #6366F1;
-        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+    .line-custom-scroll::-webkit-scrollbar {
+        width: 4px;
+        height: 4px;
     }
 
-    .line-search-input {
-        background: transparent !important;
-        color: #F1F5F9 !important;
-        border: none !important;
-        font-size: 0.82rem !important;
+    .line-custom-scroll::-webkit-scrollbar-track {
+        background: transparent;
     }
 
-    .line-search-input::placeholder {
-        color: #64748B !important;
+    .line-custom-scroll::-webkit-scrollbar-thumb {
+        background: #cbdfe6;
+        border-radius: 10px;
+        transition: background 0.2s ease;
+    }
+
+    .line-custom-scroll:hover::-webkit-scrollbar-thumb {
+        background: #9bbbc5;
     }
 
     .line-sidebar-menu {
-        padding: 0.5rem 0.65rem;
+        padding: 0.25rem 0.35rem;
     }
 
     .line-section-header {
-        font-size: 0.68rem;
+        font-size: 0.65rem;
         font-weight: 700;
         text-transform: uppercase;
-        letter-spacing: 0.9px;
-        color: #64748B;
-        margin: 1.1rem 0.5rem 0.4rem 0.5rem;
+        letter-spacing: 0.7px;
+        color: #70939f;
+        margin: 0.85rem 0.4rem 0.25rem 0.4rem;
         display: flex;
         align-items: center;
-        gap: 0.5rem;
+        gap: 0.4rem;
     }
 
     .line-section-header::after {
         content: "";
         flex: 1;
         height: 1px;
-        background: linear-gradient(90deg, rgba(255, 255, 255, 0.08), transparent);
+        background: linear-gradient(90deg, #cbdfe6, transparent);
     }
 
     .line-menu-btn, .line-menu-link {
@@ -145,115 +146,110 @@
         align-items: center;
         justify-content: space-between;
         width: 100%;
-        padding: 0.55rem 0.75rem;
-        margin-bottom: 0.25rem;
-        border-radius: 0.6rem;
+        min-height: 38px;
+        padding: 0.4rem 0.6rem;
+        margin-bottom: 0.15rem;
+        border-radius: 0.5rem;
         background: transparent;
         border: 1px solid transparent;
-        color: #94A3B8;
+        color: #2C3E50;
         text-decoration: none;
-        transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+        transition: all 0.15s ease-in-out;
         cursor: pointer;
         user-select: none;
     }
 
     .line-menu-btn:hover, .line-menu-link:hover {
-        background: rgba(255, 255, 255, 0.05);
-        color: #FFFFFF;
-        transform: translateX(-2px);
-    }
-
-    [dir="ltr"] .line-menu-btn:hover, [dir="ltr"] .line-menu-link:hover {
-        transform: translateX(2px);
+        background: rgba(203, 223, 230, 0.4);
+        color: #1B325B;
     }
 
     .line-menu-link.active-root, .line-menu-btn.active-parent {
-        background: rgba(99, 102, 241, 0.14) !important;
-        border: 1px solid rgba(99, 102, 241, 0.28) !important;
-        color: #FFFFFF !important;
+        background: linear-gradient(135deg, #cbdfe6 0%, #eef5f7 100%) !important;
+        border: 1px solid #b2d3dc !important;
+        color: #1B325B !important;
         font-weight: 700;
     }
 
     .line-icon-badge {
-        width: 32px;
-        height: 32px;
-        min-width: 32px;
-        border-radius: 0.45rem;
-        background: rgba(255, 255, 255, 0.05);
+        width: 28px;
+        height: 28px;
+        min-width: 28px;
+        border-radius: 0.4rem;
+        background: #f0f6f8;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 0.92rem;
-        transition: all 0.2s ease;
-        border: 1px solid rgba(255, 255, 255, 0.06);
+        font-size: 0.85rem;
+        transition: all 0.15s ease;
+        border: 1px solid #cbdfe6;
     }
 
-    /* Vibrant Color Accents for Badges */
-    .icon-dashboard { color: #38BDF8; }
-    .icon-invoices { color: #34D399; }
-    .icon-store { color: #FBBF24; }
-    .icon-pos { color: #FB7185; }
-    .icon-accounting { color: #818CF8; }
-    .icon-finance { color: #22D3EE; }
-    .icon-hr { color: #C084FC; }
-    .icon-basicdata { color: #A78BFA; }
-    .icon-settings { color: #94A3B8; }
+    /* Standard Distinct Tints */
+    .icon-dashboard { color: #0284C7; }
+    .icon-invoices { color: #059669; }
+    .icon-store { color: #D97706; }
+    .icon-pos { color: #E11D48; }
+    .icon-accounting { color: #4F46E5; }
+    .icon-finance { color: #0891B2; }
+    .icon-hr { color: #7C3AED; }
+    .icon-basicdata { color: #8B5CF6; }
+    .icon-settings { color: #475569; }
 
     .line-menu-link.active-root .line-icon-badge,
     .line-menu-btn.active-parent .line-icon-badge,
     .line-menu-btn:hover .line-icon-badge,
     .line-menu-link:hover .line-icon-badge {
-        background: linear-gradient(135deg, #6366F1 0%, #4F46E5 100%) !important;
-        color: #FFFFFF !important;
-        border-color: rgba(99, 102, 241, 0.5) !important;
-        box-shadow: 0 2px 10px rgba(99, 102, 241, 0.4);
+        background: #1B325B !important;
+        color: #ffffff !important;
+        border-color: #1B325B !important;
     }
 
     .line-menu-title {
-        font-size: 0.84rem;
+        font-size: 0.81rem;
         font-weight: 600;
         color: inherit;
     }
 
     .line-menu-arrow {
-        font-size: 0.68rem;
-        transition: transform 0.22s cubic-bezier(0.4, 0, 0.2, 1);
-        color: #64748B;
+        font-size: 0.65rem;
+        transition: transform 0.2s ease;
+        color: #8daab4;
     }
 
     .line-menu-arrow.rotate-180 {
         transform: rotate(180deg);
-        color: #818CF8;
+        color: #1B325B;
     }
 
     .line-submenu {
-        margin-inline-start: 1.1rem;
-        padding-inline-start: 0.75rem;
-        border-inline-start: 1.5px solid rgba(255, 255, 255, 0.1);
-        margin-top: 0.2rem;
-        margin-bottom: 0.35rem;
+        margin-inline-start: 0.85rem;
+        padding-inline-start: 0.65rem;
+        border-inline-start: 1.5px solid #cbdfe6;
+        margin-top: 0.15rem;
+        margin-bottom: 0.25rem;
         display: flex;
         flex-direction: column;
-        gap: 0.15rem;
+        gap: 0.1rem;
     }
 
     .line-sub-item {
         display: flex;
         align-items: center;
-        gap: 0.55rem;
-        padding: 0.45rem 0.7rem;
-        border-radius: 0.45rem;
-        color: #94A3B8;
-        font-size: 0.8rem;
+        gap: 0.5rem;
+        min-height: 30px;
+        padding: 0.35rem 0.55rem;
+        border-radius: 0.4rem;
+        color: #47636e;
+        font-size: 0.78rem;
         font-weight: 500;
         text-decoration: none;
-        transition: all 0.18s ease;
+        transition: all 0.15s ease;
     }
 
     .line-sub-item:hover {
-        background: rgba(255, 255, 255, 0.05);
-        color: #F8FAFC;
-        padding-inline-start: 0.85rem;
+        background: rgba(203, 223, 230, 0.4);
+        color: #1B325B;
     }
 
     .line-sub-dot {
@@ -261,55 +257,50 @@
         height: 5px;
         min-width: 5px;
         border-radius: 50%;
-        background: #475569;
-        transition: all 0.18s ease;
+        background: #9bbbc5;
+        transition: all 0.15s ease;
     }
 
     .line-sub-item:hover .line-sub-dot {
-        background: #818CF8;
-        box-shadow: 0 0 6px #818CF8;
+        background: #1B325B;
     }
 
     .line-sub-item.active-sub {
-        background: linear-gradient(90deg, rgba(99, 102, 241, 0.2) 0%, rgba(99, 102, 241, 0.04) 100%);
-        color: #818CF8 !important;
+        background: #cbdfe6 !important;
+        color: #1B325B !important;
         font-weight: 700;
-        border-inline-start: 2px solid #6366F1;
     }
 
     .line-sub-item.active-sub .line-sub-dot {
-        background: #818CF8;
-        box-shadow: 0 0 8px #818CF8;
-        transform: scale(1.3);
+        background: #1B325B;
+        box-shadow: 0 0 3px #1B325B;
     }
 
     /* Sidebar Footer User Card */
     .line-sidebar-footer {
-        background: #0B0F19;
-        border-top: 1px solid rgba(255, 255, 255, 0.06);
-        padding: 0.75rem 1rem;
+        background: #f7fafb;
+        border-top: 1px solid #cbdfe6;
     }
 
     .line-user-avatar {
-        width: 34px;
-        height: 34px;
-        min-width: 34px;
+        width: 28px;
+        height: 28px;
+        min-width: 28px;
         border-radius: 50%;
-        background: linear-gradient(135deg, #6366F1 0%, #3B82F6 100%);
+        background: linear-gradient(135deg, #1B325B 0%, #3B82F6 100%);
         display: flex;
         align-items: center;
         justify-content: center;
         color: #FFFFFF;
         font-weight: 700;
-        font-size: 0.85rem;
+        font-size: 0.75rem;
     }
 
     .status-dot-online {
-        width: 8px;
-        height: 8px;
+        width: 7px;
+        height: 7px;
         border-radius: 50%;
         background: #10B981;
-        box-shadow: 0 0 6px #10B981;
         display: inline-block;
     }
 

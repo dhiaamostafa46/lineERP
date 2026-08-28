@@ -25,6 +25,22 @@
         <!--end::Mobile logo-->
         <!--begin::Header wrapper-->
         <div class="d-flex align-items-stretch justify-content-between flex-lg-grow-1" id="kt_app_header_wrapper">
+            
+            <!--begin::Header Global Search Bar-->
+            <div class="d-flex align-items-center flex-grow-1 max-w-lg me-4">
+                <div class="header-search-box position-relative w-100 d-none d-md-block" style="max-width: 380px;">
+                    <i class="fas fa-search position-absolute top-50 translate-middle-y ms-3 fs-7" style="color: #7a99a3;"></i>
+                    <input type="text" 
+                           id="globalHeaderSearch"
+                           class="form-control form-control-sm rounded-pill ps-9 pe-4 border-0 fs-7" 
+                           placeholder="@lang('lang.search')... (Ctrl + K)" 
+                           style="background: #f0f6f8; border: 1px solid #cbdfe6 !important; color: #1B325B; height: 36px; transition: all 0.2s ease;"
+                           onfocus="this.style.background='#ffffff'; this.style.borderColor='#8cb9c7'; this.style.boxShadow='0 0 0 3px rgba(203, 223, 230, 0.45)';"
+                           onblur="this.style.background='#f0f6f8'; this.style.borderColor='#cbdfe6'; this.style.boxShadow='none';" />
+                </div>
+            </div>
+            <!--end::Header Global Search Bar-->
+
             <!--begin::Menu wrapper-->
             <div class="app-header-menu app-header-mobile-drawer align-items-stretch" data-kt-drawer="true"
                 data-kt-drawer-name="app-header-menu" data-kt-drawer-activate="{default: true, lg: false}"
