@@ -4,21 +4,19 @@ namespace Modules\BasicData\App\Livewire\Kitchens;
 
 use Livewire\Component;
 use Livewire\Attributes\On;
+use Modules\BasicData\App\Livewire\Concerns\HasModalForm;
 use Modules\BasicData\App\Repositories\DbKitchenRepository;
 
 class KitchenModal extends Component
 {
-    public $isOpen = false;
-    public $kitchen_id = null;
-    public $is_edit = false;
+    use HasModalForm;
 
-    public $name = [];
-    public $barcode = '';
-    public $status = 1;
+    public string $barcode = '';
+    public int $status = 1;
 
     protected $repository;
 
-    public function boot(DbKitchenRepository $repository)
+    public function boot(DbKitchenRepository $repository): void
     {
         $this->repository = $repository;
     }
@@ -37,69 +35,51 @@ class KitchenModal extends Component
         return $rules;
     }
 
-    public function mount()
+    public function mount(): void
     {
         $this->resetFields();
     }
 
-    public function resetFields()
+    public function resetFields(): void
     {
-        $this->kitchen_id = null;
-        $this->is_edit = false;
-        $this->name = [];
-        foreach (config('langs', ['ar' => 'Arabic', 'en' => 'English']) as $locale => $name) {
-            $this->name[$locale] = '';
-        }
+        $this->resetModalState();
+        $this->initTranslations();
         $this->barcode = '';
         $this->status = 1;
-        $this->resetErrorBag();
     }
 
     #[On('openCreateModal')]
-    public function openCreate()
+    public function openCreate(): void
     {
         $this->resetFields();
-        $this->isOpen = true;
+        $this->openModal();
     }
 
     #[On('openEditModal')]
-    public function openEdit($id)
+    public function openEdit($id): void
     {
         $this->resetFields();
         $kitchen = $this->repository->find($id);
         if ($kitchen) {
-            $this->kitchen_id = $id;
+            $this->model_id = $id;
             $this->is_edit = true;
-            foreach (config('langs', ['ar' => 'Arabic', 'en' => 'English']) as $locale => $name) {
-                $this->name[$locale] = $kitchen->translate($locale)->name ?? '';
-            }
-            $this->barcode = $kitchen->barcode;
-            $this->status = $kitchen->status;
-            $this->isOpen = true;
+            $this->populateTranslations($kitchen);
+            $this->barcode = (string)$kitchen->barcode;
+            $this->status = (int)$kitchen->status;
+            $this->openModal();
         }
-    }
-
-    public function closeModal()
-    {
-        $this->isOpen = false;
-        $this->resetFields();
     }
 
     public function save()
     {
         $this->validate();
 
-        $data = [
-            'barcode' => $this->barcode,
-            'status' => $this->status,
-        ];
+        $data = $this->formatTranslations($this->name);
+        $data['barcode'] = $this->barcode ?: null;
+        $data['status'] = $this->status;
 
-        foreach ($this->name as $locale => $val) {
-            $data[$locale] = ['name' => $val];
-        }
-
-        if ($this->is_edit && $this->kitchen_id) {
-            $this->repository->update($data, $this->kitchen_id);
+        if ($this->is_edit && $this->model_id) {
+            $this->repository->update($data, $this->model_id);
             flash()->success(__('messages.updated', ['model' => __('basicdata::models/db_kitchens.singular')]));
         } else {
             $this->repository->create($data);

@@ -4,20 +4,18 @@ namespace Modules\BasicData\App\Livewire\Units;
 
 use Livewire\Component;
 use Livewire\Attributes\On;
+use Modules\BasicData\App\Livewire\Concerns\HasModalForm;
 use Modules\BasicData\App\Repositories\DbUnitRepository;
 
 class UnitModal extends Component
 {
-    public $isOpen = false;
-    public $unit_id = null;
-    public $is_edit = false;
+    use HasModalForm;
 
-    public $name = [];
     public $status = 1;
 
     protected $repository;
 
-    public function boot(DbUnitRepository $repository)
+    public function boot(DbUnitRepository $repository): void
     {
         $this->repository = $repository;
     }
@@ -35,66 +33,48 @@ class UnitModal extends Component
         return $rules;
     }
 
-    public function mount()
+    public function mount(): void
     {
         $this->resetFields();
     }
 
-    public function resetFields()
+    public function resetFields(): void
     {
-        $this->unit_id = null;
-        $this->is_edit = false;
-        $this->name = [];
-        foreach (config('langs', ['ar' => 'Arabic', 'en' => 'English']) as $locale => $name) {
-            $this->name[$locale] = '';
-        }
+        $this->resetModalState();
+        $this->initTranslations();
         $this->status = 1;
-        $this->resetErrorBag();
     }
 
     #[On('openCreateModal')]
-    public function openCreate()
+    public function openCreate(): void
     {
         $this->resetFields();
-        $this->isOpen = true;
+        $this->openModal();
     }
 
     #[On('openEditModal')]
-    public function openEdit($id)
+    public function openEdit($id): void
     {
         $this->resetFields();
         $unit = $this->repository->find($id);
         if ($unit) {
-            $this->unit_id = $id;
+            $this->model_id = $id;
             $this->is_edit = true;
-            foreach (config('langs', ['ar' => 'Arabic', 'en' => 'English']) as $locale => $name) {
-                $this->name[$locale] = $unit->translate($locale)->name ?? '';
-            }
-            $this->status = $unit->status;
-            $this->isOpen = true;
+            $this->populateTranslations($unit);
+            $this->status = (int)$unit->status;
+            $this->openModal();
         }
-    }
-
-    public function closeModal()
-    {
-        $this->isOpen = false;
-        $this->resetFields();
     }
 
     public function save()
     {
         $this->validate();
 
-        $data = [
-            'status' => $this->status,
-        ];
+        $data = $this->formatTranslations($this->name);
+        $data['status'] = $this->status;
 
-        foreach ($this->name as $locale => $val) {
-            $data[$locale] = ['name' => $val];
-        }
-
-        if ($this->is_edit && $this->unit_id) {
-            $this->repository->update($data, $this->unit_id);
+        if ($this->is_edit && $this->model_id) {
+            $this->repository->update($data, $this->model_id);
             flash()->success(__('messages.updated', ['model' => __('basicdata::models/db_units.singular')]));
         } else {
             $this->repository->create($data);

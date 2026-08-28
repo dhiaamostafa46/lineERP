@@ -5,49 +5,46 @@ namespace Modules\BasicData\App\Livewire\Products;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Livewire\Attributes\On;
+use Modules\BasicData\App\Livewire\Concerns\HasModalForm;
 use Modules\BasicData\App\Repositories\DbProductRepository;
 
 class ProductModal extends Component
 {
-    use WithFileUploads;
+    use WithFileUploads, HasModalForm;
 
-    public $isOpen = false;
-    public $product_id = null;
-    public $is_edit = false;
-    public $activeTab = 'basic'; // 'basic', 'sizes', 'units', 'other'
+    public string $activeTab = 'basic'; // 'basic', 'sizes', 'units', 'other'
 
     // 1. Basic Info
-    public $name = [];
-    public $barcode = '';
-    public $category_id = '';
-    public $kitchen_id = '';
-    public $base_unit_id = '';
-    public $tax_id = '';
-    public $type = 1; // 1 = Product, 2 = Service
-    public $cost_price = 0.00;
-    public $prod_price = 0.00;
-    public $status = 1;
+    public string $barcode = '';
+    public string $category_id = '';
+    public string $kitchen_id = '';
+    public string $base_unit_id = '';
+    public string $tax_id = '';
+    public int $type = 1; // 1 = Product, 2 = Service
+    public float $cost_price = 0.00;
+    public float $prod_price = 0.00;
+    public int $status = 1;
     public $img;
     public $existing_img = null;
 
     // 2. Sizes
-    public $have_sizes = false;
-    public $sizes = [];
+    public bool $have_sizes = false;
+    public array $sizes = [];
 
     // 3. Multiple Units
-    public $units = [];
+    public array $units = [];
 
     // 4. Other Info & Schedule
-    public $details = [];
-    public $min_quantity = 0;
-    public $calories = 0;
+    public array $details = [];
+    public float $min_quantity = 0;
+    public float $calories = 0;
     public $s_from = null;
     public $s_to = null;
-    public $work_days = [];
+    public array $work_days = [];
 
     protected $repository;
 
-    public function boot(DbProductRepository $repository)
+    public function boot(DbProductRepository $repository): void
     {
         $this->repository = $repository;
     }
@@ -88,21 +85,19 @@ class ProductModal extends Component
         return $rules;
     }
 
-    public function mount()
+    public function mount(): void
     {
         $this->resetFields();
     }
 
-    public function resetFields()
+    public function resetFields(): void
     {
-        $this->product_id = null;
-        $this->is_edit = false;
-        $this->activeTab = 'basic';
+        $this->resetModalState();
+        $this->initTranslations();
         
-        $this->name = [];
+        $this->activeTab = 'basic';
         $this->details = [];
         foreach (config('langs', ['ar' => 'Arabic', 'en' => 'English']) as $locale => $name) {
-            $this->name[$locale] = '';
             $this->details[$locale] = '';
         }
         
@@ -134,16 +129,14 @@ class ProductModal extends Component
         $this->s_from = null;
         $this->s_to = null;
         $this->work_days = ['sat', 'sun', 'mon', 'tue', 'wed', 'thu', 'fri'];
-
-        $this->resetErrorBag();
     }
 
-    public function setTab($tab)
+    public function setTab(string $tab): void
     {
         $this->activeTab = $tab;
     }
 
-    public function addSizeRow()
+    public function addSizeRow(): void
     {
         $this->sizes[] = [
             'ar' => ['name' => ''],
@@ -154,13 +147,13 @@ class ProductModal extends Component
         ];
     }
 
-    public function removeSizeRow($index)
+    public function removeSizeRow(int $index): void
     {
         unset($this->sizes[$index]);
         $this->sizes = array_values($this->sizes);
     }
 
-    public function addUnitRow()
+    public function addUnitRow(): void
     {
         $this->units[] = [
             'unit_id' => '',
@@ -169,40 +162,40 @@ class ProductModal extends Component
         ];
     }
 
-    public function removeUnitRow($index)
+    public function removeUnitRow(int $index): void
     {
         unset($this->units[$index]);
         $this->units = array_values($this->units);
     }
 
     #[On('openCreateModal')]
-    public function openCreate($type = 1)
+    public function openCreate($type = 1): void
     {
         $this->resetFields();
         $this->type = in_array((int)$type, [1, 2]) ? (int)$type : 1;
-        $this->isOpen = true;
+        $this->openModal();
     }
 
     #[On('openEditModal')]
-    public function openEdit($id)
+    public function openEdit($id): void
     {
         $this->resetFields();
         $product = $this->repository->find($id);
         if ($product) {
-            $this->product_id = $id;
+            $this->model_id = $id;
             $this->is_edit = true;
+            $this->populateTranslations($product);
             
             foreach (config('langs', ['ar' => 'Arabic', 'en' => 'English']) as $locale => $name) {
-                $this->name[$locale] = $product->translate($locale)->name ?? '';
-                $this->details[$locale] = $product->translate($locale)->details ?? '';
+                $this->details[$locale] = $product->translate($locale)?->details ?? '';
             }
 
-            $this->barcode = $product->barcode;
-            $this->category_id = $product->category_id;
-            $this->kitchen_id = $product->kitchen_id;
-            $this->base_unit_id = $product->base_unit_id;
-            $this->tax_id = $product->tax_id;
-            $this->type = $product->type ?? 1;
+            $this->barcode = (string)$product->barcode;
+            $this->category_id = (string)$product->category_id;
+            $this->kitchen_id = (string)$product->kitchen_id;
+            $this->base_unit_id = (string)$product->base_unit_id;
+            $this->tax_id = (string)$product->tax_id;
+            $this->type = (int)($product->type ?? 1);
             $this->cost_price = (float)$product->cost_price;
             $this->prod_price = (float)$product->prod_price;
             $this->status = (int)$product->status;
@@ -214,8 +207,8 @@ class ProductModal extends Component
                 foreach ($product->sizes as $size) {
                     $this->sizes[] = [
                         'id' => $size->id,
-                        'ar' => ['name' => $size->translate('ar')->name ?? ''],
-                        'en' => ['name' => $size->translate('en')->name ?? ''],
+                        'ar' => ['name' => $size->translate('ar')?->name ?? ''],
+                        'en' => ['name' => $size->translate('en')?->name ?? ''],
                         'cost_price' => (float)$size->cost_price,
                         'sale_price' => (float)$size->sale_price,
                         'barcode' => $size->barcode,
@@ -240,20 +233,14 @@ class ProductModal extends Component
                 ];
             }
 
-            $this->min_quantity = $product->min_quantity ?? 0;
-            $this->calories = $product->calories ?? 0;
+            $this->min_quantity = (float)($product->min_quantity ?? 0);
+            $this->calories = (float)($product->calories ?? 0);
             $this->s_from = $product->s_from;
             $this->s_to = $product->s_to;
             $this->work_days = is_array($product->work_days) ? $product->work_days : ['sat', 'sun', 'mon', 'tue', 'wed', 'thu', 'fri'];
 
-            $this->isOpen = true;
+            $this->openModal();
         }
-    }
-
-    public function closeModal()
-    {
-        $this->isOpen = false;
-        $this->resetFields();
     }
 
     public function save()
@@ -292,8 +279,8 @@ class ProductModal extends Component
                 ];
             }
 
-            if ($this->is_edit && $this->product_id) {
-                $this->repository->updateWithRelations($data, $this->product_id);
+            if ($this->is_edit && $this->model_id) {
+                $this->repository->updateWithRelations($data, $this->model_id);
                 flash()->success($this->type == 2 ? 'تم تعديل الخدمة بنجاح!' : 'تم تعديل المنتج بنجاح!');
             } else {
                 $this->repository->createWithRelations($data);

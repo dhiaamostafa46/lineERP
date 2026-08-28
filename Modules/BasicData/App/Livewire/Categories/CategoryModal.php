@@ -5,17 +5,13 @@ namespace Modules\BasicData\App\Livewire\Categories;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Livewire\Attributes\On;
+use Modules\BasicData\App\Livewire\Concerns\HasModalForm;
 use Modules\BasicData\App\Repositories\DbCategoryRepository;
 
 class CategoryModal extends Component
 {
-    use WithFileUploads;
+    use WithFileUploads, HasModalForm;
 
-    public $isOpen = false;
-    public $category_id = null;
-    public $is_edit = false;
-
-    public $name = [];
     public $parent_id = null;
     public $status = 1;
     public $type = 1;
@@ -24,7 +20,7 @@ class CategoryModal extends Component
 
     protected $repository;
 
-    public function boot(DbCategoryRepository $repository)
+    public function boot(DbCategoryRepository $repository): void
     {
         $this->repository = $repository;
     }
@@ -45,79 +41,61 @@ class CategoryModal extends Component
         return $rules;
     }
 
-    public function mount()
+    public function mount(): void
     {
         $this->resetFields();
     }
 
-    public function resetFields()
+    public function resetFields(): void
     {
-        $this->category_id = null;
-        $this->is_edit = false;
-        $this->name = [];
-        foreach (config('langs', ['ar' => 'Arabic', 'en' => 'English']) as $locale => $name) {
-            $this->name[$locale] = '';
-        }
+        $this->resetModalState();
+        $this->initTranslations();
         $this->parent_id = null;
         $this->status = 1;
         $this->type = 1;
         $this->img = null;
         $this->existing_img = null;
-        $this->resetErrorBag();
     }
 
     #[On('openCreateModal')]
-    public function openCreate()
+    public function openCreate(): void
     {
         $this->resetFields();
-        $this->isOpen = true;
+        $this->openModal();
     }
 
     #[On('openEditModal')]
-    public function openEdit($id)
+    public function openEdit($id): void
     {
         $this->resetFields();
         $category = $this->repository->find($id);
         if ($category) {
-            $this->category_id = $id;
+            $this->model_id = $id;
             $this->is_edit = true;
-            foreach (config('langs', ['ar' => 'Arabic', 'en' => 'English']) as $locale => $name) {
-                $this->name[$locale] = $category->translate($locale)->name ?? '';
-            }
+            $this->populateTranslations($category);
             $this->parent_id = $category->parent_id;
             $this->status = $category->status;
             $this->type = $category->type ?? 1;
             $this->existing_img = $category->imgThumbPath;
-            $this->isOpen = true;
+            $this->openModal();
         }
-    }
-
-    public function closeModal()
-    {
-        $this->isOpen = false;
-        $this->resetFields();
     }
 
     public function save()
     {
         $this->validate();
 
-        $data = [
-            'status' => $this->status,
-            'type' => $this->type,
-            'parent_id' => $this->parent_id ?: null,
-        ];
+        $data = $this->formatTranslations($this->name);
+        $data['status'] = $this->status;
+        $data['type'] = $this->type;
+        $data['parent_id'] = $this->parent_id ?: null;
 
         if ($this->img) {
             $data['img'] = $this->img;
         }
 
-        foreach ($this->name as $locale => $val) {
-            $data[$locale] = ['name' => $val];
-        }
-
-        if ($this->is_edit && $this->category_id) {
-            $this->repository->update($data, $this->category_id);
+        if ($this->is_edit && $this->model_id) {
+            $this->repository->update($data, $this->model_id);
             flash()->success(__('messages.updated', ['model' => __('basicdata::models/db_categories.singular')]));
         } else {
             $this->repository->create($data);
@@ -130,12 +108,8 @@ class CategoryModal extends Component
 
     public function render()
     {
-        $parentCategories = $this->repository->getModel()::whereNull('parent_id')
-            ->when($this->category_id, fn($q) => $q->where('id', '!=', $this->category_id))
-            ->get();
-
         return view('basicdata::livewire.categories.category-modal', [
-            'parentCategories' => $parentCategories,
+            'parentCategories' => $this->repository->parentCategories($this->model_id),
         ]);
     }
 }

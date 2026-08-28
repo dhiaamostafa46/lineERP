@@ -4,22 +4,20 @@ namespace Modules\BasicData\App\Livewire\ServicePoints;
 
 use Livewire\Component;
 use Livewire\Attributes\On;
+use Modules\BasicData\App\Livewire\Concerns\HasModalForm;
 use Modules\BasicData\App\Repositories\DbServicePointRepository;
 
 class ServicePointModal extends Component
 {
-    public $isOpen = false;
-    public $service_point_id = null;
-    public $is_edit = false;
+    use HasModalForm;
 
-    public $name = [];
-    public $code = '';
-    public $type = 1;
-    public $status = 1;
+    public string $code = '';
+    public int $type = 1;
+    public int $status = 1;
 
     protected $repository;
 
-    public function boot(DbServicePointRepository $repository)
+    public function boot(DbServicePointRepository $repository): void
     {
         $this->repository = $repository;
     }
@@ -39,72 +37,54 @@ class ServicePointModal extends Component
         return $rules;
     }
 
-    public function mount()
+    public function mount(): void
     {
         $this->resetFields();
     }
 
-    public function resetFields()
+    public function resetFields(): void
     {
-        $this->service_point_id = null;
-        $this->is_edit = false;
-        $this->name = [];
-        foreach (config('langs', ['ar' => 'Arabic', 'en' => 'English']) as $locale => $name) {
-            $this->name[$locale] = '';
-        }
+        $this->resetModalState();
+        $this->initTranslations();
         $this->code = '';
         $this->type = 1;
         $this->status = 1;
-        $this->resetErrorBag();
     }
 
     #[On('openCreateModal')]
-    public function openCreate()
+    public function openCreate(): void
     {
         $this->resetFields();
-        $this->isOpen = true;
+        $this->openModal();
     }
 
     #[On('openEditModal')]
-    public function openEdit($id)
+    public function openEdit($id): void
     {
         $this->resetFields();
         $sp = $this->repository->find($id);
         if ($sp) {
-            $this->service_point_id = $id;
+            $this->model_id = $id;
             $this->is_edit = true;
-            foreach (config('langs', ['ar' => 'Arabic', 'en' => 'English']) as $locale => $name) {
-                $this->name[$locale] = $sp->translate($locale)->name ?? '';
-            }
-            $this->code = $sp->code;
-            $this->type = $sp->type;
-            $this->status = $sp->status;
-            $this->isOpen = true;
+            $this->populateTranslations($sp);
+            $this->code = (string)$sp->code;
+            $this->type = (int)$sp->type;
+            $this->status = (int)$sp->status;
+            $this->openModal();
         }
-    }
-
-    public function closeModal()
-    {
-        $this->isOpen = false;
-        $this->resetFields();
     }
 
     public function save()
     {
         $this->validate();
 
-        $data = [
-            'code' => $this->code,
-            'type' => $this->type,
-            'status' => $this->status,
-        ];
+        $data = $this->formatTranslations($this->name);
+        $data['code'] = $this->code ?: null;
+        $data['type'] = $this->type;
+        $data['status'] = $this->status;
 
-        foreach ($this->name as $locale => $val) {
-            $data[$locale] = ['name' => $val];
-        }
-
-        if ($this->is_edit && $this->service_point_id) {
-            $this->repository->update($data, $this->service_point_id);
+        if ($this->is_edit && $this->model_id) {
+            $this->repository->update($data, $this->model_id);
             flash()->success(__('messages.updated', ['model' => __('basicdata::models/db_service_points.singular')]));
         } else {
             $this->repository->create($data);

@@ -81,55 +81,11 @@ class DbProductController extends AppBaseController
      */
     public function store(CreateDbProductRequest $request)
     {
-        DB::beginTransaction();
         try {
-            $input = $request->all();
-            if (!empty($input['tax_id'])) {
-                $taxAccount = TaxAccount::find($input['tax_id']);
-                $input['vat'] = $taxAccount ? $taxAccount->rate : 15;
-            } else {
-                $defaultTax = TaxAccount::Active()->first();
-                if ($defaultTax) {
-                    $input['tax_id'] = $defaultTax->id;
-                    $input['vat'] = $defaultTax->rate;
-                } else {
-                    $input['vat'] = 15;
-                }
-            }
- 
-            // 1. إنشاء المنتج الأساسي
-            $product = $this->dbProductRepository->create($input);
-
-            //  dd($input);// 2. معالجة وحفظ وحدات المنتج
-            if ($request->has('units') && is_array($input['units'])) {
-                foreach ($input['units'] as $unitData) {
-                    // التأكد من وجود البيانات الأساسية قبل الحفظ
-                    if (!empty($unitData['unit_id'])) {
-                        $unitData['conversion_factor'] = (isset($unitData['conversion_factor']) && $unitData['conversion_factor'] !== '') ? $unitData['conversion_factor'] : 1;
-                        $unitData['product_id'] = $product->id;
-                        $this->dbProductUnitRepository->create($unitData);
-                    }
-                }
-            }
-
-            // 3. معالجة وحفظ أحجام المنتج إذا كان الخيار مفعلاً
-            if ($request->boolean('have_sizes') && $request->has('sizes') && is_array($input['sizes'])) {
-                foreach ($input['sizes'] as $sizeData) {
-                    // التأكد من وجود اسم للحجم قبل الحفظ
-                    if (!empty($sizeData['ar']['name']) || !empty($sizeData['en']['name'])) {
-                        $sizeData['product_id'] = $product->id;
-                        $this->dbProductSizeRepository->create($sizeData);
-                    }
-                }
-            }
-
-            DB::commit();
-
+            $this->dbProductRepository->createWithRelations($request->all());
             flash()->success(__('messages.saved', ['model' => __('basicdata::models/db_products.singular')]));
-
             return redirect()->route('basicdata.products.index');
         } catch (\Exception $e) {
-            DB::rollBack();
             flash()->error(__('messages.error_creating', ['model' => __('basicdata::models/db_products.singular')]) . ': ' . $e->getMessage());
             return redirect()->back()->withInput();
         }
@@ -170,7 +126,7 @@ class DbProductController extends AppBaseController
         // يمكنك تمرير بيانات ضرورية لنموذج التعديل مثل الفئات
         // $data['categories'] = $this->dbProductRepository->getCategories();
         $data['type'] = $data['product']->type ?? 1;
-        $data['categories'] = $this->dbProductRepository->Categories();
+        $data['categories'] = $this->dbProductRepository->categories();
         $data['kitchens'] = $this->dbProductRepository->kitchens();
         $data['statuses'] = $this->dbProductRepository->statuses();
         $data['units'] = $this->dbProductRepository->units();
@@ -189,61 +145,8 @@ class DbProductController extends AppBaseController
      */
     public function update(UpdateDbProductRequest $request, $id)
     {
-
-      
-        DB::beginTransaction();
         try {
-            $product = $this->dbProductRepository->find($id);
-
-            if (empty($product)) {
-                DB::rollBack();
-                flash()->error(__('basicdata::models/db_products.singular') . ' ' . __('messages.not_found'));
-                return redirect(route('basicdata.products.index'));
-            }
-
-            $input = $request->all();
-            if (!empty($input['tax_id'])) {
-                $taxAccount = TaxAccount::find($input['tax_id']);
-                $input['vat'] = $taxAccount ? $taxAccount->rate : 15;
-            } else {
-                $defaultTax = TaxAccount::Active()->first();
-                if ($defaultTax) {
-                    $input['tax_id'] = $defaultTax->id;
-                    $input['vat'] = $defaultTax->rate;
-                } else {
-                    $input['vat'] = 15;
-                }
-            }
-            // 1. تحديث بيانات المنتج الأساسية
-            $product = $this->dbProductRepository->update($input, $id);
-
-            // 2. حذف الوحدات والأحجام القديمة للبدء من جديد
-            $product->units()->delete();
-            $product->sizes()->delete();
-
-            // 3. إعادة إنشاء وحدات المنتج
-            if ($request->has('units') && is_array($input['units'])) {
-                foreach ($input['units'] as $unitData) {
-                    if (!empty($unitData['unit_id'])) {
-                        $unitData['conversion_factor'] = (isset($unitData['conversion_factor']) && $unitData['conversion_factor'] !== '') ? $unitData['conversion_factor'] : 1;
-                        $unitData['product_id'] = $product->id;
-                        $this->dbProductUnitRepository->create($unitData);
-                    }
-                }
-            }
-
-            // 4. إعادة إنشاء أحجام المنتج إذا كان الخيار مفعلاً
-            if ($request->boolean('have_sizes') && $request->has('sizes') && is_array($input['sizes'])) {
-                foreach ($input['sizes'] as $sizeData) {
-                    if (!empty($sizeData['ar']['name']) || !empty($sizeData['en']['name'])) {
-                        $sizeData['product_id'] = $product->id;
-                        $this->dbProductSizeRepository->create($sizeData);
-                    }
-                }
-            }
-
-            DB::commit();
-
+            $this->dbProductRepository->updateWithRelations($request->all(), $id);
             flash()->success(__('messages.updated', ['model' => __('basicdata::models/db_products.singular')]));
 
             return redirect()->route('basicdata.products.index');
