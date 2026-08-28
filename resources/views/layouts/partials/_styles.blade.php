@@ -78,26 +78,186 @@
         }
     }
 
-    /* Sidebar Accordion Display States */
-    .menu-item.menu-accordion.show > .menu-sub,
-    .menu-item.menu-accordion.hover > .menu-sub,
-    .menu-item.menu-accordion.here > .menu-sub,
-    .menu-item.menu-accordion.show > .menu-sub-accordion,
-    .menu-item.menu-accordion.hover > .menu-sub-accordion,
-    .menu-item.menu-accordion.here > .menu-sub-accordion {
-        display: block !important;
-        visibility: visible !important;
-        opacity: 1 !important;
+    /* ==========================================================================
+       LineERP Ultra-Modern Sidebar & Reactive Navigation Design System
+       ========================================================================== */
+    .line-sidebar-menu {
+        padding: 0.5rem 0.75rem;
     }
-    .menu-item.menu-accordion:not(.show):not(.hover):not(.here) > .menu-sub,
-    .menu-item.menu-accordion:not(.show):not(.hover):not(.here) > .menu-sub-accordion {
-        display: none !important;
+
+    .line-section-header {
+        font-size: 0.72rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        color: #8E84BF;
+        margin: 1.25rem 0.5rem 0.5rem 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
     }
-    .menu-item.menu-accordion.show > .menu-link .menu-arrow,
-    .menu-item.menu-accordion.hover > .menu-link .menu-arrow,
-    .menu-item.menu-accordion.here > .menu-link .menu-arrow {
-        transform: rotate(90deg) !important;
-        transition: transform 0.2s ease !important;
+
+    .line-section-header::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: linear-gradient(90deg, rgba(142, 132, 191, 0.25), transparent);
+    }
+
+    .line-menu-btn, .line-menu-link {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        padding: 0.65rem 0.85rem;
+        margin-bottom: 0.3rem;
+        border-radius: 0.65rem;
+        background: transparent;
+        border: 1px solid transparent;
+        color: #3F4254;
+        text-decoration: none;
+        transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+        cursor: pointer;
+        user-select: none;
+    }
+
+    .line-menu-btn:hover, .line-menu-link:hover {
+        background: rgba(106, 102, 157, 0.08);
+        color: #1B325B;
+        transform: translateX(-2px);
+    }
+
+    [dir="ltr"] .line-menu-btn:hover, [dir="ltr"] .line-menu-link:hover {
+        transform: translateX(2px);
+    }
+
+    .line-menu-link.active-root, .line-menu-btn.active-parent {
+        background: linear-gradient(135deg, rgba(106, 102, 157, 0.14) 0%, rgba(27, 50, 91, 0.08) 100%);
+        border: 1px solid rgba(106, 102, 157, 0.22);
+        color: #1B325B !important;
+        font-weight: 700;
+    }
+
+    .line-icon-badge {
+        width: 34px;
+        height: 34px;
+        min-width: 34px;
+        border-radius: 0.5rem;
+        background: #F3F5F8;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #6A669D;
+        font-size: 1rem;
+        transition: all 0.22s ease;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    }
+
+    .line-menu-link.active-root .line-icon-badge,
+    .line-menu-btn.active-parent .line-icon-badge,
+    .line-menu-btn:hover .line-icon-badge,
+    .line-menu-link:hover .line-icon-badge {
+        background: linear-gradient(135deg, #6A669D 0%, #1B325B 100%);
+        color: #ffffff !important;
+        box-shadow: 0 3px 8px rgba(106, 102, 157, 0.35);
+    }
+
+    .line-menu-title {
+        font-size: 0.88rem;
+        font-weight: 600;
+        color: inherit;
+    }
+
+    .line-menu-arrow {
+        font-size: 0.72rem;
+        transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        color: #A1A5B7;
+    }
+
+    .line-menu-arrow.rotate-180 {
+        transform: rotate(180deg);
+        color: #6A669D;
+    }
+
+    .line-submenu {
+        margin-inline-start: 1.15rem;
+        padding-inline-start: 0.85rem;
+        border-inline-start: 2px dashed rgba(106, 102, 157, 0.25);
+        margin-top: 0.2rem;
+        margin-bottom: 0.4rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.15rem;
+    }
+
+    .line-sub-item {
+        display: flex;
+        align-items: center;
+        gap: 0.65rem;
+        padding: 0.5rem 0.75rem;
+        border-radius: 0.5rem;
+        color: #5E6278;
+        font-size: 0.83rem;
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.2s ease;
+    }
+
+    .line-sub-item:hover {
+        background: rgba(106, 102, 157, 0.08);
+        color: #1B325B;
+        padding-inline-start: 0.95rem;
+    }
+
+    .line-sub-dot {
+        width: 6px;
+        height: 6px;
+        min-width: 6px;
+        border-radius: 50%;
+        background: #B5B5C3;
+        transition: all 0.2s ease;
+    }
+
+    .line-sub-item:hover .line-sub-dot {
+        background: #6A669D;
+        transform: scale(1.3);
+    }
+
+    .line-sub-item.active-sub {
+        background: #ffffff;
+        color: #6A669D !important;
+        font-weight: 700;
+        box-shadow: 0 2px 6px rgba(106, 102, 157, 0.12);
+        border: 1px solid rgba(106, 102, 157, 0.18);
+    }
+
+    .line-sub-item.active-sub .line-sub-dot {
+        background: #6A669D;
+        box-shadow: 0 0 6px #6A669D;
+        transform: scale(1.4);
+    }
+
+    /* Dark Mode Support for Line Sidebar */
+    [data-bs-theme="dark"] .line-menu-btn,
+    [data-bs-theme="dark"] .line-menu-link {
+        color: #CDD5DF;
+    }
+    [data-bs-theme="dark"] .line-icon-badge {
+        background: #1e1e2d;
+        color: #8E84BF;
+    }
+    [data-bs-theme="dark"] .line-sub-item {
+        color: #92929F;
+    }
+    [data-bs-theme="dark"] .line-sub-item.active-sub {
+        background: #1B2C4E;
+        color: #9ABF80 !important;
+        border-color: rgba(154, 191, 128, 0.3);
+    }
+    [data-bs-theme="dark"] .line-menu-link.active-root,
+    [data-bs-theme="dark"] .line-menu-btn.active-parent {
+        background: rgba(106, 102, 157, 0.22);
+        color: #ffffff !important;
     }
 
     body {

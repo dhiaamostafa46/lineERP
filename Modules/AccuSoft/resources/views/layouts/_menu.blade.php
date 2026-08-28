@@ -9,165 +9,114 @@
     'accusoft.payment_vouchers.index',
     'accusoft.assets.index'
 ])
-<div data-kt-menu-trigger="click" class="menu-item menu-accordion">
-    <span class="menu-link">
-        <span class="menu-bullet">
-            <i class="ki-duotone ki-calculator fs-2">
-                <span class="path1"></span>
-                <span class="path2"></span>
-                <span class="path3"></span>
-            </i>
-        </span>
-        <span class="menu-title">@lang('accusoft::lang.accusoft')</span>
-        <span class="menu-arrow"></span>
-    </span>
 
-    <div class="menu-sub menu-sub-accordion">
-        @can('accusoft.TreeAccounts.index')
-            <div class="menu-item">
-                <a class="menu-link {{ Route::is('accusoft.TreeAccounts*') ? 'active' : '' }}"
+    @php
+        $isAccuSoftActive = Route::is('accusoft.*');
+        $pendingCount = \Illuminate\Support\Facades\Cache::remember('accusoft_menu_pending_journals', 60, function() {
+            return \App\Models\AccuSoft\JournalEntry::where('status', \App\Models\AccuSoft\JournalEntry::STATUS_PENDING)->count();
+        });
+    @endphp
+
+    <div x-data="{ open: {{ $isAccuSoftActive ? 'true' : 'false' }} }" class="line-menu-item mb-1">
+        <button type="button" 
+                @click="open = !open" 
+                :class="{ 'active-parent': open || {{ $isAccuSoftActive ? 'true' : 'false' }} }"
+                class="line-menu-btn">
+            <div class="d-flex align-items-center gap-3">
+                <div class="line-icon-badge">
+                    <i class="fas fa-calculator"></i>
+                </div>
+                <span class="line-menu-title">@lang('accusoft::lang.accusoft')</span>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+                @if($pendingCount > 0)
+                    <span class="badge rounded-pill bg-danger" style="font-size: 0.68rem;">
+                        {{ $pendingCount > 99 ? '99+' : $pendingCount }}
+                    </span>
+                @endif
+                <i class="fas fa-chevron-down line-menu-arrow" :class="{ 'rotate-180': open }"></i>
+            </div>
+        </button>
+
+        <div x-show="open" x-collapse x-cloak class="line-submenu">
+            @can('accusoft.TreeAccounts.index')
+                <a class="line-sub-item {{ Route::is('accusoft.TreeAccounts*') ? 'active-sub' : '' }}"
                     href="{{ route('accusoft.TreeAccounts.index') }}" wire:navigate>
-                    <span class="menu-bullet">
-                        <i class="nav-icon fas fa-sitemap"></i>
-                    </span>
-                    <span class="menu-title">@lang('accusoft::models/as_tree_account.plural')</span>
+                    <span class="line-sub-dot"></span>
+                    <span>@lang('accusoft::models/as_tree_account.plural')</span>
                 </a>
-            </div>
-        @endcan
+            @endcan
 
-        @can('accusoft.CostCenter.index')
-            <div class="menu-item">
-                <a class="menu-link {{ Route::is('accusoft.CostCenter*') ? 'active' : '' }}"
+            @can('accusoft.CostCenter.index')
+                <a class="line-sub-item {{ Route::is('accusoft.CostCenter*') ? 'active-sub' : '' }}"
                     href="{{ route('accusoft.CostCenter.index') }}" wire:navigate>
-                    <span class="menu-bullet">
-                        <i class="nav-icon fas fa-chart-pie"></i>
-                    </span>
-                    <span class="menu-title">@lang('accusoft::models/as_cost_centers.plural')</span>
+                    <span class="line-sub-dot"></span>
+                    <span>@lang('accusoft::models/as_cost_centers.plural')</span>
                 </a>
-            </div>
-        @endcan
+            @endcan
 
-        @can('accusoft.JournalEntry.index')
-            @php
-                $pendingCount = \Illuminate\Support\Facades\Cache::remember('accusoft_menu_pending_journals', 60, function() {
-                    return \App\Models\AccuSoft\JournalEntry::where('status', \App\Models\AccuSoft\JournalEntry::STATUS_PENDING)->count();
-                });
-            @endphp
-            <div class="menu-item">
-                <a class="menu-link {{ Route::is('accusoft.JournalEntry*') ? 'active' : '' }}"
+            @can('accusoft.JournalEntry.index')
+                <a class="line-sub-item {{ Route::is('accusoft.JournalEntry*') ? 'active-sub' : '' }}"
                     href="{{ route('accusoft.JournalEntry.index') }}" wire:navigate>
-                    <span class="menu-bullet">
-                        <i class="nav-icon fas fa-book-open"></i>
-                    </span>
-                    <span class="menu-title d-flex align-items-center">
+                    <span class="line-sub-dot"></span>
+                    <span class="d-flex align-items-center justify-content-between flex-grow-1">
                         @lang('accusoft::models/as_journal_entries.plural')
                         @if($pendingCount > 0)
-                            <span class="badge rounded-pill bg-danger ms-2"
-                                  style="font-size: 0.7rem; animation: pulse 1.5s infinite;">
-                                {{ $pendingCount > 99 ? '99+' : $pendingCount }}
+                            <span class="badge bg-danger text-white rounded-pill px-2" style="font-size: 0.65rem;">
+                                {{ $pendingCount }}
                             </span>
-                            <style>
-                                @keyframes pulse {
-                                    0%   { transform: scale(1); }
-                                    50%  { transform: scale(1.1); }
-                                    100% { transform: scale(1); }
-                                }
-                            </style>
                         @endif
                     </span>
                 </a>
-            </div>
-        @endcan
+            @endcan
 
-        @can('accusoft.assets.index')
-            @php
-                $unactivatedAssetsCount = \Illuminate\Support\Facades\Cache::remember('accusoft_menu_unactivated_assets', 60, function() {
-                    $count = 0;
-                    if (class_exists(\Modules\HR\App\Models\HrAsset::class)) {
-                        $count += \Modules\HR\App\Models\HrAsset::doesntHave('financialAsset')->count();
-                    }
-                    return $count;
-                });
-            @endphp
-            <div class="menu-item">
-                <a class="menu-link {{ Route::is('accusoft.assets*') ? 'active' : '' }}"
+            @can('accusoft.assets.index')
+                <a class="line-sub-item {{ Route::is('accusoft.assets*') ? 'active-sub' : '' }}"
                     href="{{ route('accusoft.assets.index') }}" wire:navigate>
-                    <span class="menu-bullet">
-                        <i class="nav-icon fas fa-building"></i>
-                    </span>
-                    <span class="menu-title d-flex align-items-center">
-                        @lang('accusoft::models/as_asset.plural')
-                        @if($unactivatedAssetsCount > 0)
-                            <span class="badge rounded-pill bg-danger ms-2"
-                                  style="font-size: 0.7rem; animation: pulse 1.5s infinite;">
-                                {{ $unactivatedAssetsCount > 99 ? '99+' : $unactivatedAssetsCount }}
-                            </span>
-                        @endif
-                    </span>
+                    <span class="line-sub-dot"></span>
+                    <span>@lang('accusoft::models/as_asset.plural')</span>
                 </a>
-            </div>
-        @endcan
+            @endcan
 
-        @can('accusoft.Setting.index')
-            <div class="menu-item">
-                <a class="menu-link {{ Route::is('accusoft.Setting*') ? 'active' : '' }}"
-                    href="{{ route('accusoft.Setting.index') }}" wire:navigate>
-                    <span class="menu-bullet">
-                        <i class="nav-icon fas fa-calendar-alt"></i>
-                    </span>
-                    <span class="menu-title">@lang('accusoft::models/as_setting.plural')</span>
-                </a>
-            </div>
-        @endcan
-
-        @can('accusoft.reports.index')
-            <div class="menu-item">
-                <a class="menu-link {{ Route::is('accusoft.reports*') ? 'active' : '' }}"
-                    href="{{ route('accusoft.reports.index') }}" wire:navigate>
-                    <span class="menu-bullet">
-                        <i class="nav-icon fas fa-money-bill-wave"></i>
-                    </span>
-                    <span class="menu-title">@lang('accusoft::models/as_reports.plural')</span>
-                </a>
-            </div>
-        @endcan
-
-        @can('accusoft.banks.index')
-            <div class="menu-item">
-                <a class="menu-link {{ Route::is('accusoft.banks*') ? 'active' : '' }}"
-                    href="{{ route('accusoft.banks.index') }}" wire:navigate>
-                    <span class="menu-bullet">
-                        <i class="nav-icon fas fa-university"></i>
-                    </span>
-                    <span class="menu-title">@lang('accusoft::models/banks.plural')</span>
-                </a>
-            </div>
-        @endcan
-
-        @can('accusoft.receipt_vouchers.index')
-            <div class="menu-item">
-                <a class="menu-link {{ Route::is('accusoft.receipt_vouchers*') ? 'active' : '' }}"
+            @can('accusoft.receipt_vouchers.index')
+                <a class="line-sub-item {{ Route::is('accusoft.receipt_vouchers*') ? 'active-sub' : '' }}"
                     href="{{ route('accusoft.receipt_vouchers.index') }}" wire:navigate>
-                    <span class="menu-bullet">
-                        <i class="nav-icon fas fa-file-invoice-dollar"></i>
-                    </span>
-                    <span class="menu-title">@lang('accusoft::models/receipt_vouchers.plural')</span>
+                    <span class="line-sub-dot"></span>
+                    <span>@lang('accusoft::models/receipt_vouchers.plural')</span>
                 </a>
-            </div>
-        @endcan
+            @endcan
 
-        @can('accusoft.payment_vouchers.index')
-            <div class="menu-item">
-                <a class="menu-link {{ Route::is('accusoft.payment_vouchers*') ? 'active' : '' }}"
+            @can('accusoft.payment_vouchers.index')
+                <a class="line-sub-item {{ Route::is('accusoft.payment_vouchers*') ? 'active-sub' : '' }}"
                     href="{{ route('accusoft.payment_vouchers.index') }}" wire:navigate>
-                    <span class="menu-bullet">
-                        <i class="nav-icon fas fa-file-invoice"></i>
-                    </span>
-                    <span class="menu-title">@lang('accusoft::models/payment_vouchers.plural')</span>
+                    <span class="line-sub-dot"></span>
+                    <span>@lang('accusoft::models/payment_vouchers.plural')</span>
                 </a>
-            </div>
-        @endcan
+            @endcan
 
+            @can('accusoft.banks.index')
+                <a class="line-sub-item {{ Route::is('accusoft.banks*') ? 'active-sub' : '' }}"
+                    href="{{ route('accusoft.banks.index') }}" wire:navigate>
+                    <span class="line-sub-dot"></span>
+                    <span>@lang('accusoft::models/banks.plural')</span>
+                </a>
+            @endcan
+
+            @can('accusoft.reports.index')
+                <a class="line-sub-item {{ Route::is('accusoft.reports*') ? 'active-sub' : '' }}"
+                    href="{{ route('accusoft.reports.index') }}" wire:navigate>
+                    <span class="line-sub-dot"></span>
+                    <span>@lang('accusoft::models/as_reports.plural')</span>
+                </a>
+            @endcan
+
+            @can('accusoft.Setting.index')
+                <a class="line-sub-item {{ Route::is('accusoft.Setting*') ? 'active-sub' : '' }}"
+                    href="{{ route('accusoft.Setting.index') }}" wire:navigate>
+                    <span class="line-sub-dot"></span>
+                    <span>@lang('accusoft::models/as_setting.plural')</span>
+                </a>
+            @endcan
+        </div>
     </div>
-</div>
 @endcanany
