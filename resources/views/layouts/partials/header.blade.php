@@ -41,18 +41,18 @@
             <div class="dropdown">
                 <button type="button" 
                         class="btn btn-sm d-flex align-items-center gap-2 px-3 py-1 rounded-2 border transition-all"
-                        style="background: #f8fafc; border-color: #e2e8f0 !important; color: #1e293b; height: 38px;"
+                        style="background: #f8fafc; border-color: #e2e8f0 !important; color: #1e293b; height: 38px; white-space: nowrap;"
                         data-bs-toggle="dropdown" 
                         aria-expanded="false"
                         onmouseover="this.style.background='#f1f5f9'; this.style.borderColor='#cbd5e1';"
                         onmouseout="this.style.background='#f8fafc'; this.style.borderColor='#e2e8f0';">
                     <div class="d-flex align-items-center justify-content-center rounded-2" 
-                         style="width: 24px; height: 24px; background: #e0f2fe; color: #0284c7;">
+                         style="width: 24px; height: 24px; min-width: 24px; background: #e0f2fe; color: #0284c7;">
                         <i class="fas fa-store-alt fs-8"></i>
                     </div>
                     <div class="d-flex flex-column text-start">
-                        <span class="text-muted fw-bold" style="font-size: 9.5px; text-transform: uppercase; line-height: 1;">@lang('models/Branches.singular')</span>
-                        <span class="fw-bold text-truncate" style="font-size: 12.5px; max-width: 140px; color: #0f172a; line-height: 1.2;">
+                        <span class="text-muted fw-bold" style="font-size: 9px; text-transform: uppercase; line-height: 1;">@lang('models/Branches.singular')</span>
+                        <span class="fw-bold text-truncate" style="font-size: 12px; max-width: 130px; color: #0f172a; line-height: 1.2;">
                             {{ $currentBranch?->name ?? __('lang.all_branches') }}
                         </span>
                     </div>
@@ -261,7 +261,9 @@
                                    class="d-flex align-items-center justify-content-between py-2 px-3 rounded-2 text-decoration-none {{ app()->getLocale() == 'ar' ? 'bg-light-primary text-primary fw-bold' : 'text-gray-700' }}"
                                    style="{{ app()->getLocale() == 'ar' ? 'background: #f1faff;' : '' }}; font-size: 12.5px;">
                                     <div class="d-flex align-items-center gap-2">
-                                        <img class="w-16px h-16px rounded-circle" src="{{ asset('admin_assets') }}/media/flags/saudi-arabia.svg" alt="AR" />
+                                        <img src="{{ asset('admin_assets') }}/media/flags/saudi-arabia.svg" 
+                                             alt="AR" 
+                                             style="width: 20px !important; height: 20px !important; min-width: 20px !important; max-width: 20px !important; border-radius: 50% !important; object-fit: cover !important;" />
                                         <span>العربية (Arabic)</span>
                                     </div>
                                     @if(app()->getLocale() == 'ar')
@@ -272,7 +274,9 @@
                                    class="d-flex align-items-center justify-content-between py-2 px-3 rounded-2 text-decoration-none {{ app()->getLocale() == 'en' ? 'bg-light-primary text-primary fw-bold' : 'text-gray-700' }}"
                                    style="{{ app()->getLocale() == 'en' ? 'background: #f1faff;' : '' }}; font-size: 12.5px;">
                                     <div class="d-flex align-items-center gap-2">
-                                        <img class="w-16px h-16px rounded-circle" src="{{ asset('admin_assets') }}/media/flags/united-states.svg" alt="EN" />
+                                        <img src="{{ asset('admin_assets') }}/media/flags/united-states.svg" 
+                                             alt="EN" 
+                                             style="width: 20px !important; height: 20px !important; min-width: 20px !important; max-width: 20px !important; border-radius: 50% !important; object-fit: cover !important;" />
                                         <span>English (الإنجليزية)</span>
                                     </div>
                                     @if(app()->getLocale() == 'en')
