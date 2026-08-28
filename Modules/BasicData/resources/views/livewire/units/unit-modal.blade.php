@@ -1,33 +1,41 @@
 <div>
     @if($isOpen)
-        <!-- Modal Backdrop -->
-        <div class="modal-backdrop fade show" style="z-index: 1050;" wire:click="closeModal"></div>
+        <!-- Modal Backdrop with blur -->
+        <div class="modal-backdrop fade show" style="z-index: 1050; background-color: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px);" wire:click="closeModal"></div>
 
         <!-- Unit Modal Dialog -->
         <div class="modal fade show d-block" tabindex="-1" style="z-index: 1055;" aria-modal="true" role="dialog">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content border-0 shadow-xl rounded-4" style="background: #ffffff;">
+            <div class="modal-dialog modal-dialog-centered modal-md">
+                <div class="modal-content border-0 shadow-2xl rounded-4 overflow-hidden" style="background: #ffffff;">
                     
                     <!-- Modal Header -->
-                    <div class="modal-header border-bottom py-3 px-5 d-flex align-items-center justify-content-between">
-                        <h5 class="modal-title fw-bold text-gray-900 fs-5">
-                            {{ $is_edit ? __('crud.edit') . ' ' . __('basicdata::models/db_units.singular') : __('crud.add_new') . ' ' . __('basicdata::models/db_units.singular') }}
-                        </h5>
-                        <button type="button" class="btn btn-sm btn-icon btn-ghost-secondary rounded-circle" wire:click="closeModal" aria-label="Close">
-                            <i class="fa-solid fa-xmark fs-5"></i>
+                    <div class="modal-header py-4 px-6 border-bottom d-flex align-items-center justify-content-between" style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="d-flex align-items-center justify-content-center rounded-3 shadow-sm" style="width: 42px; height: 42px; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: #ffffff;">
+                                <i class="fa-solid fa-scale-balanced fs-4"></i>
+                            </div>
+                            <div>
+                                <h4 class="modal-title fw-bolder text-gray-900 mb-0 fs-5">
+                                    {{ $is_edit ? __('crud.edit') : __('crud.add_new') }} {{ __('basicdata::models/db_units.singular') }}
+                                </h4>
+                                <span class="text-muted fs-8">إدارة وحدات القياس القياسية</span>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-sm btn-icon btn-light rounded-circle shadow-none" wire:click="closeModal" aria-label="Close" style="width: 32px; height: 32px;">
+                            <i class="fa-solid fa-xmark fs-5 text-gray-600"></i>
                         </button>
                     </div>
 
                     <!-- Modal Body -->
                     <form wire:submit.prevent="save">
-                        <div class="modal-body py-4 px-5">
+                        <div class="modal-body p-5" style="background-color: #fafbfc;">
                             
                             <!-- Names (Multilingual) -->
-                            <div class="mb-4">
+                            <div class="row g-3 mb-3">
                                 @foreach (config('langs', ['ar' => 'العربية', 'en' => 'English']) as $locale => $language)
-                                    <div class="mb-3">
-                                        <label class="form-label fw-semibold fs-7 required">
-                                            {{ $language }} - @lang('basicdata::models/db_units.fields.name')
+                                    <div class="col-12">
+                                        <label class="form-label fw-semibold fs-7 text-gray-700 mb-1">
+                                            {{ $language }} - @lang('basicdata::models/db_units.fields.name') <span class="text-danger">*</span>
                                         </label>
                                         <input type="text" 
                                                wire:model="name.{{ $locale }}" 
@@ -40,10 +48,10 @@
                                 @endforeach
                             </div>
 
-                            <!-- Status -->
-                            <div class="mb-3">
-                                <label class="form-label fw-semibold fs-7 required">
-                                    @lang('basicdata::models/db_units.fields.status')
+                            <!-- Status Field -->
+                            <div class="mb-2">
+                                <label class="form-label fw-semibold fs-7 text-gray-700 mb-1">
+                                    @lang('basicdata::models/db_units.fields.status') <span class="text-danger">*</span>
                                 </label>
                                 <select wire:model="status" class="form-select form-select-solid fs-7">
                                     <option value="1">@lang('basicdata::lang.active')</option>
@@ -54,17 +62,18 @@
                         </div>
 
                         <!-- Modal Footer -->
-                        <div class="modal-footer border-top py-3 px-5 d-flex justify-content-end gap-2">
-                            <button type="button" class="btn btn-sm btn-light fs-7" wire:click="closeModal">
+                        <div class="modal-footer py-3 px-6 border-top d-flex justify-content-between align-items-center bg-white">
+                            <button type="button" class="btn btn-sm btn-light fs-7 px-4" wire:click="closeModal">
+                                <i class="fa-solid fa-xmark fs-8 me-1"></i>
                                 @lang('basicdata::lang.cancel')
                             </button>
-                            <button type="submit" class="btn btn-sm front-btn-primary fs-7" wire:loading.attr="disabled">
+                            <button type="submit" class="btn btn-sm front-btn-primary fs-7 px-5 shadow-sm" wire:loading.attr="disabled">
                                 <span wire:loading.remove>
-                                    <i class="fa-solid fa-check fs-8"></i>
+                                    <i class="fa-solid fa-check fs-8 me-1"></i>
                                     @lang('basicdata::lang.save')
                                 </span>
                                 <span wire:loading>
-                                    <i class="fa-solid fa-spinner fa-spin fs-8"></i>
+                                    <i class="fa-solid fa-spinner fa-spin fs-8 me-1"></i>
                                     جاري الحفظ...
                                 </span>
                             </button>
