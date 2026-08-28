@@ -34,20 +34,21 @@ class BasicDataExport implements FromCollection, WithHeadings, WithStyles
 
     public function styles(Worksheet $sheet)
     {
-        // عدد الأعمدة والصفوف
         $rowCount = count($this->data) + 1;
         $colCount = count($this->headers);
         $lastColumn = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($colCount);
 
-        // تنسيق الهيدر
+        // Header Row Styling (Clean Enterprise Royal Blue)
+        $sheet->getRowDimension(1)->setRowHeight(30);
         $sheet->getStyle("A1:{$lastColumn}1")->applyFromArray([
             'font' => [
                 'bold' => true,
-                'color' => ['rgb' => 'FFFFFF'], // نص أبيض
+                'size' => 12,
+                'color' => ['rgb' => 'FFFFFF'],
             ],
             'fill' => [
                 'fillType' => Fill::FILL_SOLID,
-                'startColor' => ['rgb' => '9ABF80'], // خلفية خضراء
+                'startColor' => ['rgb' => '2563EB'],
             ],
             'alignment' => [
                 'horizontal' => Alignment::HORIZONTAL_CENTER,
@@ -56,30 +57,39 @@ class BasicDataExport implements FromCollection, WithHeadings, WithStyles
             'borders' => [
                 'allBorders' => [
                     'borderStyle' => Border::BORDER_THIN,
-                    'color' => ['rgb' => '000000'],
+                    'color' => ['rgb' => '1D4ED8'],
                 ],
             ],
         ]);
 
-        // تنسيق باقي الصفوف (الخلفية الفاتحة)
-        $sheet->getStyle("A2:{$lastColumn}{$rowCount}")->applyFromArray([
-            'fill' => [
-                'fillType' => Fill::FILL_SOLID,
-                'startColor' => ['rgb' => 'E5E3D4'], // خلفية فاتحة
-            ],
-            'alignment' => [
-                'horizontal' => Alignment::HORIZONTAL_CENTER,
-                'vertical' => Alignment::VERTICAL_CENTER,
-            ],
-            'borders' => [
-                'allBorders' => [
-                    'borderStyle' => Border::BORDER_THIN,
-                    'color' => ['rgb' => '000000'],
+        // Data Rows Styling (Clean White & Soft Slate Zebra with Light Borders)
+        for ($row = 2; $row <= $rowCount; $row++) {
+            $sheet->getRowDimension($row)->setRowHeight(22);
+            $bgColor = ($row % 2 === 0) ? 'FFFFFF' : 'F8FAFC';
+            
+            $sheet->getStyle("A{$row}:{$lastColumn}{$row}")->applyFromArray([
+                'font' => [
+                    'size' => 11,
+                    'color' => ['rgb' => '1E293B'],
                 ],
-            ],
-        ]);
+                'fill' => [
+                    'fillType' => Fill::FILL_SOLID,
+                    'startColor' => ['rgb' => $bgColor],
+                ],
+                'alignment' => [
+                    'horizontal' => Alignment::HORIZONTAL_CENTER,
+                    'vertical' => Alignment::VERTICAL_CENTER,
+                ],
+                'borders' => [
+                    'allBorders' => [
+                        'borderStyle' => Border::BORDER_THIN,
+                        'color' => ['rgb' => 'E2E8F0'],
+                    ],
+                ],
+            ]);
+        }
 
-        // جعل الأعمدة تتكيف مع المحتوى
+        // Auto-fit columns
         foreach (range(1, $colCount) as $col) {
             $sheet->getColumnDimensionByColumn($col)->setAutoSize(true);
         }

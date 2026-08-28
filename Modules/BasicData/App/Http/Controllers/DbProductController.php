@@ -336,22 +336,34 @@ class DbProductController extends AppBaseController
         $dataExcel = $this->dbProductRepository->dataExel();
         $name = $this->dbProductRepository->name();
 
-        $mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8']);
+        $mpdf = new \Mpdf\Mpdf([
+            'mode' => 'utf-8',
+            'format' => 'A4',
+            'margin_left' => 10,
+            'margin_right' => 10,
+            'margin_top' => 10,
+            'margin_bottom' => 10,
+        ]);
         $mpdf->autoScriptToLang = true;
         $mpdf->autoLangToFont = true;
         $mpdf->autoArabic = true;
-
         $mpdf->baseScript = 1;
-        $mpdf->autoVietnamese = true;
-
         $mpdf->shrink_tables_to_fit = 1;
         $mpdf->keep_table_proportions = true;
-
         $mpdf->SetDisplayMode('fullpage');
-
-        $mpdf->list_indent_first_level = 0;
         $mpdf->SetDirectionality(app()->getLocale() == 'ar' ? 'rtl' : 'ltr');
-        $mpdf->WriteHTML(view('basicdata::exports.pdf', ['headers' => $headers, 'data' => $dataExcel, 'name' => $name]));
-        $mpdf->Output();
+
+        $html = view('basicdata::exports.pdf', [
+            'headers' => $headers, 
+            'data' => $dataExcel, 
+            'name' => $name,
+            'date' => now()->format('Y-m-d H:i')
+        ])->render();
+
+        $mpdf->WriteHTML($html);
+        return response($mpdf->Output($name . '.pdf', 'I'), 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'inline; filename="' . $name . '.pdf"'
+        ]);
     }
 }

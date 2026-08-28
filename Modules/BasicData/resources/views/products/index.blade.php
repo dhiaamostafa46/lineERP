@@ -5,12 +5,13 @@
 @section('content')
 <div class="d-flex flex-column flex-column-fluid">
     
-    <!--begin::Toolbar / Page Header-->
+    <!--begin::Toolbar-->
     <div id="kt_app_toolbar" class="app-toolbar py-3 py-lg-4">
         <div id="kt_app_toolbar_container" class="app-container container-xxl d-flex align-items-center justify-content-between">
             
+            <!--begin::Page title-->
             <div class="page-title d-flex flex-column justify-content-center">
-                <h1 class="page-heading text-gray-900 fw-bold fs-4 my-0">
+                <h1 class="page-heading text-gray-900 fw-bolder fs-4 my-0">
                     @lang('basicdata::models/db_products.plural')
                 </h1>
                 <ul class="breadcrumb breadcrumb-separatorless fw-semibold fs-8 my-0 pt-1">
@@ -23,19 +24,20 @@
                     <li class="breadcrumb-item text-muted">@lang('basicdata::models/db_products.plural')</li>
                 </ul>
             </div>
+            <!--end::Page title-->
 
-            <!-- Header Action Buttons -->
+            <!--begin::Actions-->
             <div class="d-flex align-items-center gap-2">
                 @can('basicdata.products.import')
-                    <a class="btn btn-sm front-btn-filter" href="{{ route('basicdata.products.import') }}" wire:navigate>
-                        <i class="fa-solid fa-file-import fs-8 text-primary"></i>
+                    <a class="btn btn-sm btn-light-primary fw-bold" href="{{ route('basicdata.products.import') }}" wire:navigate>
+                        <i class="fa-solid fa-file-import fs-8"></i>
                         @lang('crud.import')
                     </a>
                 @endcan
 
                 @can('basicdata.products.create')
                     <div class="btn-group">
-                        <button type="button" class="btn btn-sm front-btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                        <button type="button" class="btn btn-sm btn-primary fw-bold dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="fa-solid fa-plus fs-8"></i>
                             @lang('crud.add_new')
                         </button>
@@ -46,6 +48,7 @@
                     </div>
                 @endcan
             </div>
+            <!--end::Actions-->
 
         </div>
     </div>
@@ -56,153 +59,116 @@
         <div id="kt_app_content_container" class="app-container container-xxl">
 
             <!-- ============================================================== -->
-            <!-- Front Dashboard Exact Card Layout -->
+            <!-- Unified Smart Datatable Card (البطاقة الذكية المدمجة المتكاملة) -->
             <!-- ============================================================== -->
-            <div class="front-card">
+            <div class="card shadow-xs border" style="border-radius: 12px; overflow: hidden; background: #ffffff;">
                 
-                <!-- Front Card Header: Search + Export + Filter Dropdown -->
-                <div class="front-card-header">
+                <!-- 1. Card Top Toolbar: Search + Filter Toggle + Export Tools -->
+                <div class="card-header border-0 pt-4 pb-3 px-5 d-flex align-items-center justify-content-between gap-3 flex-wrap bg-white">
                     
-                    <!-- Search Input -->
-                    <div class="position-relative flex-grow-1" style="max-width: 320px;">
-                        {!! Form::open(['route' => 'basicdata.products.index', 'method' => 'GET', 'id' => 'frontSearchForm']) !!}
-                            <i class="fas fa-search position-absolute top-50 translate-middle-y ms-3 text-muted fs-7"></i>
-                            <input type="text" 
-                                   name="name" 
-                                   value="{{ request('name') }}" 
-                                   class="form-control front-search-input" 
-                                   placeholder="@lang('crud.search') بالاسم أو الكود..." 
-                                   onchange="document.getElementById('frontSearchForm').submit()" />
+                    <!-- Left: Quick Search & Filter Trigger -->
+                    <div class="d-flex align-items-center gap-2 flex-grow-1" style="max-width: 480px;">
+                        {!! Form::open(['route' => 'basicdata.products.index', 'method' => 'GET', 'class' => 'd-flex align-items-center gap-2 w-100']) !!}
+                            <div class="position-relative flex-grow-1">
+                                <i class="fas fa-search position-absolute top-50 translate-middle-y ms-3 text-muted fs-7"></i>
+                                <input type="text" 
+                                       name="name" 
+                                       value="{{ request('name') }}" 
+                                       class="form-control form-control-sm rounded-2 ps-9 fs-7" 
+                                       placeholder="@lang('crud.search') بالاسم أو الكود..." 
+                                       style="background: #f8fafc; border: 1px solid #e2e8f0; height: 38px;" />
+                            </div>
+
+                            <button type="button" 
+                                    class="btn btn-sm btn-light border d-flex align-items-center gap-2 text-nowrap" 
+                                    style="height: 38px; background: #f8fafc; border-color: #e2e8f0 !important;"
+                                    data-bs-toggle="collapse" 
+                                    data-bs-target="#advancedFilterPanel" 
+                                    aria-expanded="{{ request()->hasAny(['status', 'pagination']) ? 'true' : 'false' }}">
+                                <i class="fa-solid fa-sliders text-primary fs-7"></i>
+                                <span class="fs-7 fw-semibold">الفلاتر</span>
+                                @if(request()->hasAny(['name', 'status']))
+                                    <span class="badge badge-circle badge-primary w-15px h-15px fs-9 p-0 d-flex align-items-center justify-content-center">✓</span>
+                                @endif
+                            </button>
                         {!! Form::close() !!}
                     </div>
 
-                    <!-- Right Toolbar Controls: Export + Filter -->
-                    <div class="d-flex align-items-center gap-2">
-                        
-                        <!-- 1. Export Dropdown -->
-                        <div class="dropdown">
-                            <button type="button" class="front-btn-export dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fa-solid fa-arrow-down-to-bracket fs-8"></i>
-                                <span>تصدير (Export)</span>
-                            </button>
-                            <ul class="dropdown-menu dropdown-menu-end shadow-sm border py-2 rounded-2" style="font-size: 13px;">
-                                @can('basicdata.products.print')
-                                    <li>
-                                        <a class="dropdown-item py-2 d-flex align-items-center gap-2" href="#" onclick="window.print(); return false;">
-                                            <i class="fa-solid fa-print text-muted fs-7"></i>
-                                            <span>@lang('crud.print')</span>
-                                        </a>
-                                    </li>
-                                @endcan
-                                @can('basicdata.products.copy')
-                                    <li>
-                                        <a class="dropdown-item py-2 d-flex align-items-center gap-2 copy-table" href="#" data-target="#db-products-table">
-                                            <i class="fa-solid fa-copy text-muted fs-7"></i>
-                                            <span>نسخ (Copy)</span>
-                                        </a>
-                                    </li>
-                                @endcan
-                                @can('basicdata.products.excel')
-                                    <li>
-                                        <a class="dropdown-item py-2 d-flex align-items-center gap-2" href="{{ route('basicdata.products.excel') }}">
-                                            <i class="fa-solid fa-file-excel text-success fs-7"></i>
-                                            <span>Excel</span>
-                                        </a>
-                                    </li>
-                                @endcan
-                                @can('basicdata.products.pdf')
-                                    <li>
-                                        <a class="dropdown-item py-2 d-flex align-items-center gap-2" href="{{ route('basicdata.products.pdf') }}">
-                                            <i class="fa-solid fa-file-pdf text-danger fs-7"></i>
-                                            <span>PDF</span>
-                                        </a>
-                                    </li>
-                                @endcan
-                            </ul>
-                        </div>
-
-                        <!-- 2. Front Filter Dropdown (Exact Popover Modal) -->
-                        <div class="dropdown">
-                            @php
-                                $activeFiltersCount = (request('name') ? 1 : 0) + (request('status') ? 1 : 0) + (request('type') ? 1 : 0);
-                            @endphp
+                    <!-- Right: Quick Export Buttons (Print, Copy, Excel, PDF) -->
+                    <div class="d-flex align-items-center gap-1">
+                        @can('basicdata.products.print')
                             <button type="button" 
-                                    class="front-btn-filter dropdown-toggle {{ $activeFiltersCount > 0 ? 'show text-primary border-primary' : '' }}" 
-                                    data-bs-toggle="dropdown" 
-                                    data-bs-auto-close="outside"
-                                    aria-expanded="false">
-                                <i class="fa-solid fa-sliders fs-8"></i>
-                                <span>فلترة (Filter)</span>
-                                @if($activeFiltersCount > 0)
-                                    <span class="badge rounded-pill bg-primary text-white fs-9 px-2 py-0">{{ $activeFiltersCount }}</span>
-                                @endif
+                                    class="btn btn-icon btn-sm btn-light border w-34px h-34px rounded-2" 
+                                    onclick="window.print()" 
+                                    title="@lang('crud.print')">
+                                <i class="fa-solid fa-print text-gray-600 fs-7"></i>
                             </button>
+                        @endcan
 
-                            <!-- Front Filter Dropdown Card Body -->
-                            <div class="dropdown-menu dropdown-menu-end front-filter-dropdown">
-                                {!! Form::open(['route' => 'basicdata.products.index', 'method' => 'GET']) !!}
-                                    <!-- Filter Header -->
-                                    <div class="d-flex align-items-center justify-content-between pb-3 mb-3 border-bottom">
-                                        <h5 class="front-filter-title">فلترة المنتجات (Filter)</h5>
-                                        <button type="button" class="btn btn-sm btn-icon btn-ghost-secondary p-0" onclick="this.closest('.dropdown-menu').classList.remove('show')">
-                                            <i class="fa-solid fa-xmark text-muted fs-6"></i>
-                                        </button>
-                                    </div>
+                        @can('basicdata.products.copy')
+                            <button type="button" 
+                                    class="btn btn-icon btn-sm btn-light border w-34px h-34px rounded-2 copy-table" 
+                                    data-target="#db-products-table" 
+                                    title="نسخ">
+                                <i class="fa-solid fa-copy text-gray-600 fs-7"></i>
+                            </button>
+                        @endcan
 
-                                    <!-- Filter: Type Radio/Check -->
-                                    <div class="mb-3">
-                                        <span class="front-filter-section-title">نوع الصنف (TYPE)</span>
-                                        <div class="d-flex align-items-center gap-3">
-                                            <div class="form-check form-check-sm">
-                                                <input class="form-check-input" type="radio" name="type" id="typeAll" value="" {{ !request('type') ? 'checked' : '' }}>
-                                                <label class="form-check-label fs-7 text-gray-700" for="typeAll">الكل</label>
-                                            </div>
-                                            <div class="form-check form-check-sm">
-                                                <input class="form-check-input" type="radio" name="type" id="typeProd" value="1" {{ request('type') == '1' ? 'checked' : '' }}>
-                                                <label class="form-check-label fs-7 text-gray-700" for="typeProd">منتج</label>
-                                            </div>
-                                            <div class="form-check form-check-sm">
-                                                <input class="form-check-input" type="radio" name="type" id="typeServ" value="2" {{ request('type') == '2' ? 'checked' : '' }}>
-                                                <label class="form-check-label fs-7 text-gray-700" for="typeServ">خدمة</label>
-                                            </div>
-                                        </div>
-                                    </div>
+                        @can('basicdata.products.excel')
+                            <a href="{{ route('basicdata.products.excel') }}" 
+                               class="btn btn-icon btn-sm btn-light border w-34px h-34px rounded-2" 
+                               title="Excel">
+                                <i class="fa-solid fa-file-excel text-success fs-7"></i>
+                            </a>
+                        @endcan
 
-                                    <!-- Filter: Status Select -->
-                                    <div class="mb-3">
-                                        <span class="front-filter-section-title">الحالة (STATUS)</span>
-                                        <x-select2-input name="status" :placeholder="__('hr::lang.select_status')" :list="$statuses" :selected_id="request('status')"></x-select2-input>
-                                    </div>
-
-                                    <!-- Filter: Pagination Select -->
-                                    <div class="mb-4">
-                                        <span class="front-filter-section-title">عدد الصفوف (PAGINATION)</span>
-                                        {!! Form::select('pagination', config('statusSystem.pagination'), request('pagination') ?? null, ['class' => 'form-select form-select-sm fs-7']) !!}
-                                    </div>
-
-                                    <!-- Filter Actions -->
-                                    <div class="d-flex gap-2">
-                                        <button type="submit" class="btn btn-primary front-btn-primary w-100 justify-content-center">
-                                            تطبيق (Apply)
-                                        </button>
-                                        @if($activeFiltersCount > 0)
-                                            <a href="{{ route('basicdata.products.index') }}" class="btn btn-light front-btn-filter" title="إعادة تعيين">
-                                                <i class="fa-solid fa-rotate-left fs-8"></i>
-                                            </a>
-                                        @endif
-                                    </div>
-                                {!! Form::close() !!}
-                            </div>
-                        </div>
-
+                        @can('basicdata.products.pdf')
+                            <a href="{{ route('basicdata.products.pdf') }}" 
+                               class="btn btn-icon btn-sm btn-light border w-34px h-34px rounded-2" 
+                               title="PDF">
+                                <i class="fa-solid fa-file-pdf text-danger fs-7"></i>
+                            </a>
+                        @endcan
                     </div>
 
                 </div>
 
-                <!-- Front Table Body -->
+                <!-- 2. Collapsible Advanced Filter Drawer inside the Card -->
+                <div class="collapse {{ request()->hasAny(['status', 'pagination']) ? 'show' : '' }}" id="advancedFilterPanel">
+                    <div class="p-4 border-top border-bottom" style="background: #f8fafc;">
+                        {!! Form::open(['route' => 'basicdata.products.index', 'method' => 'GET']) !!}
+                            <div class="row g-3 align-items-end">
+                                <div class="col-md-4">
+                                    <label class="form-label fs-8 fw-bold text-gray-700">@lang('basicdata::models/db_products.fields.name')</label>
+                                    <input type="text" name="name" value="{{ request('name') }}" class="form-control form-control-sm fs-7" placeholder="اسم الصنف أو الكود" />
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label fs-8 fw-bold text-gray-700">@lang('basicdata::models/db_products.fields.status')</label>
+                                    <x-select2-input name="status" :placeholder="__('hr::lang.select_status')" :list="$statuses" :selected_id="request('status')"></x-select2-input>
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="form-label fs-8 fw-bold text-gray-700">@lang('crud.pagination')</label>
+                                    {!! Form::select('pagination', config('statusSystem.pagination'), request('pagination') ?? null, ['class' => 'form-select form-select-sm fs-7']) !!}
+                                </div>
+                                <div class="col-md-2 d-flex gap-2">
+                                    <button type="submit" class="btn btn-sm btn-primary flex-grow-1">
+                                        <i class="fa-solid fa-filter fs-8"></i> تطبيق
+                                    </button>
+                                    <a href="{{ route('basicdata.products.index') }}" class="btn btn-sm btn-light border" title="إعادة تعيين">
+                                        <i class="fa-solid fa-rotate-left fs-8"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        {!! Form::close() !!}
+                    </div>
+                </div>
+
+                <!-- 3. Integrated Table Component -->
                 @include('basicdata::products.table')
 
             </div>
+            <!-- ============================================================== -->
+            <!-- End Unified Smart Datatable Card -->
             <!-- ============================================================== -->
 
         </div>
