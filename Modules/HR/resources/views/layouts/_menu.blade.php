@@ -11,10 +11,6 @@
         $isHrActive = Route::is('hr.*');
     @endphp
 
-    <div class="line-section-header">
-        <span>@lang('hr::lang.human_resource')</span>
-    </div>
-
     <div x-data="{ open: {{ $isHrActive ? 'true' : 'false' }} }" class="line-menu-item mb-1">
         <button type="button" 
                 @click="open = !open" 

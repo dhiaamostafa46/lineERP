@@ -1,4 +1,8 @@
-{{-- Dashboard Link --}}
+{{-- 1. Main Navigation --}}
+<div class="line-section-header">
+    <span>@lang('lang.dashboard')</span>
+</div>
+
 @can('dashboard')
     <div class="line-menu-item mb-1">
         <a class="line-menu-link {{ Route::is('dashboard') ? 'active-root' : '' }}" href="{{ route('dashboard') }}" wire:navigate>
@@ -15,42 +19,54 @@
 {{-- System Core Modules Included Dynamically --}}
 @if (auth()->user()?->user_type !== 'service_center')
 
-    {{-- 1. Invoices & Sales / Purchases / ZATCA --}}
-    @if (View::exists('invoices::layouts._menu'))
-        @include('invoices::layouts._menu')
+    {{-- 2. Commercial & Supply Chain Modules --}}
+    @if (View::exists('invoices::layouts._menu') || View::exists('store::layouts._menu') || View::exists('pos::layouts._menu'))
+        <div class="line-section-header">
+            <span>المبيعات والمخزون</span>
+        </div>
+
+        @if (View::exists('invoices::layouts._menu'))
+            @include('invoices::layouts._menu')
+        @endif
+
+        @if (View::exists('store::layouts._menu'))
+            @include('store::layouts._menu')
+        @endif
+
+        @if (View::exists('pos::layouts._menu'))
+            @include('pos::layouts._menu')
+        @endif
     @endif
 
-    {{-- 2. Store & Inventory --}}
-    @if (View::exists('store::layouts._menu'))
-        @include('store::layouts._menu')
+    {{-- 3. Accounting & Financial Modules --}}
+    @if (View::exists('accusoft::layouts._menu') || View::exists('finance::layouts._menu'))
+        <div class="line-section-header">
+            <span>الحسابات والمالية</span>
+        </div>
+
+        @if (View::exists('accusoft::layouts._menu'))
+            @include('accusoft::layouts._menu')
+        @endif
+
+        @if (View::exists('finance::layouts._menu'))
+            @include('finance::layouts._menu')
+        @endif
     @endif
 
-    {{-- 3. Point of Sale --}}
-    @if (View::exists('pos::layouts._menu'))
-        @include('pos::layouts._menu')
-    @endif
+    {{-- 4. Administration, HR & System Settings --}}
+    <div class="line-section-header">
+        <span>الإدارة والنظام</span>
+    </div>
 
-    {{-- 4. Accounting & Assets (AccuSoft) --}}
-    @if (View::exists('accusoft::layouts._menu'))
-        @include('accusoft::layouts._menu')
-    @endif
-
-    {{-- 5. Finance & Cash/Banks --}}
-    @if (View::exists('finance::layouts._menu'))
-        @include('finance::layouts._menu')
-    @endif
-
-    {{-- 6. Human Resources (HR) --}}
     @if (View::exists('hr::layouts._menu'))
         @include('hr::layouts._menu')
     @endif
 
-    {{-- 7. Basic Data & Configurations --}}
     @if (View::exists('basicdata::layouts._menu'))
         @include('basicdata::layouts._menu')
     @endif
 
-    {{-- 8. General System Settings & Administration --}}
+    {{-- General System Settings & Administration --}}
     @php
         $isSettingsActive = Route::is([
             'Organization*', 'Templates*', 'Branches*', 'Areas*', 'Cities*', 
@@ -58,10 +74,6 @@
             'DeviceSessions*', 'taxaccounts*', 'settings*'
         ]);
     @endphp
-
-    <div class="line-section-header">
-        <span>@lang('lang.system_settings')</span>
-    </div>
 
     <div x-data="{ open: {{ $isSettingsActive ? 'true' : 'false' }} }" class="line-menu-item mb-1">
         <button type="button" 
@@ -72,7 +84,7 @@
                 <div class="line-icon-badge icon-settings">
                     <i class="fas fa-cog"></i>
                 </div>
-                <span class="line-menu-title">@lang('lang.Settings')</span>
+                <span class="line-menu-title">@lang('lang.system_settings')</span>
             </div>
             <i class="fas fa-chevron-down line-menu-arrow" :class="{ 'rotate-180': open }"></i>
         </button>

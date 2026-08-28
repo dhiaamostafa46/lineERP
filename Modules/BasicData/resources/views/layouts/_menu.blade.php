@@ -10,10 +10,6 @@
         $isBasicDataActive = Route::is('basicdata.*');
     @endphp
 
-    <div class="line-section-header">
-        <span>@lang('basicdata::lang.basicdata')</span>
-    </div>
-
     <div x-data="{ open: {{ $isBasicDataActive ? 'true' : 'false' }} }" class="line-menu-item mb-1">
         <button type="button" 
                 @click="open = !open" 

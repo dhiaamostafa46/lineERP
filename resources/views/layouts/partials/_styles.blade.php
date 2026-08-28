@@ -79,308 +79,6 @@
         }
     }
 
-    /* ==========================================================================
-       LineERP Compact & Ultra-Delicate Professional Design System (#cbdfe6 & #ffffff)
-       ========================================================================== */
-    :root {
-        --kt-app-sidebar-width: 240px !important;
-        --kt-app-sidebar-gap: 240px !important;
-    }
-
-    #kt_app_sidebar {
-        background: #ffffff !important;
-        border-inline-end: 1px solid #cbdfe6 !important;
-        box-shadow: 0 2px 10px rgba(203, 223, 230, 0.25) !important;
-        width: 240px !important;
-    }
-
-    @media (min-width: 992px) {
-        [dir="rtl"] .app-sidebar-fixed .app-wrapper {
-            margin-right: 240px !important;
-            margin-left: 0 !important;
-        }
-
-        [dir="ltr"] .app-sidebar-fixed .app-wrapper {
-            margin-left: 240px !important;
-            margin-right: 0 !important;
-        }
-    }
-
-    .line-sidebar-header {
-        background: #ffffff !important;
-        border-bottom: 1px solid #cbdfe6 !important;
-    }
-
-    /* Header Live Clock Badge & Pulsing Indicator */
-    .badge-dot-live {
-        width: 5px;
-        height: 5px;
-        border-radius: 50%;
-        background: #10B981;
-        display: inline-block;
-        box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
-        animation: livePulse 2s infinite ease-in-out;
-    }
-
-    @keyframes livePulse {
-        0% {
-            transform: scale(0.95);
-            opacity: 0.7;
-        }
-
-        50% {
-            transform: scale(1.2);
-            opacity: 1;
-            box-shadow: 0 0 6px #10B981;
-        }
-
-        100% {
-            transform: scale(0.95);
-            opacity: 0.7;
-        }
-    }
-
-    /* Custom Sleek Ultra-Thin Scrollbar */
-    .line-custom-scroll {
-        scrollbar-width: thin;
-        scrollbar-color: #cbdfe6 transparent;
-    }
-
-    .line-custom-scroll::-webkit-scrollbar {
-        width: 4px;
-        height: 4px;
-    }
-
-    .line-custom-scroll::-webkit-scrollbar-track {
-        background: transparent;
-    }
-
-    .line-custom-scroll::-webkit-scrollbar-thumb {
-        background: #cbdfe6;
-        border-radius: 10px;
-        transition: background 0.2s ease;
-    }
-
-    .line-custom-scroll:hover::-webkit-scrollbar-thumb {
-        background: #9bbbc5;
-    }
-
-    .line-sidebar-menu {
-        padding: 0.25rem 0.35rem;
-    }
-
-    .line-section-header {
-        font-size: 0.65rem;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.6px;
-        color: #70939f;
-        margin: 0.75rem 0.35rem 0.2rem 0.35rem;
-        display: flex;
-        align-items: center;
-        gap: 0.4rem;
-    }
-
-    .line-section-header::after {
-        content: "";
-        flex: 1;
-        height: 1px;
-        background: linear-gradient(90deg, #cbdfe6, transparent);
-    }
-
-    .line-menu-btn,
-    .line-menu-link {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        width: 100%;
-        min-height: 35px;
-        padding: 0.35rem 0.55rem;
-        margin-bottom: 0.15rem;
-        border-radius: 0.45rem;
-        background: transparent;
-        border: 1px solid transparent;
-        color: #2C3E50;
-        text-decoration: none;
-        transition: all 0.15s ease-in-out;
-        cursor: pointer;
-        user-select: none;
-    }
-
-    .line-menu-btn:hover,
-    .line-menu-link:hover {
-        background: rgba(203, 223, 230, 0.4);
-        color: #1B325B;
-    }
-
-    .line-menu-link.active-root,
-    .line-menu-btn.active-parent {
-        background: linear-gradient(135deg, #cbdfe6 0%, #eef5f7 100%) !important;
-        border: 1px solid #b2d3dc !important;
-        color: #1B325B !important;
-        font-weight: 700;
-    }
-
-    .line-icon-badge {
-        width: 24px;
-        height: 24px;
-        min-width: 24px;
-        border-radius: 0.35rem;
-        background: #f0f6f8;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 0.8rem;
-        transition: all 0.15s ease;
-        border: 1px solid #cbdfe6;
-    }
-
-    /* Standard Distinct Tints */
-    .icon-dashboard {
-        color: #0284C7;
-    }
-
-    .icon-invoices {
-        color: #059669;
-    }
-
-    .icon-store {
-        color: #D97706;
-    }
-
-    .icon-pos {
-        color: #E11D48;
-    }
-
-    .icon-accounting {
-        color: #4F46E5;
-    }
-
-    .icon-finance {
-        color: #0891B2;
-    }
-
-    .icon-hr {
-        color: #7C3AED;
-    }
-
-    .icon-basicdata {
-        color: #8B5CF6;
-    }
-
-    .icon-settings {
-        color: #475569;
-    }
-
-    .line-menu-link.active-root .line-icon-badge,
-    .line-menu-btn.active-parent .line-icon-badge,
-    .line-menu-btn:hover .line-icon-badge,
-    .line-menu-link:hover .line-icon-badge {
-        background: #1B325B !important;
-        color: #ffffff !important;
-        border-color: #1B325B !important;
-    }
-
-    .line-menu-title {
-        font-size: 0.79rem;
-        font-weight: 600;
-        color: inherit;
-    }
-
-    .line-menu-arrow {
-        font-size: 0.62rem;
-        transition: transform 0.2s ease;
-        color: #8daab4;
-    }
-
-    .line-menu-arrow.rotate-180 {
-        transform: rotate(180deg);
-        color: #1B325B;
-    }
-
-    .line-submenu {
-        margin-inline-start: 0.75rem;
-        padding-inline-start: 0.6rem;
-        border-inline-start: 1.5px solid #cbdfe6;
-        margin-top: 0.15rem;
-        margin-bottom: 0.25rem;
-        display: flex;
-        flex-direction: column;
-        gap: 0.1rem;
-    }
-
-    .line-sub-item {
-        display: flex;
-        align-items: center;
-        gap: 0.45rem;
-        min-height: 28px;
-        padding: 0.25rem 0.45rem;
-        border-radius: 0.35rem;
-        color: #47636e;
-        font-size: 0.75rem;
-        font-weight: 500;
-        text-decoration: none;
-        transition: all 0.15s ease;
-    }
-
-    .line-sub-item:hover {
-        background: rgba(203, 223, 230, 0.4);
-        color: #1B325B;
-        padding-inline-start: 0.65rem;
-    }
-
-    .line-sub-dot {
-        width: 4px;
-        height: 4px;
-        min-width: 4px;
-        border-radius: 50%;
-        background: #9bbbc5;
-        transition: all 0.15s ease;
-    }
-
-    .line-sub-item:hover .line-sub-dot {
-        background: #1B325B;
-    }
-
-    .line-sub-item.active-sub {
-        background: #cbdfe6 !important;
-        color: #1B325B !important;
-        font-weight: 700;
-    }
-
-    .line-sub-item.active-sub .line-sub-dot {
-        background: #1B325B;
-        box-shadow: 0 0 3px #1B325B;
-    }
-
-    /* Sidebar Footer User Card */
-    .line-sidebar-footer {
-        background: #f7fafb;
-        border-top: 1px solid #cbdfe6;
-    }
-
-    .line-user-avatar {
-        width: 26px;
-        height: 26px;
-        min-width: 26px;
-        border-radius: 50%;
-        background: linear-gradient(135deg, #1B325B 0%, #3B82F6 100%);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: #FFFFFF;
-        font-weight: 700;
-        font-size: 0.72rem;
-    }
-
-    .status-dot-online {
-        width: 6px;
-        height: 6px;
-        border-radius: 50%;
-        background: #10B981;
-        display: inline-block;
-    }
-
     body {
         background-color: var(--bs-body-bg);
         color: var(--bs-text-primary);
@@ -1244,6 +942,214 @@
         .table-action {
             display: none !important;
         }
+    }
+
+    /* ==========================================================================
+       LineERP Enterprise SaaS Design System (Clean, High-Contrast & Pixel-Perfect)
+       ========================================================================== */
+    :root {
+        --kt-app-sidebar-width: 260px !important;
+        --kt-app-sidebar-gap: 260px !important;
+    }
+
+    #kt_app_sidebar {
+        background: #ffffff !important;
+        border-inline-end: 1px solid #e2e8f0 !important;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03) !important;
+        width: 260px !important;
+    }
+
+    @media (min-width: 992px) {
+        [dir="rtl"] .app-sidebar-fixed .app-wrapper {
+            margin-right: 260px !important;
+            margin-left: 0 !important;
+        }
+        [dir="ltr"] .app-sidebar-fixed .app-wrapper {
+            margin-left: 260px !important;
+            margin-right: 0 !important;
+        }
+    }
+
+    /* Custom Sleek Scrollbar */
+    .line-custom-scroll {
+        scrollbar-width: thin;
+        scrollbar-color: #cbd5e1 transparent;
+    }
+
+    .line-custom-scroll::-webkit-scrollbar {
+        width: 5px;
+        height: 5px;
+    }
+
+    .line-custom-scroll::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .line-custom-scroll::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 10px;
+    }
+
+    .line-custom-scroll:hover::-webkit-scrollbar-thumb {
+        background: #94a3b8;
+    }
+
+    .line-sidebar-menu {
+        padding: 0.5rem 0.6rem;
+    }
+
+    .line-section-header {
+        font-size: 11px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        color: #94a3b8;
+        margin: 16px 8px 6px 8px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .line-section-header::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: #f1f5f9;
+    }
+
+    .line-menu-btn, .line-menu-link {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        min-height: 40px;
+        padding: 6px 10px;
+        margin-bottom: 2px;
+        border-radius: 8px;
+        background: transparent;
+        border: 1px solid transparent;
+        color: #334155;
+        text-decoration: none;
+        transition: all 0.15s ease-in-out;
+        cursor: pointer;
+        user-select: none;
+    }
+
+    .line-menu-btn:hover, .line-menu-link:hover {
+        background: #f8fafc;
+        color: #1d4ed8;
+        border-color: #e2e8f0;
+    }
+
+    .line-menu-link.active-root, .line-menu-btn.active-parent {
+        background: #eff6ff !important;
+        border-color: #bfdbfe !important;
+        color: #1d4ed8 !important;
+        font-weight: 700;
+    }
+
+    .line-icon-badge {
+        width: 28px;
+        height: 28px;
+        min-width: 28px;
+        border-radius: 6px;
+        background: #f1f5f9;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+        color: #64748b;
+        transition: all 0.15s ease;
+    }
+
+    .line-menu-link.active-root .line-icon-badge,
+    .line-menu-btn.active-parent .line-icon-badge,
+    .line-menu-btn:hover .line-icon-badge,
+    .line-menu-link:hover .line-icon-badge {
+        background: #2563eb !important;
+        color: #ffffff !important;
+    }
+
+    .line-menu-title {
+        font-size: 13.5px;
+        font-weight: 600;
+        color: inherit;
+    }
+
+    .line-menu-arrow {
+        font-size: 10px;
+        transition: transform 0.2s ease;
+        color: #94a3b8;
+    }
+
+    .line-menu-arrow.rotate-180 {
+        transform: rotate(180deg);
+        color: #1d4ed8;
+    }
+
+    .line-submenu {
+        margin-inline-start: 14px;
+        padding-inline-start: 10px;
+        border-inline-start: 2px solid #e2e8f0;
+        margin-top: 2px;
+        margin-bottom: 4px;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+    }
+
+    .line-sub-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        min-height: 32px;
+        padding: 4px 10px;
+        border-radius: 6px;
+        color: #64748b;
+        font-size: 13px;
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.15s ease;
+    }
+
+    .line-sub-item:hover {
+        background: #f8fafc;
+        color: #1d4ed8;
+        padding-inline-start: 14px;
+    }
+
+    .line-sub-dot {
+        width: 5px;
+        height: 5px;
+        min-width: 5px;
+        border-radius: 50%;
+        background: #cbd5e1;
+        transition: all 0.15s ease;
+    }
+
+    .line-sub-item:hover .line-sub-dot {
+        background: #2563eb;
+    }
+
+    .line-sub-item.active-sub {
+        background: #eff6ff !important;
+        color: #1d4ed8 !important;
+        font-weight: 700;
+    }
+
+    .line-sub-item.active-sub .line-sub-dot {
+        background: #2563eb;
+        box-shadow: 0 0 4px #2563eb;
+    }
+
+    [x-cloak] {
+        display: none !important;
+    }
+
+    body {
+        background-color: var(--bs-body-bg);
+        color: var(--bs-text-primary);
+        font-family: 'Cairo', sans-serif !important;
     }
 
     /* ==========================================================================

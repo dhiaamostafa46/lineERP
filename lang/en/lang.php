@@ -29,6 +29,7 @@ return [
     'logoutMsg' => 'Successfully logged out',
     'no' => 'No',
     'Settings' => 'Settings',
+    'system_settings' => 'System Settings',
     'companies_and_contracts' => 'Companies & contracts',
     'openly' => 'open',
     'closely' => 'close',

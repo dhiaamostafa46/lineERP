@@ -27,6 +27,7 @@ return [
     'logoutMsg' => 'تم تسجيل الخروج بنجاح',
     'no' => 'لا',
     'Settings' => 'الاعدادات',
+    'system_settings' => 'إعدادات النظام',
     'companies_and_contracts' => 'الشركات والعقود',
     'pending' => 'قيد الانتظار',
     'rejected' => 'مرفوض',
