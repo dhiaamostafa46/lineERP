@@ -38,13 +38,20 @@ class DbProductController extends AppBaseController
      */
     public function index(Request $request)
     {
-        $data['products'] = $this->dbProductRepository->allQuery($request->except('pagination'))->latest()->paginate(10);
-        // يمكنك إضافة بيانات أخرى هنا مثل الفئات
+        $pagination = $request->get('pagination', 10);
+        $data['products'] = $this->dbProductRepository->allQuery($request->except('pagination'))->latest()->paginate($pagination);
+        
         $data['categories'] = $this->dbProductRepository->Categories();
         $data['vats'] = $this->dbProductRepository->vats();
         $data['statuses'] = $this->dbProductRepository->statuses();
         $data['units'] = $this->dbProductRepository->units();
         $data['types'] = $this->dbProductRepository->types();
+
+        // Front Dashboard Top KPI Stats
+        $data['totalProductsCount'] = $this->dbProductRepository->getModel()->count();
+        $data['activeProductsCount'] = $this->dbProductRepository->getModel()->where('status', 1)->count();
+        $data['servicesCount'] = $this->dbProductRepository->getModel()->where('type', 2)->count();
+        $data['categoriesCount'] = count($data['categories']);
 
         return view('basicdata::products.index', $data);
     }

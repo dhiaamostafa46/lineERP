@@ -156,6 +156,50 @@
         --front-danger: #ed4c78;
     }
 
+    /* ── Front Dashboard KPI / Stat Cards ────────────────────────────── */
+    .front-stat-card {
+        background: #ffffff !important;
+        border: 1px solid #e7eaf3 !important;
+        border-radius: 0.75rem !important;
+        padding: 1.25rem !important;
+        box-shadow: 0 0.375rem 0.75rem rgba(140, 152, 164, 0.05) !important;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .front-stat-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 0.5rem 1rem rgba(140, 152, 164, 0.1) !important;
+    }
+
+    .front-stat-title {
+        font-size: 0.6875rem !important;
+        font-weight: 700 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.05rem !important;
+        color: #8c98a4 !important;
+        margin-bottom: 0.5rem !important;
+    }
+
+    .front-stat-value {
+        font-size: 1.65rem !important;
+        font-weight: 700 !important;
+        color: #1e2022 !important;
+        line-height: 1 !important;
+    }
+
+    .front-stat-subtext {
+        font-size: 0.8125rem !important;
+        color: #8c98a4 !important;
+        margin-inline-start: 0.35rem !important;
+    }
+
+    .front-stat-badge {
+        font-size: 0.75rem !important;
+        font-weight: 600 !important;
+        padding: 0.2rem 0.45rem !important;
+        border-radius: 0.375rem !important;
+    }
+
     /* ── Front Dashboard Smart Datatable Card ────────────────────────── */
     .front-card {
         background: #ffffff !important;
