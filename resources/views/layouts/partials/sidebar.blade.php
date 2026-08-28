@@ -1,7 +1,7 @@
 <div id="kt_app_sidebar" class="app-sidebar flex-column no-print" data-kt-drawer="true" data-kt-drawer-name="app-sidebar"
-    data-kt-drawer-activate="{default: true, lg: false}" data-kt-drawer-overlay="true" data-kt-drawer-width="240px"
+    data-kt-drawer-activate="{default: true, lg: false}" data-kt-drawer-overlay="true" data-kt-drawer-width="280px"
     data-kt-drawer-direction="start" data-kt-drawer-toggle="#kt_app_sidebar_mobile_toggle"
-    style="width: 240px;">
+    style="width: 280px;">
     
     <!--begin::Sidebar Header / Logo-->
     <div class="line-sidebar-header d-flex align-items-center justify-content-between px-5 py-3" id="kt_app_sidebar_logo">

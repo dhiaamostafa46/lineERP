@@ -79,13 +79,29 @@
     }
 
     /* ==========================================================================
-       LineERP Standard Compact Accounting & ERP Design System (#cbdfe6 & #ffffff)
+       LineERP Standard Wide & Enhanced Typography ERP Design System (#cbdfe6 & #ffffff)
        ========================================================================== */
+    :root {
+        --kt-app-sidebar-width: 280px !important;
+        --kt-app-sidebar-gap: 280px !important;
+    }
+
     #kt_app_sidebar {
         background: #ffffff !important;
         border-inline-end: 1px solid #cbdfe6 !important;
         box-shadow: 0 4px 20px rgba(203, 223, 230, 0.35) !important;
-        width: 240px !important;
+        width: 280px !important;
+    }
+
+    @media (min-width: 992px) {
+        [dir="rtl"] .app-sidebar-fixed .app-wrapper {
+            margin-right: 280px !important;
+            margin-left: 0 !important;
+        }
+        [dir="ltr"] .app-sidebar-fixed .app-wrapper {
+            margin-left: 280px !important;
+            margin-right: 0 !important;
+        }
     }
 
     .line-sidebar-header {
@@ -100,8 +116,8 @@
     }
 
     .line-custom-scroll::-webkit-scrollbar {
-        width: 4px;
-        height: 4px;
+        width: 5px;
+        height: 5px;
     }
 
     .line-custom-scroll::-webkit-scrollbar-track {
@@ -119,19 +135,19 @@
     }
 
     .line-sidebar-menu {
-        padding: 0.25rem 0.35rem;
+        padding: 0.35rem 0.5rem;
     }
 
     .line-section-header {
-        font-size: 0.65rem;
+        font-size: 0.74rem;
         font-weight: 700;
         text-transform: uppercase;
         letter-spacing: 0.7px;
         color: #70939f;
-        margin: 0.85rem 0.4rem 0.25rem 0.4rem;
+        margin: 1rem 0.5rem 0.35rem 0.5rem;
         display: flex;
         align-items: center;
-        gap: 0.4rem;
+        gap: 0.5rem;
     }
 
     .line-section-header::after {
@@ -146,10 +162,10 @@
         align-items: center;
         justify-content: space-between;
         width: 100%;
-        min-height: 38px;
-        padding: 0.4rem 0.6rem;
-        margin-bottom: 0.15rem;
-        border-radius: 0.5rem;
+        min-height: 42px;
+        padding: 0.5rem 0.75rem;
+        margin-bottom: 0.2rem;
+        border-radius: 0.55rem;
         background: transparent;
         border: 1px solid transparent;
         color: #2C3E50;
@@ -172,15 +188,15 @@
     }
 
     .line-icon-badge {
-        width: 28px;
-        height: 28px;
-        min-width: 28px;
-        border-radius: 0.4rem;
+        width: 32px;
+        height: 32px;
+        min-width: 32px;
+        border-radius: 0.45rem;
         background: #f0f6f8;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 0.85rem;
+        font-size: 0.95rem;
         transition: all 0.15s ease;
         border: 1px solid #cbdfe6;
     }
@@ -206,13 +222,13 @@
     }
 
     .line-menu-title {
-        font-size: 0.81rem;
+        font-size: 0.92rem;
         font-weight: 600;
         color: inherit;
     }
 
     .line-menu-arrow {
-        font-size: 0.65rem;
+        font-size: 0.72rem;
         transition: transform 0.2s ease;
         color: #8daab4;
     }
@@ -223,25 +239,25 @@
     }
 
     .line-submenu {
-        margin-inline-start: 0.85rem;
-        padding-inline-start: 0.65rem;
-        border-inline-start: 1.5px solid #cbdfe6;
-        margin-top: 0.15rem;
-        margin-bottom: 0.25rem;
+        margin-inline-start: 1rem;
+        padding-inline-start: 0.75rem;
+        border-inline-start: 2px solid #cbdfe6;
+        margin-top: 0.2rem;
+        margin-bottom: 0.35rem;
         display: flex;
         flex-direction: column;
-        gap: 0.1rem;
+        gap: 0.15rem;
     }
 
     .line-sub-item {
         display: flex;
         align-items: center;
-        gap: 0.5rem;
-        min-height: 30px;
-        padding: 0.35rem 0.55rem;
-        border-radius: 0.4rem;
+        gap: 0.6rem;
+        min-height: 35px;
+        padding: 0.4rem 0.65rem;
+        border-radius: 0.45rem;
         color: #47636e;
-        font-size: 0.78rem;
+        font-size: 0.86rem;
         font-weight: 500;
         text-decoration: none;
         transition: all 0.15s ease;
@@ -250,12 +266,13 @@
     .line-sub-item:hover {
         background: rgba(203, 223, 230, 0.4);
         color: #1B325B;
+        padding-inline-start: 0.85rem;
     }
 
     .line-sub-dot {
-        width: 5px;
-        height: 5px;
-        min-width: 5px;
+        width: 6px;
+        height: 6px;
+        min-width: 6px;
         border-radius: 50%;
         background: #9bbbc5;
         transition: all 0.15s ease;
@@ -263,6 +280,7 @@
 
     .line-sub-item:hover .line-sub-dot {
         background: #1B325B;
+        transform: scale(1.2);
     }
 
     .line-sub-item.active-sub {
@@ -273,7 +291,8 @@
 
     .line-sub-item.active-sub .line-sub-dot {
         background: #1B325B;
-        box-shadow: 0 0 3px #1B325B;
+        box-shadow: 0 0 4px #1B325B;
+        transform: scale(1.3);
     }
 
     /* Sidebar Footer User Card */
@@ -283,9 +302,9 @@
     }
 
     .line-user-avatar {
-        width: 28px;
-        height: 28px;
-        min-width: 28px;
+        width: 32px;
+        height: 32px;
+        min-width: 32px;
         border-radius: 50%;
         background: linear-gradient(135deg, #1B325B 0%, #3B82F6 100%);
         display: flex;
@@ -293,12 +312,12 @@
         justify-content: center;
         color: #FFFFFF;
         font-weight: 700;
-        font-size: 0.75rem;
+        font-size: 0.82rem;
     }
 
     .status-dot-online {
-        width: 7px;
-        height: 7px;
+        width: 8px;
+        height: 8px;
         border-radius: 50%;
         background: #10B981;
         display: inline-block;
