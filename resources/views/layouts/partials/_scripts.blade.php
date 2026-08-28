@@ -671,7 +671,116 @@
     })();
 </script>
 
-<script>
+<script data-navigate-once>
+    // Universal SPA Link Navigator & Hover Prefetching
+    (function() {
+        var isNavigating = false;
+
+        // 1. Intercept all internal standard link clicks for seamless SPA navigation
+        document.addEventListener('click', function(event) {
+            var link = event.target.closest('a');
+            if (!link) return;
+
+            // Ignore if default prevented or modified click (Ctrl/Cmd/Shift/Alt/middle click)
+            if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
+                return;
+            }
+
+            // Ignore links marked with target="_blank", download, or no-navigate flags
+            if (link.target === '_blank' || link.hasAttribute('download') || link.hasAttribute('wire:navigate.ignore') || link.hasAttribute('data-no-navigate') || link.hasAttribute('data-kt-image-input-action')) {
+                return;
+            }
+
+            var href = link.getAttribute('href');
+            if (!href || href === '#' || href.startsWith('javascript:') || href.startsWith('mailto:') || href.startsWith('tel:')) {
+                return;
+            }
+
+            // Parse URL to check domain and path
+            try {
+                var url = new URL(link.href, window.location.origin);
+                if (url.origin !== window.location.origin) {
+                    return; // External URL
+                }
+
+                var pathname = url.pathname.toLowerCase();
+                // Exclude logout, switch-lang, direct file downloads/exports, or swagger docs
+                if (pathname.includes('/logout') || pathname.includes('/switchlang') || pathname.includes('/switch-lang') || pathname.includes('/export') || pathname.includes('/download') || pathname.includes('/api/documentation')) {
+                    return;
+                }
+
+                // If link doesn't already have wire:navigate, navigate via Livewire SPA
+                if (!link.hasAttribute('wire:navigate') && typeof Livewire !== 'undefined' && Livewire.navigate) {
+                    event.preventDefault();
+                    Livewire.navigate(link.href);
+                }
+            } catch (e) {}
+        });
+
+        // 2. Prefetch on Hover for ultra-fast instant page transitions
+        var prefetchTimeout;
+        document.addEventListener('mouseover', function(event) {
+            var link = event.target.closest('a');
+            if (!link) return;
+
+            var href = link.getAttribute('href');
+            if (!href || href === '#' || href.startsWith('javascript:') || link.target === '_blank' || link.hasAttribute('download')) {
+                return;
+            }
+
+            clearTimeout(prefetchTimeout);
+            prefetchTimeout = setTimeout(function() {
+                try {
+                    var url = new URL(link.href, window.location.origin);
+                    if (url.origin === window.location.origin && typeof Livewire !== 'undefined' && Livewire.prefetch) {
+                        var pathname = url.pathname.toLowerCase();
+                        if (!pathname.includes('/logout') && !pathname.includes('/switchlang') && !pathname.includes('/export')) {
+                            Livewire.prefetch(link.href);
+                        }
+                    }
+                } catch (e) {}
+            }, 65);
+        });
+
+        // 3. Smart SweetAlert2 Delete Confirmation Interceptor for all Delete forms
+        document.addEventListener('submit', function(event) {
+            var form = event.target;
+            if (!form) return;
+
+            var methodInput = form.querySelector('input[name="_method"]');
+            var isDeleteForm = (methodInput && methodInput.value.toUpperCase() === 'DELETE');
+
+            if (isDeleteForm && !form.dataset.confirmed && typeof Swal !== 'undefined') {
+                event.preventDefault();
+
+                var confirmTitle = @json(__('messages.confirm_Del_title') !== 'messages.confirm_Del_title' ? __('messages.confirm_Del_title') : 'هل أنت متأكد من الحذف؟');
+                var confirmText = @json(__('messages.confirm_Del_text') !== 'messages.confirm_Del_text' ? __('messages.confirm_Del_text') : 'لن تتمكن من استرجاع هذا السجل بعد الحذف!');
+                var confirmBtn = @json(__('messages.confirm_Del_btn') !== 'messages.confirm_Del_btn' ? __('messages.confirm_Del_btn') : 'نعم، احذف');
+                var cancelBtn = @json(__('messages.cancel_btn') !== 'messages.cancel_btn' ? __('messages.cancel_btn') : 'إلغاء');
+
+                Swal.fire({
+                    title: confirmTitle,
+                    text: confirmText,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: confirmBtn,
+                    cancelButtonText: cancelBtn,
+                    customClass: {
+                        confirmButton: 'btn btn-danger',
+                        cancelButton: 'btn btn-secondary'
+                    },
+                    buttonsStyling: false,
+                    reverseButtons: true
+                }).then(function(result) {
+                    if (result.isConfirmed) {
+                        form.dataset.confirmed = "true";
+                        form.submit();
+                    }
+                });
+            }
+        });
+    })();
+
     // Livewire 3 SPA Navigation Lifecycle Handler
     document.addEventListener('livewire:navigated', function () {
         // 1. Re-initialize Metronic UI Components
