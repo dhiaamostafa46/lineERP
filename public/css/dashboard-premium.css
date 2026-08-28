@@ -1,0 +1,445 @@
+/* ==========================================================================
+   Evix ERP Premium Executive Dashboard Stylesystem
+   ========================================================================== */
+
+:root {
+    --evix-navy: #1B325B;
+    --evix-navy-light: #2C436F;
+    --evix-navy-dark: #122240;
+    --evix-purple: #685E99;
+    --evix-purple-light: #8E84BF;
+    --evix-purple-dark: #4D4475;
+    --evix-green: #86B36B;
+    --evix-green-light: #A5CE8D;
+    --evix-green-dark: #2D6A4F;
+    
+    --bg-card: #ffffff;
+    --border-card: #e2e8f0;
+    --shadow-card: 0 1px 3px rgba(27, 50, 91, 0.04), 0 1px 2px rgba(27, 50, 91, 0.02);
+    --shadow-hover: 0 4px 14px rgba(27, 50, 91, 0.08);
+}
+
+[data-bs-theme="dark"] {
+    --evix-navy: #f1f5f9;
+    --evix-navy-light: #cbd5e1;
+    --evix-navy-dark: #8E84BF;
+    --evix-purple: #a59ad6;
+    --evix-purple-light: #c4bbf0;
+    --evix-purple-dark: #685E99;
+    --evix-green: #86B36B;
+    --evix-green-light: #A5CE8D;
+    --evix-green-dark: #3ba779;
+    
+    --bg-card: #1e293b;
+    --border-card: #334155;
+    --shadow-card: 0 4px 12px rgba(0, 0, 0, 0.3);
+    --shadow-hover: 0 8px 25px rgba(0, 0, 0, 0.4);
+}
+
+/* Helper Brand Typography */
+.text-brand-navy {
+    color: #1B325B;
+}
+.text-brand-purple {
+    color: #685E99;
+}
+.text-brand-green {
+    color: #2D6A4F;
+}
+
+[data-bs-theme="dark"] .text-brand-navy {
+    color: #F8FAFC !important;
+}
+[data-bs-theme="dark"] .text-brand-purple {
+    color: #C4BBF0 !important;
+}
+[data-bs-theme="dark"] .text-brand-green {
+    color: #86B36B !important;
+}
+
+/* Universal Dark Mode Attribute Adapters */
+[data-bs-theme="dark"] [style*="color: #1B325B"],
+[data-bs-theme="dark"] [style*="color:#1B325B"],
+[data-bs-theme="dark"] [style*="color: #1b325b"],
+[data-bs-theme="dark"] [style*="color:#1b325b"],
+[data-bs-theme="dark"] [style*="color: #1b365d"],
+[data-bs-theme="dark"] [style*="color:#1b365d"],
+[data-bs-theme="dark"] [style*="color: #1E2B50"],
+[data-bs-theme="dark"] [style*="color:#1E2B50"],
+[data-bs-theme="dark"] [style*="color: #334155"],
+[data-bs-theme="dark"] [style*="color:#334155"],
+[data-bs-theme="dark"] [style*="color: #1e293b"],
+[data-bs-theme="dark"] [style*="color:#1e293b"],
+[data-bs-theme="dark"] [style*="color: #0f172a"],
+[data-bs-theme="dark"] [style*="color:#0f172a"],
+[data-bs-theme="dark"] [style*="color: black"],
+[data-bs-theme="dark"] [style*="color: #000"],
+[data-bs-theme="dark"] [style*="color:#000"] {
+    color: #f8fafc !important;
+}
+
+[data-bs-theme="dark"] [style*="color: #685E99"],
+[data-bs-theme="dark"] [style*="color:#685E99"],
+[data-bs-theme="dark"] [style*="color: #6A669D"],
+[data-bs-theme="dark"] [style*="color:#6A669D"] {
+    color: #c4bbf0 !important;
+}
+
+[data-bs-theme="dark"] [style*="color: #2D6A4F"],
+[data-bs-theme="dark"] [style*="color:#2D6A4F"],
+[data-bs-theme="dark"] [style*="color: #2e8b57"],
+[data-bs-theme="dark"] [style*="color:#2e8b57"] {
+    color: #86B36B !important;
+}
+
+[data-bs-theme="dark"] [style*="color: #d97706"],
+[data-bs-theme="dark"] [style*="color:#d97706"],
+[data-bs-theme="dark"] [style*="color: #F59E0B"],
+[data-bs-theme="dark"] [style*="color:#F59E0B"] {
+    color: #fbbf24 !important;
+}
+
+[data-bs-theme="dark"] [style*="background: rgba(27, 50, 91"],
+[data-bs-theme="dark"] [style*="background:rgba(27, 50, 91"] {
+    background: rgba(142, 132, 191, 0.20) !important;
+    color: #f8fafc !important;
+}
+
+[data-bs-theme="dark"] [style*="background: rgba(104, 94, 153"],
+[data-bs-theme="dark"] [style*="background:rgba(104, 94, 153"] {
+    background: rgba(104, 94, 153, 0.28) !important;
+    color: #f8fafc !important;
+}
+
+[data-bs-theme="dark"] [style*="background: rgba(134, 179, 107"],
+[data-bs-theme="dark"] [style*="background:rgba(134, 179, 107"] {
+    background: rgba(134, 179, 107, 0.22) !important;
+    color: #f8fafc !important;
+}
+
+[data-bs-theme="dark"] [style*="background: rgba(217, 119, 6"],
+[data-bs-theme="dark"] [style*="background:rgba(217, 119, 6"] {
+    background: rgba(217, 119, 6, 0.22) !important;
+    color: #fbbf24 !important;
+}
+
+[data-bs-theme="dark"] [style*="background: #ffffff"],
+[data-bs-theme="dark"] [style*="background:#ffffff"],
+[data-bs-theme="dark"] [style*="background-color: #ffffff"],
+[data-bs-theme="dark"] [style*="background-color:#ffffff"] {
+    background-color: #1e293b !important;
+    border-color: #334155 !important;
+}
+
+/* Main Dashboard Layout Tweaks */
+.dashboard-container {
+    max-width: 100% !important;
+    padding-left: 1.5rem !important;
+    padding-right: 1.5rem !important;
+}
+
+/* Card Architecture */
+.dash-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-card);
+    border-radius: 1rem;
+    box-shadow: var(--shadow-card);
+    transition: all 0.25s ease;
+    overflow: hidden;
+    position: relative;
+}
+
+.dash-card:hover {
+    box-shadow: var(--shadow-hover);
+    border-color: #cbd5e1;
+}
+
+/* Header Cards Styling */
+.dash-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.dash-card-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--evix-navy);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* KPI Stat Cards */
+.kpi-card-inner {
+    padding: 1.25rem 1.4rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+}
+
+.kpi-title-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+}
+
+.kpi-label {
+    font-size: 0.825rem;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.kpi-icon-wrapper {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+}
+
+.kpi-value-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+}
+
+.kpi-num {
+    font-size: 1.65rem;
+    font-weight: 800;
+    color: #1b365d;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+}
+
+.kpi-currency {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #94a3b8;
+    margin-right: 0.25rem;
+}
+
+.kpi-spark-container {
+    height: 42px;
+    width: 100%;
+    margin-top: 0.25rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.kpi-spark-container svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+/* Tables in Panels */
+.dash-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.dash-table th {
+    background: #f8fafc;
+    color: #475569;
+    font-size: 0.775rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    padding: 0.65rem 0.9rem;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.dash-table td {
+    padding: 0.75rem 0.9rem;
+    font-size: 0.85rem;
+    border-bottom: 1px solid #f1f5f9;
+    vertical-align: middle;
+}
+
+.dash-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.dash-table tbody tr:hover td {
+    background: #f8fafc;
+}
+
+/* Timeline Custom Component */
+.activity-timeline {
+    position: relative;
+    padding-right: 1.5rem;
+}
+
+.activity-timeline::before {
+    content: '';
+    position: absolute;
+    right: 7px;
+    top: 6px;
+    bottom: 6px;
+    width: 2px;
+    background: #e2e8f0;
+}
+
+.activity-item {
+    position: relative;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+}
+
+.activity-item:last-child {
+    margin-bottom: 0;
+}
+
+.activity-dot {
+    position: absolute;
+    right: -1.5rem;
+    top: 4px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 2px solid #ffffff;
+    box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.05);
+}
+
+.activity-content {
+    flex-grow: 1;
+    padding-right: 0.5rem;
+}
+
+.activity-title {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: #1e293b;
+}
+
+.activity-sub {
+    font-size: 0.775rem;
+    color: #64748b;
+}
+
+.activity-time {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #94a3b8;
+    white-space: nowrap;
+}
+
+/* Badge Enhancements */
+.badge-pill-soft {
+    border-radius: 50rem;
+    padding: 0.35em 0.8em;
+    font-weight: 700;
+    font-size: 0.75rem;
+}
+
+/* ApexCharts Overrides for Perfection */
+.apexcharts-canvas {
+    margin: 0 auto;
+}
+
+.apexcharts-legend {
+    padding: 0 !important;
+}
+
+.apexcharts-tooltip {
+    border-radius: 8px !important;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Dark Mode Dashboard Perfection */
+[data-bs-theme="dark"] .dash-card,
+[data-bs-theme="dark"] .card {
+    background-color: #1e293b !important;
+    border-color: #334155 !important;
+}
+
+[data-bs-theme="dark"] .kpi-num {
+    color: #f1f5f9 !important;
+}
+
+[data-bs-theme="dark"] .activity-dot {
+    border-color: #1e293b !important;
+}
+
+[data-bs-theme="dark"] .activity-title {
+    color: #f1f5f9 !important;
+}
+
+[data-bs-theme="dark"] .activity-timeline::before {
+    background: #334155 !important;
+}
+
+[data-bs-theme="dark"] .top-product-item {
+    background: #151e2e !important;
+    border-color: #334155 !important;
+}
+
+[data-bs-theme="dark"] .progress {
+    background-color: #334155 !important;
+}
+
+[data-bs-theme="dark"] .apexcharts-tooltip {
+    background: #1e293b !important;
+    border-color: #334155 !important;
+    color: #f1f5f9 !important;
+}
+
+[data-bs-theme="dark"] .apexcharts-tooltip-title {
+    background: #182234 !important;
+    border-bottom: 1px solid #334155 !important;
+    color: #f1f5f9 !important;
+}
+
+[data-bs-theme="dark"] .apexcharts-text tspan {
+    fill: #94a3b8 !important;
+}
+
+[data-bs-theme="dark"] .apexcharts-gridline {
+    stroke: #334155 !important;
+}
+
+[data-bs-theme="dark"] .apexcharts-radialbar-track path {
+    stroke: #182234 !important;
+}
+
+/* Dashboard Responsive Tweaks */
+@media (max-width: 991.98px) {
+    .dash-card-header {
+        padding: 1rem 1.2rem;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .dashboard-container {
+        padding-left: 0.5rem !important;
+        padding-right: 0.5rem !important;
+    }
+    .kpi-num {
+        font-size: 1.35rem;
+    }
+    .kpi-card-inner {
+        padding: 1rem 1rem;
+    }
+    .kpi-label {
+        font-size: 0.75rem;
+    }
+    .dash-card {
+        border-radius: 0.75rem;
+    }
+}

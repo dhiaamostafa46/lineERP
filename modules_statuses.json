@@ -1,0 +1,9 @@
+{
+    "HR": true,
+    "BasicData": true,
+    "Store": true,
+    "AccuSoft": true,
+    "Finance": true,
+    "Invoices": true,
+    "Pos": true
+}

@@ -1,0 +1,123 @@
+/* Variables */
+:root {
+    --brown: #192de0;
+    --dark_brown: #4f3502;
+    --light_brown: #d9d4be;
+    --beige: #f2f1ec;
+    --White: #ffffff;
+    --gold: #ccb86a;
+}
+
+/* End Variables */
+
+/* General */
+body {
+    background-color: var(--beige);
+}
+
+.aside-menu {
+    color: var(--beige);
+    background-size: cover;
+    background-color: var(--brown);
+    background-blend-mode: overlay;
+}
+
+.aside-fixed .aside,
+.brand {
+    background-color: var(--dark_brown);
+}
+
+.text-primary {
+    color: var(--dark_brown) !important;
+}
+
+.aside-menu .menu-nav>.menu-item:not(.menu-item-parent):not(.menu-item-open):not(.menu-item-here):not(.menu-item-active):hover>.menu-heading,
+.aside-menu .menu-nav>.menu-item:not(.menu-item-parent):not(.menu-item-open):not(.menu-item-here):not(.menu-item-active):hover>.menu-link,
+.aside-menu .menu-nav>.menu-item.menu-item-active>.menu-heading,
+.aside-menu .menu-nav>.menu-item.menu-item-active>.menu-link,
+.aside-menu .menu-nav>.menu-item.menu-item-open>.menu-heading,
+.aside-menu .menu-nav>.menu-item.menu-item-open>.menu-link,
+.aside-menu .menu-nav>.menu-item .menu-submenu .menu-item.menu-item-active>.menu-heading,
+.aside-menu .menu-nav>.menu-item .menu-submenu .menu-item.menu-item-active>.menu-link,
+.aside-menu .menu-nav>.menu-item .menu-submenu .menu-item:not(.menu-item-parent):not(.menu-item-open):not(.menu-item-here):not(.menu-item-active):hover>.menu-heading,
+.aside-menu .menu-nav>.menu-item .menu-submenu .menu-item:not(.menu-item-parent):not(.menu-item-open):not(.menu-item-here):not(.menu-item-active):hover>.menu-link {
+    background-color: var(--beige);
+}
+
+.aside-menu .menu-nav>.menu-item:not(.menu-item-parent):not(.menu-item-open):not(.menu-item-here):not(.menu-item-active):hover>.menu-heading .menu-text,
+.aside-menu .menu-nav>.menu-item:not(.menu-item-parent):not(.menu-item-open):not(.menu-item-here):not(.menu-item-active):hover>.menu-link .menu-text,
+.aside-menu .menu-nav>.menu-item.menu-item-active>.menu-heading .menu-text,
+.aside-menu .menu-nav>.menu-item.menu-item-active>.menu-link .menu-text,
+.aside-menu .menu-nav>.menu-item .menu-submenu .menu-item.menu-item-active>.menu-heading .menu-text,
+.aside-menu .menu-nav>.menu-item .menu-submenu .menu-item.menu-item-active>.menu-link .menu-text,
+.aside-menu .menu-nav>.menu-item.menu-item-open>.menu-heading .menu-text,
+.aside-menu .menu-nav>.menu-item.menu-item-open>.menu-link .menu-text,
+.aside-menu .menu-nav>.menu-item .menu-submenu .menu-item:not(.menu-item-parent):not(.menu-item-open):not(.menu-item-here):not(.menu-item-active):hover>.menu-heading .menu-text,
+.aside-menu .menu-nav>.menu-item .menu-submenu .menu-item:not(.menu-item-parent):not(.menu-item-open):not(.menu-item-here):not(.menu-item-active):hover>.menu-link .menu-text,
+a,
+.navi .navi-item .navi-link:hover,
+.navi .navi-item .navi-link:hover .navi-text {
+    color: var(--brown);
+}
+
+.btn.btn-primary,
+.btn.btn-primary:hover:not(.btn-text):not(:disabled):not(.disabled),
+.btn.btn-primary:focus:not(.btn-text),
+.btn.btn-primary.focus:not(.btn-text) {
+    color: var(--White);
+    background-color: var(--dark_brown);
+    border-color: var(--brown);
+}
+
+thead {
+    background-color: var(--light_brown);
+}
+
+.aside-menu .menu-nav>.menu-item .menu-submenu .menu-item.menu-item-active>.menu-heading .menu-icon.svg-icon svg g [fill],
+.aside-menu .menu-nav>.menu-item .menu-submenu .menu-item.menu-item-active>.menu-link .menu-icon.svg-icon svg g [fill],
+.aside-menu .menu-nav>.menu-item>.menu-heading .menu-icon.svg-icon svg g [fill],
+.aside-menu .menu-nav>.menu-item>.menu-link .menu-icon.svg-icon svg g [fill],
+.aside-menu .menu-nav>.menu-item .menu-submenu .menu-item>.menu-heading .menu-icon.svg-icon svg g [fill],
+.aside-menu .menu-nav>.menu-item .menu-submenu .menu-item>.menu-link .menu-icon.svg-icon svg g [fill],
+.aside-menu .menu-nav>.menu-item:not(.menu-item-parent):not(.menu-item-open):not(.menu-item-here):not(.menu-item-active):hover>.menu-heading .menu-icon.svg-icon svg g [fill],
+.aside-menu .menu-nav>.menu-item:not(.menu-item-parent):not(.menu-item-open):not(.menu-item-here):not(.menu-item-active):hover>.menu-link .menu-icon.svg-icon svg g [fill],
+.aside-menu .menu-nav>.menu-item .menu-submenu .menu-item:not(.menu-item-parent):not(.menu-item-open):not(.menu-item-here):not(.menu-item-active):hover>.menu-heading .menu-icon.svg-icon svg g [fill],
+.aside-menu .menu-nav>.menu-item .menu-submenu .menu-item:not(.menu-item-parent):not(.menu-item-open):not(.menu-item-here):not(.menu-item-active):hover>.menu-link .menu-icon.svg-icon svg g [fill],
+.aside-menu .menu-nav>.menu-item.menu-item-active>.menu-heading .menu-icon.svg-icon svg g [fill],
+.aside-menu .menu-nav>.menu-item.menu-item-active>.menu-link .menu-icon.svg-icon svg g [fill],
+.svg-icon.svg-icon-primary svg g [fill],
+.brand .btn .svg-icon svg g [fill] {
+    fill: var(--gold) !important;
+}
+
+.aside-menu .menu-nav>.menu-item.menu-item-open>.menu-heading .menu-icon,
+.aside-menu .menu-nav>.menu-item.menu-item-open>.menu-link .menu-icon,
+.aside-menu .menu-nav>.menu-item>.menu-heading .menu-icon,
+.aside-menu .menu-nav>.menu-item>.menu-link .menu-icon,
+.aside-menu .menu-nav>.menu-item:not(.menu-item-parent):not(.menu-item-open):not(.menu-item-here):not(.menu-item-active):hover>.menu-heading .menu-icon,
+.aside-menu .menu-nav>.menu-item:not(.menu-item-parent):not(.menu-item-open):not(.menu-item-here):not(.menu-item-active):hover>.menu-link .menu-icon,
+.aside-menu .menu-nav>.menu-item>.menu-heading .menu-text,
+.aside-menu .menu-nav>.menu-item>.menu-link .menu-text {
+    color: var(--gold);
+}
+
+/* End General */
+
+
+
+/* Show Fields */
+
+.show.row .form-group {
+    background-color: var(--beige);
+    padding: .8rem;
+    border: 1rem solid var(--White);
+    text-align: center;
+    vertical-align: middle;
+    margin: 0;
+}
+
+.form-group label {
+    margin: 0;
+}
+
+/* End Show Fields */

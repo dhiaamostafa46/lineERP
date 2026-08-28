@@ -1,0 +1,41 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        if (\Illuminate\Support\Facades\DB::getDriverName() !== 'sqlite') {
+            if (Schema::hasTable('sales_invoice_items')) {
+                Schema::table('sales_invoice_items', function (Blueprint $table) {
+                    $table->dropForeign(['product_id']);
+                });
+            }
+
+            if (Schema::hasTable('purchase_invoice_items')) {
+                Schema::table('purchase_invoice_items', function (Blueprint $table) {
+                    $table->dropForeign(['product_id']);
+                });
+            }
+
+            if (Schema::hasTable('purchase_order_items')) {
+                Schema::table('purchase_order_items', function (Blueprint $table) {
+                    $table->dropForeign(['product_id']);
+                });
+            }
+        }
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+    }
+};

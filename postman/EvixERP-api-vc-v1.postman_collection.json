@@ -1,0 +1,655 @@
+{
+	"info": {
+		"_postman_id": "evix-erp-vc-v1-api",
+		"name": "EvixERP — VC Mobile API (v1)",
+		"description": "All endpoints under `api/vc/v1/` (Vehicles module).\n\n**Setup**\n1. Import this collection and `EvixERP-api-vc-v1.postman_environment.json`.\n2. Set `base_url` (e.g. `http://localhost:8000`).\n3. Run **Auth → Login**; the test script saves `access_token` for protected requests.\n\n**Lang:** `ar` or `en` in path `{{lang}}`.\n\n**Auth:** Sanctum Bearer token. Public routes: login, register (stub), OTP, reset password.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{access_token}}",
+				"type": "string"
+			}
+		]
+	},
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8000"
+		},
+		{
+			"key": "lang",
+			"value": "ar"
+		},
+		{
+			"key": "access_token",
+			"value": ""
+		},
+		{
+			"key": "vehicle_id",
+			"value": "1"
+		},
+		{
+			"key": "driver_id",
+			"value": "1"
+		}
+	],
+	"item": [
+		{
+			"name": "Auth (public)",
+			"description": "No Bearer token required.",
+			"auth": {
+				"type": "noauth"
+			},
+			"item": [
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const json = pm.response.json();",
+									"if (json.access_token) {",
+									"    pm.collectionVariables.set('access_token', json.access_token);",
+									"    pm.environment.set('access_token', json.access_token);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"type\": \"supervisor\",\n  \"phone\": \"0500000000\",\n  \"password\": \"password\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/vc/v1/auth/login/{{lang}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "vc", "v1", "auth", "login", "{{lang}}"]
+						},
+						"description": "`type`: `driver` | `supervisor`. Returns `access_token` on success (`status_code`: `00`)."
+					},
+					"response": []
+				},
+				{
+					"name": "Register",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/vc/v1/auth/register/{{lang}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "vc", "v1", "auth", "register", "{{lang}}"]
+						},
+						"description": "Route is registered; controller method may not be implemented yet."
+					},
+					"response": []
+				},
+				{
+					"name": "Send OTP",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"type\": \"supervisor\",\n  \"phone\": \"0500000000\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/vc/v1/auth/sendOTP/{{lang}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "vc", "v1", "auth", "sendOTP", "{{lang}}"]
+						},
+						"description": "Sends 4-digit OTP for password reset."
+					},
+					"response": []
+				},
+				{
+					"name": "Verify OTP",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"type\": \"supervisor\",\n  \"phone\": \"0500000000\",\n  \"code\": \"1234\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/vc/v1/auth/verifyOTP/{{lang}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "vc", "v1", "auth", "verifyOTP", "{{lang}}"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Reset Password",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"type\": \"supervisor\",\n  \"phone\": \"0500000000\",\n  \"code\": \"1234\",\n  \"password\": \"newpass123\",\n  \"password_confirmation\": \"newpass123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/vc/v1/auth/resetPassword/{{lang}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "vc", "v1", "auth", "resetPassword", "{{lang}}"]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Auth (Sanctum)",
+			"description": "Requires Bearer `{{access_token}}` from Login.",
+			"item": [
+				{
+					"name": "Change Password",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"old_password\": \"password\",\n  \"new_password\": \"newpass123\",\n  \"new_password_confirmation\": \"newpass123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/vc/v1/auth/changePassword/{{lang}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "vc", "v1", "auth", "changePassword", "{{lang}}"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.unset('access_token');",
+									"pm.environment.unset('access_token');"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/vc/v1/auth/logout/{{lang}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "vc", "v1", "auth", "logout", "{{lang}}"]
+						},
+						"description": "Revokes all tokens for the user."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Handover",
+			"description": "Supervisor handover flows. Assign requires `user_type=supervisor` and managed store.",
+			"item": [
+				{
+					"name": "Check Items",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/vc/v1/handover/CheckItems/{{lang}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "vc", "v1", "handover", "CheckItems", "{{lang}}"]
+						},
+						"description": "Active check-up items with statuses (localized)."
+					},
+					"response": []
+				},
+				{
+					"name": "Vehicles (store)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/vc/v1/handover/vehicles/{{lang}}?isReturn=false",
+							"host": ["{{base_url}}"],
+							"path": ["api", "vc", "v1", "handover", "vehicles", "{{lang}}"],
+							"query": [
+								{
+									"key": "isReturn",
+									"value": "false",
+									"description": "false = available (assign); true = active (return flow)"
+								}
+							]
+						},
+						"description": "Vehicles in supervisor's store. Default: available status."
+					},
+					"response": []
+				},
+				{
+					"name": "Drivers",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/vc/v1/handover/drivers/{{lang}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "vc", "v1", "handover", "drivers", "{{lang}}"]
+						},
+						"description": "Active drivers with active company reference."
+					},
+					"response": []
+				},
+				{
+					"name": "Assign Handover",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const json = pm.response.json();",
+									"if (json.data && json.data.vehicle_id) {",
+									"    pm.collectionVariables.set('vehicle_id', String(json.data.vehicle_id));",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"vehicle_id\": {{vehicle_id}},\n  \"driver_id\": {{driver_id}},\n  \"driver_ref\": \"\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/vc/v1/handover/asign/{{lang}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "vc", "v1", "handover", "asign", "{{lang}}"]
+						},
+						"description": "Supervisor only. Creates handover (`status=1` NEW), sets vehicle to pending. Omit or empty `driver_ref` to use active ref."
+					},
+					"response": []
+				},
+				{
+					"name": "My Requests (driver — handover)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/vc/v1/handover/my-requests/{{lang}}?type=1",
+							"host": ["{{base_url}}"],
+							"path": ["api", "vc", "v1", "handover", "my-requests", "{{lang}}"],
+							"query": [
+								{
+									"key": "type",
+									"value": "1",
+									"description": "1=handover (assign), 2=return"
+								}
+							]
+						},
+						"description": "Driver only. Lists NEW requests assigned to logged-in driver (`drivers.user_id`). Login with type=driver."
+					},
+					"response": []
+				},
+				{
+					"name": "My Requests (driver — return)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/vc/v1/handover/my-requests/{{lang}}?type=2",
+							"host": ["{{base_url}}"],
+							"path": ["api", "vc", "v1", "handover", "my-requests", "{{lang}}"],
+							"query": [
+								{
+									"key": "type",
+									"value": "2",
+									"description": "1=handover, 2=return"
+								}
+							]
+						},
+						"description": "Same endpoint as handover list; filter type=2 for return requests."
+					},
+					"response": []
+				},
+				{
+					"name": "Receive Handover (driver — complete)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "handover_id",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "checkup_items",
+									"value": "[{\"checkup_item_id\":1,\"item_status_id\":1,\"notes\":\"\"},{\"checkup_item_id\":2,\"item_status_id\":4}]",
+									"type": "text",
+									"description": "JSON array — all active items from CheckItems (no duplicates)"
+								},
+								{
+									"key": "otometer",
+									"value": "50000",
+									"type": "text"
+								},
+								{
+									"key": "fuel_level",
+									"value": "75",
+									"type": "text"
+								},
+								{
+									"key": "needs_maintenance",
+									"value": "0",
+									"type": "text"
+								},
+								{
+									"key": "has_damage",
+									"value": "0",
+									"type": "text"
+								},
+								{
+									"key": "driver_notes",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "notes",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "front_image",
+									"type": "file",
+									"src": []
+								},
+								{
+									"key": "back_image",
+									"type": "file",
+									"src": []
+								},
+								{
+									"key": "left_image",
+									"type": "file",
+									"src": []
+								},
+								{
+									"key": "right_image",
+									"type": "file",
+									"src": []
+								},
+								{
+									"key": "odometer_image",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/api/vc/v1/handover/asign_recive/{{lang}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "vc", "v1", "handover", "asign_recive", "{{lang}}"]
+						},
+						"description": "Driver only. Multipart form-data. Updates handover status from NEW (1) to PENDING (2). Requires 5 images + checkup_items JSON (all active CheckItems)."
+					},
+					"response": []
+				},
+				{
+					"name": "Current Vehicle (driver)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/vc/v1/handover/current-vehicle/{{lang}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "vc", "v1", "handover", "current-vehicle", "{{lang}}"]
+						},
+						"description": "Driver only. vehicle_id from active vc_delegations for auth driver (user_id)."
+					},
+					"response": []
+				},
+				{
+					"name": "Start Return (driver)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"vehicle_id\": {{vehicle_id}}\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/vc/v1/handover/return/{{lang}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "vc", "v1", "handover", "return", "{{lang}}"]
+						},
+						"description": "Driver only. Body: vehicle_id only. Driver/ref from token. type=2, status=NEW. Vehicle stays ACTIVE."
+					},
+					"response": []
+				},
+				{
+					"name": "Store Returns (supervisor — inbox)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/vc/v1/handover/returns/{{lang}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "vc", "v1", "handover", "returns", "{{lang}}"]
+						},
+						"description": "Supervisor only. NEW return requests in managed store."
+					},
+					"response": []
+				},
+				{
+					"name": "Receive Return (supervisor — complete)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "handover_id",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "checkup_items",
+									"value": "[{\"checkup_item_id\":1,\"item_status_id\":1,\"notes\":\"\"},{\"checkup_item_id\":2,\"item_status_id\":4}]",
+									"type": "text",
+									"description": "JSON array — all active items from CheckItems"
+								},
+								{
+									"key": "otometer",
+									"value": "50000",
+									"type": "text"
+								},
+								{
+									"key": "fuel_level",
+									"value": "75",
+									"type": "text"
+								},
+								{
+									"key": "driver_notes",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "front_image",
+									"type": "file",
+									"src": []
+								},
+								{
+									"key": "back_image",
+									"type": "file",
+									"src": []
+								},
+								{
+									"key": "left_image",
+									"type": "file",
+									"src": []
+								},
+								{
+									"key": "right_image",
+									"type": "file",
+									"src": []
+								},
+								{
+									"key": "odometer_image",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/api/vc/v1/handover/return_recive/{{lang}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "vc", "v1", "handover", "return_recive", "{{lang}}"]
+						},
+						"description": "Supervisor only. NEW → PENDING. Vehicle status unchanged. Requires checkup_items JSON + 5 images."
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

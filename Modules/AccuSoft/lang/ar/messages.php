@@ -1,0 +1,45 @@
+<?php
+
+return [
+
+    'retrieved' => 'تم جلب :model بنجاح.',
+    'saved'     => 'تم حفظ :model بنجاح.',
+    'updated'   => 'تم تعديل :model بنجاح.',
+    'deleted'   => 'تم حذف :model بنجاح.',
+    'not_found' => 'لم يتم العثور على :model.',
+    'cannot_delete_costcenter_has_children' => 'لا يمكن حذف مركز التكلفة لأنه يحتوي على مراكز فرعية.',
+    'cannot_delete_costcenter_has_journals' => 'لا يمكن حذف مركز التكلفة لأنه مرتبط بقيود محاسبية.',
+    'cannot_delete_account_has_children' => 'لا يمكن حذف الحساب لأنه يحتوي على حسابات فرعية.',
+    'cannot_delete_account_has_journals' => 'لا يمكن حذف الحساب لأنه مرتبط بقيود محاسبية.',
+    'cannot_delete_account_used_in_table' => 'لا يمكن حذف الحساب لأنه مستخدم في جدول :table',
+    'confirm_delete_account' => 'هل أنت متأكد من رغبتك في حذف هذا الحساب؟',
+    'confirm_delete_costcenter' => 'هل أنت متأكد من رغبتك في حذف مركز التكلفة هذا؟',
+    'success' => 'نجاح',
+    'error' => 'خطأ',
+    'ok' => 'حسناً',
+    'cannot_delete' => 'عذراً، لا يمكن الحذف',
+    'delete_error_occurred' => 'حدث خطأ أثناء الحذف',
+
+    // Assets
+    'asset_depreciation_success' => 'تم إنشاء إهلاك الأصل بنجاح وتوليد القيد المحاسبي.',
+    'asset_depreciation_failed' => 'تعذر إجراء الإهلاك. قد يكون الأصل مهلكاً بالكامل أو قيمته التخريدية تمنع ذلك.',
+    'error_prefix' => 'خطأ: ',
+    'asset_disposal_success' => 'تم استبعاد الأصل بنجاح وتوليد القيود اللازمة.',
+    'depreciation_run_closed' => 'تم إغلاق الإهلاك لهذا الشهر مسبقاً.',
+    'depreciation_run_success' => 'تم إنشاء دورة الإهلاك المجمعة بنجاح بقيمة :value',
+    'depreciate_asset' => 'إهلاك الأصل',
+    'depreciation_date' => 'تاريخ الإهلاك',
+    'depreciation_note' => 'سيتم حساب قيمة الإهلاك وإنشاء قيد محاسبي آلياً.',
+    'execute_depreciation' => 'تنفيذ الإهلاك',
+    'depreciate' => 'إهلاك',
+    'cannot_delete_category_has_assets' => 'لا يمكن حذف هذه الفئة لوجود أصول ثابتة مرتبطة بها.',
+
+    'dispose_asset_title' => 'استبعاد / تخريد الأصل الثابت',
+    'dispose_asset_subtitle' => 'إقفال الأصل :name في الدفاتر المحاسبية وتوليد قيود الاستبعاد.',
+    'accounting_warning' => 'تحذير محاسبي',
+    'dispose_warning_message' => 'هذا الإجراء سيقوم بتصفير التكلفة التاريخية ومجمع الإهلاك للأصل في الميزانية، وحساب الأرباح أو الخسائر الرأسمالية وإصدار قيد يومية معتمد بشكل آلي. لا يمكن التراجع عن هذه الخطوة!',
+    'confirm_dispose' => 'تأكيد الاستبعاد',
+    'manual_depreciation_title' => 'إهلاك يدوي للأصل',
+    'manual_depreciation_subtitle' => 'تسجيل قسط إهلاك يدوي للأصل :name',
+    'record_depreciation' => 'تسجيل الإهلاك',
+];

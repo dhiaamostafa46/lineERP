@@ -1,0 +1,3094 @@
+<div class="template-builder-container" dir="{{ app()->getLocale() == 'ar' ? 'rtl' : 'ltr' }}">
+    <style>
+        .template-builder-container {
+            display: flex;
+            flex-direction: column;
+            height: calc(100vh - 120px);
+            font-family: 'Cairo', sans-serif;
+            overflow: hidden;
+            gap: 15px;
+        }
+
+        .tb-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #ffffff;
+            padding: 15px 25px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            z-index: 10;
+        }
+
+        .tb-header-title {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: #1f2937;
+        }
+
+        .tb-header-controls {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .tb-btn {
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            border: 1px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .tb-btn-primary {
+            background-color: #3b82f6;
+            color: white;
+        }
+
+        .tb-btn-primary:hover {
+            background-color: #2563eb;
+        }
+
+        .tb-btn-outline {
+            background-color: transparent;
+            border-color: #d1d5db;
+            color: #374151;
+        }
+
+        .tb-btn-outline:hover {
+            background-color: #f9fafb;
+        }
+
+        .tb-input {
+            padding: 8px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            outline: none;
+        }
+
+        .tb-input:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+        }
+
+        .tb-main {
+            display: flex;
+            flex-direction: row-reverse;
+            flex: 1;
+            height: calc(100vh - 180px);
+            min-height: 500px;
+            overflow: hidden;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+            border: 1px solid #e4e6ef;
+        }
+
+        /* Preview Area */
+        .tb-preview-area {
+            flex: 1;
+            min-width: 0;
+            padding: 0;
+            overflow: auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: stretch;
+            background: none;
+        }
+
+        flex: 1;
+        min-width: 0;
+        padding: 40px;
+        overflow-y: auto;
+        overflow-x: auto;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+        background-color: #f1f3f7;
+        background-image: radial-gradient(#e4e6ef 1.5px, transparent 1.5px);
+        background-size: 24px 24px;
+        }
+
+        /* Sidebar Area - System Design (White skin, dark text, gray borders) */
+        .tb-sidebar {
+            width: 340px;
+            min-width: 340px;
+            max-width: 340px;
+            flex-shrink: 0;
+            background-color: #ffffff;
+            color: #181c32;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            padding-bottom: 50px;
+            box-shadow: -2px 0 10px rgba(0, 0, 0, 0.02);
+        }
+
+        [dir="rtl"] .tb-sidebar {
+            border-left: 1px solid #e4e6ef;
+            border-right: none !important;
+        }
+
+        [dir="ltr"] .tb-sidebar {
+            border-right: 1px solid #e4e6ef;
+            border-left: none !important;
+        }
+
+        .tb-sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .tb-sidebar::-webkit-scrollbar-track {
+            background: #f1f1f4;
+        }
+
+        .tb-sidebar::-webkit-scrollbar-thumb {
+            background: #cdcdde;
+            border-radius: 3px;
+        }
+
+        .tb-sidebar::-webkit-scrollbar-thumb:hover {
+            background: #a1a1b5;
+        }
+
+        #kt_app_toolbar {
+            background: #ffffff !important;
+            border-bottom: 1px solid #e4e6ef !important;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02) !important;
+            border-radius: 8px;
+            padding: 10px 20px !important;
+        }
+
+        #kt_app_toolbar .form-control,
+        #kt_app_toolbar .form-select {
+            border: 1px solid #dbdfe9 !important;
+            background-color: #f9f9f9 !important;
+            color: #181c32 !important;
+            font-size: 0.9rem !important;
+            border-radius: 6px !important;
+            transition: all 0.2s ease !important;
+        }
+
+        #kt_app_toolbar .form-control:focus,
+        #kt_app_toolbar .form-select:focus {
+            border-color: #3b82f6 !important;
+            background-color: #ffffff !important;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1) !important;
+        }
+
+        #kt_app_toolbar .form-check-input {
+            border: 1px solid #d1d5db !important;
+            cursor: pointer;
+        }
+
+        #kt_app_toolbar .form-check-input:checked {
+            background-color: #3b82f6 !important;
+            border-color: #3b82f6 !important;
+        }
+
+        #kt_app_toolbar .btn-outline-dark {
+            border: 1px solid #dbdfe9 !important;
+            color: #4b5563 !important;
+            background-color: #ffffff !important;
+            transition: all 0.2s ease !important;
+            border-radius: 6px !important;
+            font-weight: 600 !important;
+        }
+
+        #kt_app_toolbar .btn-outline-dark:hover {
+            background-color: #f9fafb !important;
+            border-color: #d1d5db !important;
+            color: #1f2937 !important;
+        }
+
+        #kt_app_toolbar .btn-dark {
+            border: 1px solid #2563eb !important;
+            color: #ffffff !important;
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important;
+            transition: all 0.2s ease !important;
+            border-radius: 6px !important;
+            font-weight: 600 !important;
+            box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2) !important;
+        }
+
+        #kt_app_toolbar .btn-dark:hover {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%) !important;
+            border-color: #1d4ed8 !important;
+            box-shadow: 0 4px 6px rgba(37, 99, 235, 0.3) !important;
+            transform: translateY(-1px);
+        }
+
+        .tb-sidebar-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid #e4e6ef;
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #181c32;
+            background-color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .tb-section {
+            border-bottom: 1px solid #e4e6ef;
+            transition: all 0.2s ease;
+        }
+
+        .tb-section-title {
+            padding: 16px 20px;
+            font-weight: 700;
+            color: #4b5563;
+            font-size: 0.95rem;
+            background-color: #fcfdfe;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.2s ease;
+        }
+
+        .tb-section-title:hover {
+            background-color: #f8fafc;
+            color: #3b82f6;
+        }
+
+        .tb-toggle-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 20px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            border-bottom: 1px solid #f8fafc;
+        }
+
+        .tb-toggle-row:hover {
+            background-color: #f8fafc;
+        }
+
+        .tb-toggle-label {
+            font-size: 0.9rem;
+            color: #374151;
+            font-weight: 500;
+        }
+
+        /* Toggle switch */
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 44px;
+            height: 24px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #e4e6ef;
+            transition: .4s;
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked+.slider {
+            background-color: #3b82f6;
+            /* system primary blue */
+        }
+
+        input:checked+.slider:before {
+            transform: translateX(20px);
+        }
+
+        /* Select inputs in sidebar */
+        .tb-sidebar-select {
+            background-color: #ffffff;
+            color: #181c32;
+            border: 1px solid #dbdfe9;
+            border-radius: 6px;
+            padding: 8px 12px;
+            width: 100%;
+            margin-top: 5px;
+            outline: none;
+            font-size: 0.85rem;
+            transition: border-color 0.2s;
+        }
+
+        .tb-sidebar-select:focus {
+            border-color: #3b82f6;
+        }
+
+        .tb-sidebar-input {
+            background-color: #ffffff;
+            color: #181c32;
+            border: 1px solid #dbdfe9;
+            border-radius: 6px;
+            padding: 8px 12px;
+            width: 100%;
+            margin-top: 5px;
+            outline: none;
+            box-sizing: border-box;
+            font-size: 0.85rem;
+            transition: border-color 0.2s;
+        }
+
+        .tb-sidebar-input:focus {
+            border-color: #3b82f6;
+        }
+
+
+        /* Invoice Preview Styles */
+        .invoice-preview-wrapper {
+            width: 100%;
+            height: auto;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        transition: all 0.3s ease;
+        }
+
+        .invoice-a4 {
+            width: 21cm;
+            min-height: 29.7cm;
+            padding: 1cm;
+            background: white;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            color: #000;
+            box-sizing: border-box;
+        }
+
+        .invoice-thermal {
+            width: 80mm;
+            min-height: 100mm;
+            padding: 5mm;
+            background: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            color: #000;
+            box-sizing: border-box;
+        }
+
+        /* Saudi Invoice Styling from invoicetemplate4k & invoicetemplatesimple */
+        .saudi-invoice {
+            background: #fff;
+            font-family: 'Cairo', 'Arial', sans-serif;
+            color: #000;
+            padding: 10px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .invoice-border {
+            border: 2px solid #000;
+            padding: 20px;
+            border-radius: 0;
+        }
+
+        .invoice-thermal .invoice-border {
+            border: none;
+            padding: 0;
+        }
+
+        .line-divider {
+            border-top: 1px solid #000;
+            margin: 15px 0;
+        }
+
+        .invoice-thermal .line-divider {
+            border-top: 1px dashed #000;
+            margin: 10px 0;
+        }
+
+        .table-zatca {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .invoice-thermal .table-zatca {
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+
+        .table-zatca th {
+            border: 1px solid #000;
+            background: #f0f0f0 !important;
+            padding: 10px;
+            font-weight: bold;
+            text-align: center;
+            font-size: 0.85rem;
+            color: #000;
+        }
+
+        .invoice-thermal .table-zatca th {
+            border: none;
+            border-top: 1px dashed #000;
+            border-bottom: 1px dashed #000;
+            background: transparent !important;
+            padding: 6px 2px;
+            font-size: 0.8rem;
+        }
+
+        .table-zatca td {
+            border: 1px solid #000;
+            padding: 10px;
+            text-align: center;
+            vertical-align: middle;
+            font-size: 0.85rem;
+        }
+
+        .invoice-thermal .table-zatca td {
+            border: none;
+            border-bottom: 1px dotted #ddd;
+            padding: 6px 2px;
+            font-size: 0.8rem;
+        }
+
+        .qr-container {
+            border: 1px solid #000;
+            padding: 0;
+            width: 160px;
+            height: 160px;
+            display: inline-block;
+            background: #fff;
+            box-sizing: border-box;
+        }
+
+        .invoice-thermal .qr-container {
+            border: none;
+            width: 120px;
+            height: 120px;
+            margin: 10px auto;
+            display: block;
+        }
+
+        .qr-container svg,
+        .qr-container img {
+            width: 100% !important;
+            height: 100% !important;
+        }
+
+        .data-label {
+            font-weight: bold;
+            font-size: 0.80rem;
+        }
+
+        .invoice-thermal .data-label {
+            font-size: 0.75rem;
+        }
+
+        .data-value {
+            font-size: 0.90rem;
+        }
+
+        .invoice-thermal .data-value {
+            font-size: 0.75rem;
+        }
+
+        .bg-row {
+            background: #f9f9f9;
+        }
+
+        .text-right {
+            text-align: right !important;
+        }
+
+        .text-left {
+            text-align: left !important;
+        }
+
+        .text-center {
+            text-align: center !important;
+        }
+    </style>
+
+    <!-- Header/Toolbar - Modern Clean Design -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center bg-light p-4 rounded mb-5"
+        style="border: 1px solid #eff2f5;">
+        <!-- Controls (Right side in RTL) -->
+        <div class="d-flex align-items-center gap-4 flex-wrap">
+            <!-- Template Name -->
+            <div class="position-relative">
+                <input type="text" wire:model="name" class="form-control form-control-solid w-250px fw-bold"
+                    placeholder="{{ __('models/Templates.builder.name') }}"
+                    style="background-color: #ffffff; border: 1px solid #dbdfe9;">
+            </div>
+
+            <!-- Format Select -->
+            <div class="position-relative">
+                <select wire:model.live="print_format" class="form-select form-select-solid w-150px fw-bold"
+                    style="background-color: #ffffff; border: 1px solid #dbdfe9;">
+                    <option value="A4">{{ __('models/Templates.formats.A4') }}</option>
+                    <option value="thermal">{{ __('models/Templates.formats.thermal') }}</option>
+                </select>
+            </div>
+
+            <!-- Default checkbox -->
+            <div class="form-check form-check-custom form-check-solid">
+                <input class="form-check-input" type="checkbox" wire:model="is_default" id="is_default_check"
+                    style="cursor: pointer;">
+                <label class="form-check-label fw-bold text-gray-700" for="is_default_check" style="cursor: pointer;">
+                    {{ __('models/Templates.builder.default') }}
+                </label>
+            </div>
+        </div>
+
+
+        <!-- Actions (Left side in RTL) -->
+        <div class="d-flex align-items-center gap-3 mt-3 mt-md-0">
+            @if (session()->has('message'))
+                <span class="text-success fw-bold me-3">{{ session('message') }}</span>
+            @endif
+            {{-- <button class="btn btn-sm btn-secondary fw-bold"
+                onclick="window.location.href='{{ route('Templates.index') }}'">{{ __('models/Templates.builder.cancel')
+                }}</button>
+            --}}
+            <button class="btn btn-sm btn-primary fw-bold" wire:click="save">
+                <i class="fa fa-save fs-4"></i> {{ __('models/Templates.builder.save') }}
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="tb-main">
+        <!-- Live Preview -->
+        <div class="tb-preview-area"
+            style="flex-direction: column; align-items: stretch; justify-content: flex-start; overflow-y: auto; overflow-x: auto; min-width: 0;">
+
+            <style>
+                /* Template Selector Styles */
+                .template-selector-container {
+                    margin-bottom: 25px;
+                    width: 100%;
+                    background: #ffffff;
+                    padding: 20px;
+                    border-radius: 12px;
+                    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+                    border: 1px solid #e4e6ef;
+                }
+
+                .ts-title {
+                    font-size: 1.1rem;
+                    font-weight: 700;
+                    color: #181c32;
+                    margin-bottom: 15px;
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                }
+
+                .ts-grid {
+                    display: flex;
+                    gap: 16px;
+                    overflow-x: auto;
+                    padding-bottom: 12px;
+                }
+
+                .ts-grid::-webkit-scrollbar {
+                    height: 6px;
+                }
+
+                .ts-grid::-webkit-scrollbar-track {
+                    background: #f1f1f4;
+                }
+
+                .ts-grid::-webkit-scrollbar-thumb {
+                    background: #cdcdde;
+                    border-radius: 3px;
+                }
+
+                .ts-card {
+                    flex: 0 0 150px;
+                    border: 1px solid #dbdfe9;
+                    border-radius: 10px;
+                    padding: 12px;
+                    cursor: pointer;
+                    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                    text-align: center;
+                    background: #ffffff;
+                    position: relative;
+                    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+                }
+
+                .ts-card:hover {
+                    border-color: #3b82f6;
+                    transform: translateY(-4px) scale(1.02);
+                    box-shadow: 0 6px 15px rgba(59, 130, 246, 0.1);
+                }
+
+                .ts-card.active {
+                    border-color: #3b82f6;
+                    background: #f0f7ff;
+                    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+                }
+
+                .ts-card.active::after {
+                    content: "\f00c";
+                    font-family: "Font Awesome 6 Free";
+                    font-weight: 900;
+                    position: absolute;
+                    top: -6px;
+                    left: -6px;
+                    background: #3b82f6;
+                    color: #ffffff;
+                    width: 20px;
+                    height: 20px;
+                    border-radius: 50%;
+                    font-size: 0.75rem;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                }
+
+                .ts-thumbnail {
+                    height: 95px;
+                    background: #f8fafc;
+                    border-radius: 8px;
+                    margin-bottom: 10px;
+                    overflow: hidden;
+                    display: flex;
+                    flex-direction: column;
+                    padding: 8px;
+                    gap: 6px;
+                    border: 1px solid #e2e8f0;
+                    transition: all 0.2s ease;
+                }
+
+                .ts-card.active .ts-thumbnail {
+                    border-color: #93c5fd;
+                    background: #ffffff;
+                }
+
+                .ts-label {
+                    font-size: 0.85rem;
+                    font-weight: 700;
+                    color: #1f2937;
+                }
+
+                /* CSS Mini Mockups for A4 templates */
+                .mock-a4-d1 {
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: space-between;
+                    height: 100%;
+                }
+
+                .mock-d1-hdr {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    border-bottom: 1px solid #d1d5db;
+                    padding-bottom: 4px;
+                }
+
+                .mock-logo {
+                    width: 16px;
+                    height: 10px;
+                    background: #9ca3af;
+                    border-radius: 1px;
+                }
+
+                .mock-title {
+                    width: 30px;
+                    height: 6px;
+                    background: #4b5563;
+                    margin: 0 auto;
+                    border-radius: 1px;
+                }
+
+                .mock-lines {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 3px;
+                    margin-top: 8px;
+                }
+
+                .mock-line {
+                    height: 4px;
+                    background: #e5e7eb;
+                    border-radius: 1px;
+                }
+
+                .mock-line.short {
+                    width: 60%;
+                }
+
+                .mock-table {
+                    border: 1px solid #d1d5db;
+                    height: 30px;
+                    margin-top: 6px;
+                    border-radius: 1px;
+                    display: flex;
+                    flex-direction: column;
+                }
+
+                .mock-th {
+                    height: 8px;
+                    background: #e5e7eb;
+                    border-bottom: 1px solid #d1d5db;
+                }
+
+                .mock-a4-d2 {
+                    display: flex;
+                    flex-direction: column;
+                    height: 100%;
+                    justify-content: space-between;
+                }
+
+                .mock-d2-hdr {
+                    display: flex;
+                    justify-content: space-between;
+                    gap: 6px;
+                }
+
+                .mock-box-left {
+                    width: 45%;
+                    height: 20px;
+                    border: 1px solid #e5e7eb;
+                    background: #f9fafb;
+                    border-radius: 2px;
+                }
+
+                .mock-box-right {
+                    width: 45%;
+                    height: 20px;
+                    border: 1px solid #e5e7eb;
+                    background: #f9fafb;
+                    border-radius: 2px;
+                }
+
+                .mock-grid-lines {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 2px;
+                    padding: 2px;
+                }
+
+                .mock-grid-line {
+                    height: 2px;
+                    background: #d1d5db;
+                }
+
+                .mock-a4-d3 {
+                    display: flex;
+                    flex-direction: column;
+                    height: 100%;
+                }
+
+                .mock-d3-banner {
+                    height: 12px;
+                    background: #1e293b;
+                    color: white;
+                    border-radius: 2px 2px 0 0;
+                }
+
+                .mock-d3-th {
+                    height: 8px;
+                    background: #1e293b;
+                }
+
+                .mock-a4-d4 {
+                    display: flex;
+                    flex-direction: column;
+                    height: 100%;
+                    border-top: 2px solid #0f172a;
+                    padding-top: 4px;
+                }
+
+                .mock-d4-columns {
+                    display: flex;
+                    justify-content: space-between;
+                    gap: 6px;
+                    height: 35px;
+                }
+
+                .mock-d4-col-left {
+                    width: 55%;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 3px;
+                }
+
+                .mock-d4-col-right {
+                    width: 40%;
+                    border-right: 1px solid #e5e7eb;
+                    padding-right: 3px;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 3px;
+                }
+
+                /* Thermal mini mockups */
+                .mock-thermal {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: space-between;
+                    height: 100%;
+                }
+
+                .mock-thermal-d1-lines {
+                    width: 100%;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    gap: 3px;
+                }
+
+                .mock-thermal-line {
+                    height: 4px;
+                    background: #d1d5db;
+                    width: 80%;
+                    border-radius: 1px;
+                }
+
+                .mock-thermal-line.short {
+                    width: 50%;
+                }
+
+                .mock-thermal-line.dashed {
+                    border-top: 1px dashed #9ca3af;
+                    height: 0;
+                    background: none;
+                }
+
+                .mock-thermal-d2-box {
+                    width: 60%;
+                    height: 10px;
+                    border: 1px solid #000;
+                    border-radius: 2px;
+                    background: #fff;
+                    margin: 4px auto;
+                }
+
+                .mock-thermal-d3-hdr {
+                    width: 100%;
+                    text-align: center;
+                    border-bottom: 1px dashed #000;
+                    padding-bottom: 2px;
+                    margin-bottom: 4px;
+                }
+
+                /* Design 2 preview box styling */
+                .info-box {
+                    border: 1px solid #e4e6ef;
+                    border-radius: 6px;
+                    padding: 15px;
+                    height: 100%;
+                    background: #f9fafb;
+                }
+
+                .meta-table {
+                    width: 100%;
+                }
+
+                .meta-table td {
+                    padding: 4px;
+                    border-bottom: 1px dashed #e4e6ef;
+                }
+
+                .meta-table tr:last-child td {
+                    border-bottom: none;
+                }
+            </style>
+
+            <!-- Template Selector Row -->
+            <div class="template-selector-container mb-5 no-print" dir="rtl">
+                <div class="ts-title"><i class="fa fa-layer-group text-primary me-2"></i>
+                    {{ $print_format == 'A4' ? 'أشكال الفاتورة (A4)' : 'أشكال الإيصال (حراري)' }}</div>
+                <div class="ts-grid">
+                    @if($print_format == 'A4')
+                        <!-- design1 -->
+                        <div class="ts-card {{ ($templateConfig['layout_design'] ?? 'design1') == 'design1' ? 'active' : '' }}"
+                            wire:click="$set('templateConfig.layout_design', 'design1')">
+                            <div class="ts-thumbnail">
+                                <div class="mock-a4-d1">
+                                    <div class="mock-d1-hdr">
+                                        <div class="mock-logo"></div>
+                                        <div class="mock-logo" style="background:#e5e7eb;"></div>
+                                    </div>
+                                    <div class="mock-title"></div>
+                                    <div class="mock-lines">
+                                        <div class="mock-line"></div>
+                                        <div class="mock-line short"></div>
+                                    </div>
+                                    <div class="mock-table">
+                                        <div class="mock-th"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="ts-label">قالب 1 (الافتراضي)</div>
+                        </div>
+
+                        <!-- design2 -->
+                        <div class="ts-card {{ ($templateConfig['layout_design'] ?? 'design1') == 'design2' ? 'active' : '' }}"
+                            wire:click="$set('templateConfig.layout_design', 'design2')">
+                            <div class="ts-thumbnail">
+                                <div class="mock-a4-d2">
+                                    <div class="mock-d2-hdr">
+                                        <div class="mock-box-left"></div>
+                                        <div class="mock-box-right">
+                                            <div class="mock-grid-lines">
+                                                <div class="mock-grid-line"></div>
+                                                <div class="mock-grid-line"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mock-lines" style="margin-top: 4px;">
+                                        <div class="mock-line"></div>
+                                    </div>
+                                    <div class="mock-table" style="margin-top: 4px;">
+                                        <div class="mock-th"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="ts-label">قالب 2 (شبكي)</div>
+                        </div>
+
+                        <!-- design3 -->
+                        <div class="ts-card {{ ($templateConfig['layout_design'] ?? 'design1') == 'design3' ? 'active' : '' }}"
+                            wire:click="$set('templateConfig.layout_design', 'design3')">
+                            <div class="ts-thumbnail">
+                                <div class="mock-a4-d3">
+                                    <div class="mock-d3-banner"></div>
+                                    <div class="mock-lines" style="margin-top: 4px;">
+                                        <div class="mock-line"></div>
+                                        <div class="mock-line short"></div>
+                                    </div>
+                                    <div class="mock-table" style="margin-top: 4px;">
+                                        <div class="mock-d3-th"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="ts-label">قالب 3 (شريط ملون)</div>
+                        </div>
+
+                        <!-- design4 -->
+                        <div class="ts-card {{ ($templateConfig['layout_design'] ?? 'design1') == 'design4' ? 'active' : '' }}"
+                            wire:click="$set('templateConfig.layout_design', 'design4')">
+                            <div class="ts-thumbnail">
+                                <div class="mock-a4-d4">
+                                    <div class="mock-d4-columns">
+                                        <div class="mock-d4-col-left">
+                                            <div class="mock-line"></div>
+                                            <div class="mock-line short"></div>
+                                            <div class="mock-logo" style="width: 25px; height: 15px; margin-top: 4px;">
+                                            </div>
+                                        </div>
+                                        <div class="mock-d4-col-right">
+                                            <div class="mock-line"></div>
+                                            <div class="mock-line"></div>
+                                        </div>
+                                    </div>
+                                    <div class="mock-table"
+                                        style="margin-top: 4px; border: none; border-top: 1px solid #000; border-bottom: 1px solid #000;">
+                                        <div class="mock-th" style="background:#fff;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="ts-label">قالب 4 (عمودي حديث)</div>
+                        </div>
+                    @else
+                        <!-- design1 -->
+                        <div class="ts-card {{ ($templateConfig['layout_design'] ?? 'design1') == 'design1' ? 'active' : '' }}"
+                            wire:click="$set('templateConfig.layout_design', 'design1')">
+                            <div class="ts-thumbnail">
+                                <div class="mock-thermal">
+                                    <div class="mock-thermal-d1-lines">
+                                        <div class="mock-thermal-line short"></div>
+                                        <div class="mock-thermal-line"></div>
+                                        <div class="mock-thermal-line short" style="width: 30%;"></div>
+                                        <div class="mock-thermal-line dashed"></div>
+                                    </div>
+                                    <div class="mock-thermal-d1-lines">
+                                        <div class="mock-thermal-line short"></div>
+                                        <div class="mock-thermal-line short"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="ts-label">إيصال 1 (الافتراضي)</div>
+                        </div>
+
+                        <!-- design2 -->
+                        <div class="ts-card {{ ($templateConfig['layout_design'] ?? 'design1') == 'design2' ? 'active' : '' }}"
+                            wire:click="$set('templateConfig.layout_design', 'design2')">
+                            <div class="ts-thumbnail">
+                                <div class="mock-thermal">
+                                    <div class="mock-thermal-d2-box"></div>
+                                    <div class="mock-thermal-d1-lines">
+                                        <div class="mock-thermal-line dashed"></div>
+                                        <div class="mock-thermal-line"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="ts-label">إيصال 2 (POS)</div>
+                        </div>
+
+                        <!-- design3 -->
+                        <div class="ts-card {{ ($templateConfig['layout_design'] ?? 'design1') == 'design3' ? 'active' : '' }}"
+                            wire:click="$set('templateConfig.layout_design', 'design3')">
+                            <div class="ts-thumbnail">
+                                <div class="mock-thermal">
+                                    <div class="mock-thermal-d3-hdr">
+                                        <div class="mock-thermal-line"
+                                            style="width: 70%; height: 8px; background: #000; margin: 0 auto;"></div>
+                                    </div>
+                                    <div class="mock-thermal-d1-lines" style="margin-top: 5px;">
+                                        <div class="mock-thermal-line"></div>
+                                        <div class="mock-thermal-line short"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="ts-label">إيصال 3 (مطعم)</div>
+                        </div>
+                    @endif
+                </div>
+            </div>
+
+            <!-- Preview Wrapper container -->
+            <div class="invoice-preview-wrapper" style="font-size: {{ $templateConfig['font_size'] ?? 12 }}px;">
+
+                @if($print_format == 'A4')
+                    <!-- A4 Layout Preview -->
+                    <div class="saudi-invoice w-100" style="font-size: {{ $templateConfig['font_size'] ?? 12 }}px;">
+
+                        @if(($templateConfig['layout_design'] ?? 'design1') == 'design2')
+                            <!-- ================== A4 DESIGN 2: MODERN GRID PREVIEW ================== -->
+                            <div class="invoice-border">
+                                <div class="row align-items-stretch mb-5">
+                                    <!-- Left: Company Info -->
+                                    <div class="col-6">
+                                        <div class="info-box">
+                                            @if($templateConfig['show_logo'])
+                                                <div class="mb-2">
+                                                    <div
+                                                        style="width: 100px; height: 50px; background-color: #e5e7eb; display: inline-flex; justify-content: center; align-items: center; border-radius: 4px; color: #9ca3af; font-weight: bold; font-size: 0.8rem;">
+                                                        <img src="{{ $previewData['company_logo'] ?? '' }}" alt="Logo" style="max-height: 100%; max-width: 100%;"></div>
+                                                </div>
+                                            @endif
+                                            @if($templateConfig['show_company_name'])
+                                                <div class="fw-bolder fs-4 mb-1">{{ $previewData['organization_name'] }}</div>
+                                            @endif
+                                            @if($templateConfig['show_branch_name'])
+                                                <div class="fw-bold fs-6 mb-2 text-muted">{{ $previewData['branch_name'] }}</div>
+                                            @endif
+                                            @if($templateConfig['show_tax_number'])
+                                                <div class="small fw-bold mt-2">الرقم الضريبي (VAT ID):</div>
+                                                <div class="fw-bolder fs-4 border-bottom border-dark border-2 d-inline-block">{{ $previewData['seller_vat'] }}</div>
+                                            @endif
+                                            @if($templateConfig['show_address'])
+                                                <div class="small text-muted mt-2">{{ $previewData['seller_address'] }}</div>
+                                            @endif
+                                        </div>
+                                    </div>
+                                    <!-- Right: Invoice Metadata Grid -->
+                                    <div class="col-6">
+                                        <div class="info-box d-flex flex-column justify-content-between">
+                                            <div>
+                                                <h2 class="fw-bolder mb-1 text-primary">
+                                                    {{ $document_type == 'SalesInvoice' ? 'فاتورة ضريبية' : ($document_type == 'SalesReturn' ? 'مرتجع مبيعات' : ($document_type == 'PurchaseInvoice' ? 'فاتورة مشتريات' : 'عرض سعر')) }}
+                                                </h2>
+                                                @if($templateConfig['enable_english'])
+                                                    <h5 class="text-muted mb-2">
+                                                        {{ $document_type == 'SalesInvoice' ? 'Tax Invoice' : ($document_type == 'SalesReturn' ? 'Sales Return' : ($document_type == 'PurchaseInvoice' ? 'Purchase Invoice' : 'Quotation')) }}
+                                                    </h5>
+                                                @endif
+                                            </div>
+                                            <table class="meta-table mt-3">
+                                                <tr>
+                                                    <td class="data-label text-start" width="50%">رقم الفاتورة:</td>
+                                                    <td class="data-value text-end fw-bolder">
+                                                        #{{ $previewData['invoice_number'] }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="data-label text-start">تاريخ الإصدار:</td>
+                                                    <td class="data-value text-end">{{ $previewData['issue_date'] }}</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="line-divider"></div>
+
+                                <!-- أطراف المعاملة -->
+                                <div class="row g-6 mb-5">
+                                    <div class="col-6">
+                                        <div class="info-box">
+                                            <h6 class="fw-bolder border-bottom pb-2 mb-3"><i class="fa fa-user me-2"></i> بيانات
+                                                المشتري / Buyer Info</h6>
+                                            @if($templateConfig['show_customer_data'])
+                                                <table class="w-100">
+                                                    <tr>
+                                                        <td class="data-label" width="45%">الاسم / Name:</td>
+                                                        <td class="data-value fw-bolder">{{ $previewData['customer_name'] }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="data-label">الرقم الضريبي / VAT ID:</td>
+                                                        <td class="data-value">{{ $previewData['customer_tax'] }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="data-label">العنوان / Address:</td>
+                                                        <td class="data-value text-muted small">
+                                                            {{ $previewData['customer_address_full'] }}</td>
+                                                    </tr>
+                                                    @if($templateConfig['show_customer_phone'])
+                                                        <tr>
+                                                            <td class="data-label">الجوال / Phone:</td>
+                                                            <td class="data-value">{{ $previewData['customer_phone'] }}</td>
+                                                        </tr>
+                                                    @endif
+                                                    @if($templateConfig['show_customer_cr'])
+                                                        <tr>
+                                                            <td class="data-label">السجل التجاري / CR:</td>
+                                                            <td class="data-value">{{ $previewData['customer_cr'] }}</td>
+                                                        </tr>
+                                                    @endif
+                                                </table>
+                                            @endif
+                                        </div>
+                                    </div>
+                                    <div class="col-6 text-end">
+                                        <div class="info-box">
+                                            <h6 class="fw-bolder border-bottom pb-2 mb-3 text-end"><i
+                                                    class="fa fa-file-invoice me-2"></i> تفاصيل إضافية / Additional</h6>
+                                            <table class="w-100">
+                                                <tr>
+                                                    <td class="data-label text-start" width="45%">رقم المرجع (العميل):</td>
+                                                    <td class="data-value text-start fw-bold">
+                                                        #{{ $previewData['customer_invoice_number'] }}</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- جدول الأصناف -->
+                                <table class="table-zatca">
+                                    <thead>
+                                        <tr>
+                                            @if($templateConfig['show_item_number'])
+                                                <th width="5%">#</th>
+                                            @endif
+                                            @if($templateConfig['show_item_image'])
+                                                <th width="6%">صورة / Img</th>
+                                            @endif
+                                            <th width="20%">اسم الصنف / Item</th>
+                                            <th width="15%">الوصف / Desc</th>
+                                            @if($templateConfig['show_item_unit'])
+                                                <th width="8%">الوحدة / Unit</th>
+                                            @endif
+                                            <th width="10%">سعر الوحدة</th>
+                                            <th width="8%">الكمية</th>
+                                            @if($templateConfig['show_item_discount'])
+                                                <th width="8%">الخصم</th>
+                                            @endif
+                                            @if($templateConfig['show_item_subtotal'])
+                                                <th width="10%">الخاضع للضريبة</th>
+                                            @endif
+                                            @if($templateConfig['show_item_tax_percent'])
+                                                <th width="6%">الضريبة</th>
+                                            @endif
+                                            <th width="8%">مبلغ الضريبة</th>
+                                            @if($templateConfig['show_item_total_with_tax'])
+                                                <th width="10%">الإجمالي / Total</th>
+                                            @endif
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($previewData['items'] as $item)
+                                            <tr>
+                                                @if($templateConfig['show_item_number'])
+                                                    <td>{{ $loop->iteration }}</td>
+                                                @endif
+                                                @if($templateConfig['show_item_image'])
+                                                    <td class="text-center">
+                                                        @if(!empty($item['image']))
+                                                            <img src="{{ $item['image'] }}" style="max-height: 40px; max-width: 40px;">
+                                                        @endif
+                                                    </td>
+                                                @endif
+                                                <td class="text-start">
+                                                    <div class="fw-bold">{{ $item['product_name'] }}</div>
+                                                    @if($templateConfig['show_item_barcode'])
+                                                        <div class="d-flex align-items-center mt-1"
+                                                            style="font-family: monospace; font-size: 0.75rem; letter-spacing: 1px;">
+                                                            ||||| {{ $item['barcode'] }} |||||</div>
+                                                    @endif
+                                                    @if($templateConfig['show_item_characteristics'])
+                                                        <div style="font-size: 0.8rem; color: #6b7280;">{{ $item['characteristics'] }}
+                                                        </div>
+                                                    @endif
+                                                </td>
+                                                <td class="text-start">{{ $item['description'] }}</td>
+                                                @if($templateConfig['show_item_unit'])
+                                                    <td>{{ $item['unit_name'] }}</td>
+                                                @endif
+                                                <td>{{ $item['unit_price'] }}</td>
+                                                <td>{{ $item['quantity'] }}</td>
+                                                @if($templateConfig['show_item_discount'])
+                                                    <td class="text-danger small">{{ $item['discount'] }}</td>
+                                                @endif
+                                                @if($templateConfig['show_item_subtotal'])
+                                                    <td>{{ $item['unit_price'] }}</td>
+                                                @endif
+                                                @if($templateConfig['show_item_tax_percent'])
+                                                    <td>{{ $item['vat_rate'] }}%</td>
+                                                @endif
+                                                <td>{{ $item['vat_amount'] }}</td>
+                                                @if($templateConfig['show_item_total_with_tax'])
+                                                    <td class="fw-bolder">{{ $item['total'] }}</td>
+                                                @endif
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+
+                                <!-- الملخص المالي -->
+                                <div class="row mt-8 g-10 justify-content-end">
+                                    <div class="col-7">
+                                        <div class="info-box d-flex align-items-center justify-content-between p-3"
+                                            style="background: transparent; border: none;">
+                                            <div>
+                                                @if($templateConfig['show_payment_status'])
+                                                    <span class="fw-bolder me-2" style="font-size: 0.85rem;">تفاصيل السداد:</span>
+                                                    <span class="text-muted small">{{ $previewData['payment_method'] }}</span>
+                                                @endif
+                                            </div>
+                                            @if($templateConfig['qr_size'] != 'none')
+                                                <div class="qr-container"
+                                                    style="width: {{ $templateConfig['qr_size'] == 'small' ? '90px' : ($templateConfig['qr_size'] == 'large' ? '150px' : '120px') }}; height: {{ $templateConfig['qr_size'] == 'small' ? '90px' : ($templateConfig['qr_size'] == 'large' ? '150px' : '120px') }};">
+                                                    <div
+                                                        style="width: 100%; height: 100%; background: #e5e7eb; display: flex; justify-content: center; align-items: center; color: #9ca3af; font-size: 0.8rem; font-weight: bold;">
+                                                        <img src="{{ (new \chillerlan\QRCode\QRCode(new \chillerlan\QRCode\QROptions(['addQuietzone' => false])))->render($previewData['qr_code'] ?? 'AQRFVklYAg8wMDAwMDAwMDAwMDAwMDADFDIwMjYtMDYtMjJUMDg6NTg6MDBaBAQyLjg4BQQwLjM4') }}" alt="QR" style="width: 100%; height: 100%;"></div>
+                                                </div>
+                                            @endif
+                                        </div>
+                                    </div>
+
+                                    <div class="col-5">
+                                        <table class="w-100 border border-2 rounded">
+                                            <tr>
+                                                <td class="p-2 border-bottom data-label bg-row text-start text-dark">الإجمالي
+                                                    (Excl. VAT)</td>
+                                                <td class="p-2 border-bottom text-end fw-bold">
+                                                    {{ $previewData['total_exclusive_vat'] }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="p-2 border-bottom data-label bg-row text-start text-dark">إجمالي
+                                                    الخصم (Discount)</td>
+                                                <td class="p-2 border-bottom text-end text-danger fw-bold">-
+                                                    {{ $previewData['total_discount'] }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="p-2 border-bottom data-label bg-row text-start text-dark">الضريبة
+                                                    (VAT)</td>
+                                                <td class="p-2 border-bottom text-end fw-bold">+ {{ $previewData['total_vat'] }}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="p-2 border-bottom data-label bg-row text-start text-dark">مصاريف
+                                                    الشحن (Shipping)</td>
+                                                <td class="p-2 border-bottom text-end fw-bold">+
+                                                    {{ $previewData['shipping_cost'] }}</td>
+                                            </tr>
+                                            <tr style="background: #f1f5f9; color: #000; border-top: 2px solid #000;">
+                                                <td class="p-3 text-start fw-bolder fs-4">الإجمالي النهائي<br><small>Grand
+                                                        Total</small></td>
+                                                <td class="p-3 text-end fw-bolder fs-3">
+                                                    {{ $previewData['total_inclusive_vat'] }}</td>
+                                            </tr>
+                                        </table>
+                                        @if($templateConfig['show_total_in_words'])
+                                            <div class="mt-2 text-start fw-bold">فقط {{ $previewData['total_in_words'] }} لا غير
+                                            </div>
+                                        @endif
+                                    </div>
+                                </div>
+
+                                <!-- التذيل -->
+                                <div class="mt-8 text-center small text-muted no-print">
+                                    <div class="line-divider"></div>
+                                    <div class="d-flex justify-content-between px-3 fw-bold text-dark">
+                                        @if($templateConfig['show_seller_name'])
+                                            <span>إنشاء: {{ $previewData['created_by_name'] }}</span>
+                                        @else
+                                            <span></span>
+                                        @endif
+                                        @if($templateConfig['show_small_barcode'])
+                                            <div class="d-inline-block p-1 border"
+                                                style="background: #fff; font-family: monospace; letter-spacing: 2px;">||||| BARCODE
+                                                |||||</div>
+                                        @endif
+                                        @if($templateConfig['show_payment_status'])
+                                            <span>الحالة: {{ $previewData['status_text'] }}</span>
+                                        @else
+                                            <span></span>
+                                        @endif
+                                    </div>
+                                    @if(!empty($templateConfig['small_receipt_notes']))
+                                        <div class="mt-3 text-center fw-semibold text-dark">
+                                            {{ $templateConfig['small_receipt_notes'] }}</div>
+                                    @endif
+                                    <div class="mt-3 text-center" style="font-size: 0.75rem;">
+                                        تم استخراج هذه الفاتورة من نظام EVIX ERP وتعتبر صالحة لأغراض ضريبة القيمة المضافة طبقاً
+                                        للوائح السعودية.
+                                    </div>
+                                </div>
+                            </div>
+
+                        @elseif(($templateConfig['layout_design'] ?? 'design1') == 'design3')
+                            <!-- ================== A4 DESIGN 3: ELEGANT STRIPE PREVIEW ================== -->
+                            <div class="invoice-border shadow-sm">
+                                <!-- Top banner with dark background -->
+                                <div class="row align-items-center mb-0 p-4"
+                                    style="background: #1e293b; color: #ffffff; border-radius: 4px 4px 0 0; margin-left: 0; margin-right: 0;">
+                                    <div class="col-6 text-start">
+                                        <h2 class="text-white fw-bolder mb-1">
+                                            {{ $document_type == 'SalesInvoice' ? 'فاتورة ضريبية' : ($document_type == 'SalesReturn' ? 'مرتجع مبيعات' : ($document_type == 'PurchaseInvoice' ? 'فاتورة مشتريات' : 'عرض سعر')) }}
+                                        </h2>
+                                        @if($templateConfig['enable_english'])
+                                            <div class="text-light small">{{ $document_type == 'SalesInvoice' ? 'Tax Invoice' : ($document_type == 'SalesReturn' ? 'Sales Return' : ($document_type == 'PurchaseInvoice' ? 'Purchase Invoice' : 'Quotation')) }}</div>
+                                        @endif
+                                    </div>
+                                    <div class="col-6 text-end">
+                                        <h3 class="text-white mb-0 fw-bold">#{{ $previewData['invoice_number'] }}</h3>
+                                        <span class="text-light small">تاريخ الإصدار: {{ $previewData['issue_date'] }}</span>
+                                    </div>
+                                </div>
+
+                                <div style="padding: 25px;">
+                                    <!-- معلومات الشركة والمورد -->
+                                    <div class="row align-items-center mb-5">
+                                        <div class="col-4 text-start">
+                                            @if($templateConfig['qr_size'] != 'none')
+                                                <div class="qr-container"
+                                                    style="width: {{ $templateConfig['qr_size'] == 'small' ? '100px' : ($templateConfig['qr_size'] == 'large' ? '180px' : '140px') }}; height: {{ $templateConfig['qr_size'] == 'small' ? '100px' : ($templateConfig['qr_size'] == 'large' ? '180px' : '140px') }};">
+                                                    <div
+                                                        style="width: 100%; height: 100%; background: #e5e7eb; display: flex; justify-content: center; align-items: center; color: #9ca3af; font-size: 0.8rem; font-weight: bold;">
+                                                        <img src="{{ (new \chillerlan\QRCode\QRCode(new \chillerlan\QRCode\QROptions(['addQuietzone' => false])))->render($previewData['qr_code'] ?? 'AQRFVklYAg8wMDAwMDAwMDAwMDAwMDADFDIwMjYtMDYtMjJUMDg6NTg6MDBaBAQyLjg4BQQwLjM4') }}" alt="QR" style="width: 100%; height: 100%;"></div>
+                                                </div>
+                                            @endif
+                                        </div>
+                                        <div class="col-4 text-center">
+                                            @if($templateConfig['show_logo'])
+                                                <div class="mb-2">
+                                                    <div
+                                                        style="width: 100px; height: 50px; background-color: #e5e7eb; display: inline-flex; justify-content: center; align-items: center; border-radius: 4px; color: #9ca3af; font-weight: bold; font-size: 0.8rem;">
+                                                        <img src="{{ $previewData['company_logo'] ?? '' }}" alt="Logo" style="max-height: 100%; max-width: 100%;"></div>
+                                                </div>
+                                            @endif
+                                        </div>
+                                        <div class="col-4 text-end">
+                                            @if($templateConfig['show_company_name'])
+                                                <div class="fw-bolder fs-4 mb-1">{{ $previewData['organization_name'] }}</div>
+                                            @endif
+                                            @if($templateConfig['show_tax_number'])
+                                                <div class="small fw-bold">الرقم الضريبي (VAT ID):</div>
+                                                <div class="fw-bolder fs-5 border-bottom border-dark d-inline-block">
+                                                    {{ $previewData['seller_vat'] }}</div>
+                                            @endif
+                                            @if($templateConfig['show_address'])
+                                                <div class="small mt-1">{{ $previewData['seller_address'] }}</div>
+                                            @endif
+                                        </div>
+                                    </div>
+
+                                    <div style="border-top: 2px solid #1e293b; margin: 15px 0;"></div>
+
+                                    <!-- أطراف المعاملة -->
+                                    <div class="row g-10 mb-5">
+                                        <div class="col-6">
+                                            <h6 class="fw-bolder border-bottom border-dark pb-2 mb-3">بيانات المشتري / Buyer
+                                                Info</h6>
+                                            @if($templateConfig['show_customer_data'])
+                                                <table class="w-100">
+                                                    <tr>
+                                                        <td class="data-label" width="45%">الاسم / Name:</td>
+                                                        <td class="data-value fw-bolder">{{ $previewData['customer_name'] }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="data-label">الرقم الضريبي / VAT ID:</td>
+                                                        <td class="data-value">{{ $previewData['customer_tax'] }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="data-label">العنوان / Address:</td>
+                                                        <td class="data-value text-muted small">
+                                                            {{ $previewData['customer_address_full'] }}</td>
+                                                    </tr>
+                                                    @if($templateConfig['show_customer_phone'])
+                                                        <tr>
+                                                            <td class="data-label">الجوال / Phone:</td>
+                                                            <td class="data-value">{{ $previewData['customer_phone'] }}</td>
+                                                        </tr>
+                                                    @endif
+                                                </table>
+                                            @endif
+                                        </div>
+                                        <div class="col-6 text-end">
+                                            <h6 class="fw-bolder border-bottom border-dark pb-2 mb-3">بيانات الفاتورة / Invoice
+                                                Stats</h6>
+                                            <table class="w-100">
+                                                <tr>
+                                                    <td class="data-label text-start" width="45%">رقم المرجع (العميل):</td>
+                                                    <td class="data-value text-start fw-bold">
+                                                        #{{ $previewData['customer_invoice_number'] }}</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                    <!-- جدول الأصناف -->
+                                    <table class="table-zatca">
+                                        <thead>
+                                        <tr>
+                                            @if($templateConfig['show_item_number'])
+                                            <th style="background: #1e293b !important; color: #ffffff !important; border: 1px solid #1e293b;"
+                                                width="5%">#</th>
+                                            @endif
+                                            @if($templateConfig['show_item_image'])
+                                            <th style="background: #1e293b !important; color: #ffffff !important; border: 1px solid #1e293b;"
+                                                width="6%">صورة / Img</th>
+                                            @endif
+                                            <th style="background: #1e293b !important; color: #ffffff !important; border: 1px solid #1e293b;"
+                                                width="15%">اسم الصنف / Item</th>
+                                            <th style="background: #1e293b !important; color: #ffffff !important; border: 1px solid #1e293b;"
+                                                width="15%">الوصف / Desc</th>
+                                            @if($templateConfig['show_item_unit'])
+                                                <th style="background: #1e293b !important; color: #ffffff !important; border: 1px solid #1e293b;"
+                                                    width="8%">الوحدة / Unit</th>
+                                            @endif
+                                            <th style="background: #1e293b !important; color: #ffffff !important; border: 1px solid #1e293b;"
+                                                width="10%">سعر الوحدة</th>
+                                            <th style="background: #1e293b !important; color: #ffffff !important; border: 1px solid #1e293b;"
+                                                width="10%">الكمية</th>
+                                            @if($templateConfig['show_item_discount'])
+                                            <th style="background: #1e293b !important; color: #ffffff !important; border: 1px solid #1e293b;"
+                                                width="10%">الخصم</th>
+                                            @endif
+                                            @if($templateConfig['show_item_subtotal'])
+                                                <th style="background: #1e293b !important; color: #ffffff !important; border: 1px solid #1e293b;"
+                                                    width="10%">الخاضع للضريبة</th>
+                                            @endif
+                                            @if($templateConfig['show_item_tax_percent'])
+                                            <th style="background: #1e293b !important; color: #ffffff !important; border: 1px solid #1e293b;"
+                                                width="5%">الضريبة</th>
+                                            @endif
+                                            <th style="background: #1e293b !important; color: #ffffff !important; border: 1px solid #1e293b;"
+                                                width="10%">مبلغ الضريبة</th>
+                                            @if($templateConfig['show_item_total_with_tax'])
+                                            <th style="background: #1e293b !important; color: #ffffff !important; border: 1px solid #1e293b;"
+                                                width="10%">الإجمالي / Total</th>
+                                            @endif
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach($previewData['items'] as $item)
+                                                <tr>
+                                                    @if($templateConfig['show_item_number'])
+                                                    <td style="border: 1px solid #1e293b;">{{ $loop->iteration }}</td>
+                                                    @endif
+                                                    @if($templateConfig['show_item_image'])
+                                                    <td style="border: 1px solid #1e293b;" class="text-center">
+                                                        @if(!empty($item['image']))
+                                                            <img src="{{ $item['image'] }}" style="max-height: 40px; max-width: 40px;">
+                                                        @endif
+                                                    </td>
+                                                    @endif
+                                                    <td style="border: 1px solid #1e293b;" class="text-start">
+                                                        <div class="fw-bold">{{ $item['product_name'] }}</div>
+                                                        @if($templateConfig['show_item_barcode'])
+                                                            <div class="d-flex align-items-center mt-1"
+                                                                style="font-family: monospace; font-size: 0.75rem; letter-spacing: 1px;">
+                                                                ||||| {{ $item['barcode'] }} |||||</div>
+                                                        @endif
+                                                    </td>
+                                                    <td style="border: 1px solid #1e293b;" class="text-start">
+                                                        {{ $item['description'] }}</td>
+                                                    @if($templateConfig['show_item_unit'])
+                                                        <td style="border: 1px solid #1e293b;">{{ $item['unit_name'] }}</td>
+                                                    @endif
+                                                    <td style="border: 1px solid #1e293b;">{{ $item['unit_price'] }}</td>
+                                                    <td style="border: 1px solid #1e293b;">{{ $item['quantity'] }}</td>
+                                                    @if($templateConfig['show_item_discount'])
+                                                    <td style="border: 1px solid #1e293b;" class="text-danger small">
+                                                        {{ $item['discount'] }}</td>
+                                                    @endif
+                                                    @if($templateConfig['show_item_subtotal'])
+                                                        <td style="border: 1px solid #1e293b;">{{ $item['unit_price'] }}</td>
+                                                    @endif
+                                                    @if($templateConfig['show_item_tax_percent'])
+                                                    <td style="border: 1px solid #1e293b;">{{ $item['vat_rate'] }}%</td>
+                                                    @endif
+                                                    <td style="border: 1px solid #1e293b;">{{ $item['vat_amount'] }}</td>
+                                                    @if($templateConfig['show_item_total_with_tax'])
+                                                    <td style="border: 1px solid #1e293b;" class="fw-bolder">{{ $item['total'] }}
+                                                    </td>
+                                                    @endif
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+
+                                    <!-- الملخص المالي -->
+                                    <div class="row mt-8 g-10 justify-content-end">
+                                        <div class="col-7 no-print">
+                                            @if($templateConfig['show_payment_status'])
+                                                <div class="mt-2">
+                                                    <span class="fw-bolder me-2" style="font-size: 0.85rem;">تفاصيل السداد:</span>
+                                                    <span class="text-muted small">{{ $previewData['payment_method'] }}</span>
+                                                </div>
+                                            @endif
+                                        </div>
+
+                                        <div class="col-5">
+                                            <table class="w-100 border border-dark border-2">
+                                                <tr>
+                                                    <td
+                                                        class="p-2 border-bottom border-dark data-label bg-row text-start text-dark">
+                                                        الإجمالي (Excl. VAT)</td>
+                                                    <td class="p-2 border-bottom border-dark text-end fw-bold">3,000.00</td>
+                                                </tr>
+                                                <tr>
+                                                    <td
+                                                        class="p-2 border-bottom border-dark data-label bg-row text-start text-dark">
+                                                        إجمالي الخصم (Discount)</td>
+                                                    <td class="p-2 border-bottom border-dark text-end text-danger fw-bold">-
+                                                        {{ $previewData['total_discount'] }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td
+                                                        class="p-2 border-bottom border-dark data-label bg-row text-start text-dark">
+                                                        الضريبة (VAT)</td>
+                                                    <td class="p-2 border-bottom border-dark text-end fw-bold">+ 450.00</td>
+                                                </tr>
+                                                <tr>
+                                                    <td
+                                                        class="p-2 border-bottom border-dark data-label bg-row text-start text-dark">
+                                                        مصاريف الشحن (Shipping)</td>
+                                                    <td class="p-2 border-bottom border-dark text-end fw-bold">+
+                                                        {{ $previewData['shipping_cost'] }}</td>
+                                                </tr>
+                                                <tr style="background: #f0f0f0; color: #000; border-top: 2px solid #000;">
+                                                    <td class="p-3 text-start fw-bolder fs-4">الإجمالي النهائي<br><small>Grand
+                                                            Total</small></td>
+                                                    <td class="p-3 text-end fw-bolder fs-3">3,450.00 ر.س</td>
+                                                </tr>
+                                            </table>
+                                            @if($templateConfig['show_total_in_words'])
+                                                <div class="mt-2 text-start fw-bold">فقط {{ $previewData['total_in_words'] }}</div>
+                                            @endif
+                                        </div>
+                                    </div>
+
+                                    <!-- التذيل -->
+                                    <div class="mt-8 text-center small text-muted no-print">
+                                        <div style="border-top: 2px solid #1e293b; margin: 15px 0;"></div>
+                                        <div class="d-flex justify-content-between px-3 fw-bold text-dark">
+                                            @if($templateConfig['show_seller_name'])
+                                                <span>إنشاء: {{ $previewData['created_by_name'] }}</span>
+                                            @else
+                                                <span></span>
+                                            @endif
+                                            @if($templateConfig['show_small_barcode'])
+                                                <div class="d-inline-block p-1 border"
+                                                    style="background: #fff; font-family: monospace; letter-spacing: 2px;">|||||
+                                                    BARCODE |||||</div>
+                                            @endif
+                                            @if($templateConfig['show_payment_status'])
+                                                <span>الحالة: {{ $previewData['status_text'] }}</span>
+                                            @else
+                                                <span></span>
+                                            @endif
+                                        </div>
+                                        @if(!empty($templateConfig['small_receipt_notes']))
+                                            <div class="mt-3 text-center fw-semibold text-dark">
+                                                {{ $templateConfig['small_receipt_notes'] }}</div>
+                                        @endif
+                                        <div class="mt-2 text-center" style="font-size: 0.7rem;">
+                                            تم استخراج هذه الفاتورة من نظام EVIX ERP وتعتبر صالحة لأغراض ضريبة القيمة المضافة
+                                            طبقاً للوائح السعودية.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        @elseif(($templateConfig['layout_design'] ?? 'design1') == 'design4')
+                            <!-- ================== A4 DESIGN 4: VERTICAL SPLIT PREVIEW ================== -->
+                            <div class="invoice-border" style="border-top: 6px solid #0f172a; padding: 30px;">
+                                <!-- Title & Logo block -->
+                                <div class="d-flex justify-content-between align-items-end mb-4">
+                                    <div>
+                                        <h1 class="fw-bolder mb-1 text-dark" style="font-size: 2.2rem; letter-spacing: -1px;">
+                                            {{ $document_type == 'SalesInvoice' ? 'فاتورة ضريبية' : ($document_type == 'SalesReturn' ? 'مرتجع مبيعات' : ($document_type == 'PurchaseInvoice' ? 'فاتورة مشتريات' : 'عرض سعر')) }}
+                                        </h1>
+                                        @if($templateConfig['enable_english'])
+                                            <h5 class="text-muted mb-0">
+                                                {{ $document_type == 'SalesInvoice' ? 'Tax Invoice' : ($document_type == 'SalesReturn' ? 'Sales Return' : ($document_type == 'PurchaseInvoice' ? 'Purchase Invoice' : 'Quotation')) }}
+                                            </h5>
+                                        @endif
+                                        <div class="fs-4 mt-2">رقم المستند: <strong
+                                                class="text-dark">#{{ $previewData['invoice_number'] }}</strong></div>
+                                    </div>
+                                    <div class="text-end">
+                                        @if($templateConfig['show_logo'])
+                                            <div
+                                                style="width: 100px; height: 50px; background-color: #e5e7eb; display: inline-flex; justify-content: center; align-items: center; border-radius: 4px; color: #9ca3af; font-weight: bold; font-size: 0.8rem;">
+                                                <img src="{{ $previewData['company_logo'] ?? '' }}" alt="Logo" style="max-height: 100%; max-width: 100%;"></div>
+                                        @endif
+                                    </div>
+                                </div>
+
+                                <div class="line-divider"></div>
+
+                                <!-- Meta Details Vertical split -->
+                                <div class="row mb-5">
+                                    <!-- Left Side: Client & QR -->
+                                    <div class="col-7">
+                                        <h6 class="fw-bold text-dark text-uppercase mb-3" style="letter-spacing: 0.05em;">بيانات
+                                            المشتري / Invoice To:</h6>
+                                        @if($templateConfig['show_customer_data'])
+                                            <table class="w-100">
+                                                <tr>
+                                                    <td class="data-label text-start" width="45%">الاسم / Name:</td>
+                                                    <td class="data-value text-start fw-bolder">{{ $previewData['customer_name'] }}
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="data-label text-start">الرقم الضريبي / VAT ID:</td>
+                                                    <td class="data-value text-start">{{ $previewData['customer_tax'] }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="data-label text-start">العنوان / Address:</td>
+                                                    <td class="data-value text-start text-muted small">
+                                                        {{ $previewData['customer_address_full'] }}</td>
+                                                </tr>
+                                            </table>
+                                        @endif
+                                        <div class="mt-4">
+                                            @if($templateConfig['qr_size'] != 'none')
+                                                <div class="qr-container" style="width: 120px; height: 120px;">
+                                                    <div
+                                                        style="width: 100%; height: 100%; background: #e5e7eb; display: flex; justify-content: center; align-items: center; color: #9ca3af; font-size: 0.8rem; font-weight: bold;">
+                                                        <img src="{{ (new \chillerlan\QRCode\QRCode(new \chillerlan\QRCode\QROptions(['addQuietzone' => false])))->render($previewData['qr_code'] ?? 'AQRFVklYAg8wMDAwMDAwMDAwMDAwMDADFDIwMjYtMDYtMjJUMDg6NTg6MDBaBAQyLjg4BQQwLjM4') }}" alt="QR" style="width: 100%; height: 100%;"></div>
+                                                </div>
+                                            @endif
+                                        </div>
+                                    </div>
+                                    <!-- Right Side: Org details -->
+                                    <div class="col-5 text-end border-start ps-5">
+                                        <h6 class="fw-bold text-dark text-uppercase mb-3" style="letter-spacing: 0.05em;">بيانات
+                                            المورد / From:</h6>
+                                        @if($templateConfig['show_company_name'])
+                                            <div class="fw-bolder fs-4 mb-1">{{ $previewData['organization_name'] }}</div>
+                                        @endif
+                                        @if($templateConfig['show_branch_name'])
+                                            <div class="fw-bold fs-6 mb-2 text-muted">{{ $previewData['branch_name'] }}</div>
+                                        @endif
+                                        @if($templateConfig['show_tax_number'])
+                                            <div class="small fw-bold">الرقم الضريبي (VAT ID): {{ $previewData['seller_vat'] }}
+                                            </div>
+                                        @endif
+                                        @if($templateConfig['show_address'])
+                                            <div class="small mt-1 text-muted">{{ $previewData['seller_address'] }}</div>
+                                        @endif
+
+                                        <div class="mt-4 text-start d-inline-block">
+                                            <table class="table-sm table-borderless">
+                                                <tr>
+                                                    <td class="data-label text-start" style="padding: 2px 10px;">التاريخ / Date:
+                                                    </td>
+                                                    <td class="data-value text-start fw-bold" style="padding: 2px 10px;">
+                                                        {{ $previewData['issue_date'] }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="data-label text-start" style="padding: 2px 10px;">المرجع / Ref:
+                                                    </td>
+                                                    <td class="data-value text-start fw-bold" style="padding: 2px 10px;">
+                                                        #{{ $previewData['customer_invoice_number'] }}</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- جدول الأصناف -->
+                                <table class="table-zatca">
+                                    <thead>
+                                        <tr>
+                                            @if($templateConfig['show_item_number'])
+                                            <th style="border-bottom: 2px solid #0f172a; border-top: 1px solid #e2e8f0; background: #fff !important; color: #0f172a;" width="5%">#</th>
+                                            @endif
+                                            @if($templateConfig['show_item_image'])
+                                            <th style="border-bottom: 2px solid #0f172a; border-top: 1px solid #e2e8f0; background: #fff !important; color: #0f172a;" width="6%">صورة</th>
+                                            @endif
+                                            <th style="border-bottom: 2px solid #0f172a; border-top: 1px solid #e2e8f0; background: #fff !important; color: #0f172a;"
+                                                class="text-start" width="20%">اسم الصنف</th>
+                                            <th style="border-bottom: 2px solid #0f172a; border-top: 1px solid #e2e8f0; background: #fff !important; color: #0f172a;"
+                                                class="text-start" width="15%">الوصف</th>
+                                            @if($templateConfig['show_item_unit'])
+                                                <th style="border-bottom: 2px solid #0f172a; border-top: 1px solid #e2e8f0; background: #fff !important; color: #0f172a;"
+                                                    width="8%">الوحدة</th>
+                                            @endif
+                                            <th style="border-bottom: 2px solid #0f172a; border-top: 1px solid #e2e8f0; background: #fff !important; color: #0f172a;"
+                                                width="10%">سعر الوحدة</th>
+                                            <th style="border-bottom: 2px solid #0f172a; border-top: 1px solid #e2e8f0; background: #fff !important; color: #0f172a;"
+                                                width="10%">الكمية</th>
+                                            @if($templateConfig['show_item_discount'])
+                                            <th style="border-bottom: 2px solid #0f172a; border-top: 1px solid #e2e8f0; background: #fff !important; color: #0f172a;"
+                                                width="10%">الخصم</th>
+                                            @endif
+                                            @if($templateConfig['show_item_subtotal'])
+                                                <th style="border-bottom: 2px solid #0f172a; border-top: 1px solid #e2e8f0; background: #fff !important; color: #0f172a;"
+                                                    width="10%">الخاضع للضريبة</th>
+                                            @endif
+                                            @if($templateConfig['show_item_tax_percent'])
+                                            <th style="border-bottom: 2px solid #0f172a; border-top: 1px solid #e2e8f0; background: #fff !important; color: #0f172a;"
+                                                width="5%">الضريبة</th>
+                                            @endif
+                                            <th style="border-bottom: 2px solid #0f172a; border-top: 1px solid #e2e8f0; background: #fff !important; color: #0f172a;"
+                                                width="10%">مبلغ الضريبة</th>
+                                            @if($templateConfig['show_item_total_with_tax'])
+                                            <th style="border-bottom: 2px solid #0f172a; border-top: 1px solid #e2e8f0; background: #fff !important; color: #0f172a;"
+                                                width="10%">الإجمالي / Total</th>
+                                            @endif
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($previewData['items'] as $item)
+                                            <tr>
+                                                @if($templateConfig['show_item_number'])
+                                                <td style="border-bottom: 1px solid #e2e8f0;">{{ $loop->iteration }}</td>
+                                                @endif
+                                                @if($templateConfig['show_item_image'])
+                                                <td style="border-bottom: 1px solid #e2e8f0;" class="text-center">
+                                                    @if(!empty($item['image']))
+                                                        <img src="{{ $item['image'] }}" style="max-height: 40px; max-width: 40px;">
+                                                    @endif
+                                                </td>
+                                                @endif
+                                                <td style="border-bottom: 1px solid #e2e8f0;" class="text-start">
+                                                    <div class="fw-bold">{{ $item['product_name'] }}</div>
+                                                    @if($templateConfig['show_item_barcode'])
+                                                        <div class="d-flex align-items-center mt-1"
+                                                            style="font-family: monospace; font-size: 0.75rem; letter-spacing: 1px;">
+                                                            ||||| {{ $item['barcode'] }} |||||</div>
+                                                    @endif
+                                                </td>
+                                                <td style="border-bottom: 1px solid #e2e8f0;" class="text-start">
+                                                    {{ $item['description'] }}</td>
+                                                @if($templateConfig['show_item_unit'])
+                                                    <td style="border-bottom: 1px solid #e2e8f0;">{{ $item['unit_name'] }}</td>
+                                                @endif
+                                                <td style="border-bottom: 1px solid #e2e8f0;">{{ $item['unit_price'] }}</td>
+                                                <td style="border-bottom: 1px solid #e2e8f0;">{{ $item['quantity'] }}</td>
+                                                @if($templateConfig['show_item_discount'])
+                                                <td style="border-bottom: 1px solid #e2e8f0;" class="text-danger small">
+                                                    {{ $item['discount'] }}</td>
+                                                @endif
+                                                @if($templateConfig['show_item_subtotal'])
+                                                    <td style="border-bottom: 1px solid #e2e8f0;">{{ $item['unit_price'] }}</td>
+                                                @endif
+                                                @if($templateConfig['show_item_tax_percent'])
+                                                <td style="border-bottom: 1px solid #e2e8f0;">{{ $item['vat_rate'] }}%</td>
+                                                @endif
+                                                <td style="border-bottom: 1px solid #e2e8f0;">{{ $item['vat_amount'] }}</td>
+                                                @if($templateConfig['show_item_total_with_tax'])
+                                                <td style="border-bottom: 1px solid #e2e8f0;" class="fw-bolder">{{ $item['total'] }}
+                                                </td>
+                                                @endif
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+
+                                <!-- الملخص المالي -->
+                                <div class="row mt-8 g-10 justify-content-end" style="margin-left: 0; margin-right: 0;">
+                                    <div class="col-7 no-print">
+                                        @if($templateConfig['show_payment_status'])
+                                            <div class="mt-2">
+                                                <span class="fw-bold me-2" style="font-size: 0.85rem;">تفاصيل السداد:</span>
+                                                <span class="text-muted small">{{ $previewData['payment_method'] }}</span>
+                                            </div>
+                                        @endif
+                                    </div>
+
+                                    <div class="col-5">
+                                        <table class="w-100 border border-dark">
+                                            <tr>
+                                                <td
+                                                    class="p-2 border-bottom border-dark data-label bg-row text-start text-dark">
+                                                    الإجمالي الخاضع للضريبة</td>
+                                                <td class="p-2 border-bottom border-dark text-end fw-bold">3,000.00</td>
+                                            </tr>
+                                            <tr>
+                                                <td
+                                                    class="p-2 border-bottom border-dark data-label bg-row text-start text-dark">
+                                                    إجمالي الخصم (Discount)</td>
+                                                <td class="p-2 border-bottom border-dark text-end text-danger fw-bold">-
+                                                    {{ $previewData['total_discount'] }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td
+                                                    class="p-2 border-bottom border-dark data-label bg-row text-start text-dark">
+                                                    ضريبة القيمة المضافة (VAT)</td>
+                                                <td class="p-2 border-bottom border-dark text-end fw-bold">+ 450.00</td>
+                                            </tr>
+                                            <tr>
+                                                <td
+                                                    class="p-2 border-bottom border-dark data-label bg-row text-start text-dark">
+                                                    مصاريف الشحن (Shipping)</td>
+                                                <td class="p-2 border-bottom border-dark text-end fw-bold">+
+                                                    {{ $previewData['shipping_cost'] }}</td>
+                                            </tr>
+                                            <tr style="background: #0f172a; color: #ffffff; border-top: 2px solid #000;">
+                                                <td class="p-3 text-start fw-bolder fs-4 text-white">الإجمالي النهائي<br><small
+                                                        class="text-light">Grand Total</small></td>
+                                                <td class="p-3 text-end fw-bolder fs-3 text-white">3,450.00 ر.س</td>
+                                            </tr>
+                                        </table>
+                                        @if($templateConfig['show_total_in_words'])
+                                            <div class="mt-2 text-start fw-bold">فقط {{ $previewData['total_in_words'] }}</div>
+                                        @endif
+                                    </div>
+                                </div>
+
+                                <!-- التذيل -->
+                                <div class="mt-8 text-center small text-muted no-print">
+                                    <div class="line-divider"></div>
+                                    <div class="d-flex justify-content-between px-3 fw-bold text-dark">
+                                        @if($templateConfig['show_seller_name'])
+                                            <span>إنشاء: {{ $previewData['created_by_name'] }}</span>
+                                        @else
+                                            <span></span>
+                                        @endif
+                                        @if($templateConfig['show_small_barcode'])
+                                            <div class="d-inline-block p-1 border"
+                                                style="background: #fff; font-family: monospace; letter-spacing: 2px;">||||| BARCODE
+                                                |||||</div>
+                                        @endif
+                                        @if($templateConfig['show_payment_status'])
+                                            <span>الحالة: {{ $previewData['status_text'] }}</span>
+                                        @else
+                                            <span></span>
+                                        @endif
+                                    </div>
+                                    @if(!empty($templateConfig['small_receipt_notes']))
+                                        <div class="mt-3 text-center fw-semibold text-dark">
+                                            {{ $templateConfig['small_receipt_notes'] }}</div>
+                                    @endif
+                                    <div class="mt-2 text-center" style="font-size: 0.7rem;">
+                                        تم استخراج هذه الفاتورة من نظام EVIX ERP وتعتبر صالحة لأغراض ضريبة القيمة المضافة طبقاً
+                                        للوائح السعودية.
+                                    </div>
+                                </div>
+                            </div>
+
+                            
+                        @else
+                            <!-- ================== A4 DESIGN 1: CLASSIC SIMPLE PREVIEW (DEFAULT) ================== -->
+                            <div class="invoice-border shadow-sm">
+                                <!-- الرأس (Header) -->
+                                <div class="row align-items-center mb-5">
+                                    <div class="col-4 text-start">
+                                        @if($templateConfig['qr_size'] != 'none')
+                                            <div class="qr-container"
+                                                style="width: {{ $templateConfig['qr_size'] == 'small' ? '100px' : ($templateConfig['qr_size'] == 'large' ? '180px' : '140px') }}; height: {{ $templateConfig['qr_size'] == 'small' ? '100px' : ($templateConfig['qr_size'] == 'large' ? '180px' : '140px') }};">
+                                                <div
+                                                    style="width: 100%; height: 100%; background: #e5e7eb; display: flex; justify-content: center; align-items: center; color: #9ca3af; font-size: 0.8rem; font-weight: bold;">
+                                                    <img src="{{ (new \chillerlan\QRCode\QRCode(new \chillerlan\QRCode\QROptions(['addQuietzone' => false])))->render($previewData['qr_code'] ?? 'AQRFVklYAg8wMDAwMDAwMDAwMDAwMDADFDIwMjYtMDYtMjJUMDg6NTg6MDBaBAQyLjg4BQQwLjM4') }}" alt="QR" style="width: 100%; height: 100%;"></div>
+                                            </div>
+                                        @endif
+                                    </div>
+                                    <div class="col-4 text-center">
+                                        <h2 class="fw-bolder mb-1">
+                                            {{ $document_type == 'SalesInvoice' ? 'فاتورة ضريبية' : ($document_type == 'SalesReturn' ? 'مرتجع مبيعات' : ($document_type == 'PurchaseInvoice' ? 'فاتورة مشتريات' : 'عرض سعر')) }}
+                                        </h2>
+                                        @if($templateConfig['enable_english'])
+                                            <h5 class="text-muted mb-3">
+                                                {{ $document_type == 'SalesInvoice' ? 'Tax Invoice' : ($document_type == 'SalesReturn' ? 'Sales Return' : ($document_type == 'PurchaseInvoice' ? 'Purchase Invoice' : 'Quotation')) }}
+                                            </h5>
+                                        @endif
+                                        <div class="fw-bold fs-4">رقم الفاتورة: #{{ $previewData['invoice_number'] }}</div>
+                                        @if($templateConfig['show_order_number'])
+                                            <div class="fw-bold fs-5 mt-1">رقم الطلب: #ORD-505</div>
+                                        @endif
+                                        @if($templateConfig['show_small_barcode'])
+                                            <div class="d-inline-block p-1 border mt-1"
+                                                style="background: #fff; font-family: monospace; letter-spacing: 2px;">||||| BARCODE
+                                                |||||</div>
+                                        @endif
+                                    </div>
+                                    <div class="col-4 text-end">
+                                        @if($templateConfig['show_logo'])
+                                            <div class="mb-2">
+                                                <div
+                                                    style="width: 100px; height: 50px; background-color: #e5e7eb; display: inline-flex; justify-content: center; align-items: center; border-radius: 4px; color: #9ca3af; font-weight: bold; font-size: 0.8rem;">
+                                                    <img src="{{ $previewData['company_logo'] ?? '' }}" alt="Logo" style="max-height: 100%; max-width: 100%;"></div>
+                                            </div>
+                                        @endif
+                                        @if($templateConfig['show_company_name'])
+                                            <div class="fw-bolder fs-4 mb-1">{{ $previewData['organization_name'] }}</div>
+                                        @endif
+                                        @if($templateConfig['show_branch_name'])
+                                            <div class="fw-bold fs-6 mb-2 text-muted">{{ $previewData['branch_name'] }}</div>
+                                        @endif
+                                        @if($templateConfig['show_tax_number'])
+                                            <div class="small fw-bold">الرقم الضريبي (VAT ID):</div>
+                                            <div class="fw-bolder fs-4 border-bottom border-dark border-2 d-inline-block">
+                                                {{ $previewData['seller_vat'] }}</div>
+                                        @endif
+                                        @if($templateConfig['show_address'])
+                                            <div class="small mt-1">{{ $previewData['seller_address'] }}</div>
+                                        @endif
+                                    </div>
+                                </div>
+
+                                <div class="line-divider"></div>
+
+                                <!-- أطراف المعاملة -->
+                                <div class="row g-10 mb-5">
+                                    <div class="col-6">
+                                        @if($templateConfig['show_customer_data'])
+                                            <h6 class="fw-bolder border-bottom border-dark pb-1 mb-3">بيانات المشتري / Buyer Info
+                                            </h6>
+                                            <table class="w-100">
+                                                <tr>
+                                                    <td class="data-label" width="45%">الاسم / Name:</td>
+                                                    <td class="data-value fw-bolder">{{ $previewData['customer_name'] }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="data-label">الرقم الضريبي / VAT ID:</td>
+                                                    <td class="data-value">{{ $previewData['customer_tax'] }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="data-label">العنوان / Address:</td>
+                                                    <td class="data-value text-muted small">
+                                                        {{ $previewData['customer_address_full'] }}</td>
+                                                </tr>
+                                                @if($templateConfig['show_customer_phone'])
+                                                    <tr>
+                                                        <td class="data-label">الجوال / Phone:</td>
+                                                        <td class="data-value">{{ $previewData['customer_phone'] }}</td>
+                                                    </tr>
+                                                @endif
+                                                @if($templateConfig['show_customer_cr'])
+                                                    <tr>
+                                                        <td class="data-label">السجل التجاري / CR:</td>
+                                                        <td class="data-value">{{ $previewData['customer_cr'] }}</td>
+                                                    </tr>
+                                                @endif
+                                            </table>
+                                        @endif
+                                    </div>
+                                    <div class="col-6 text-end">
+                                        <h6 class="fw-bolder border-bottom border-dark pb-1 mb-3">بيانات الفاتورة / Invoice
+                                            Stats</h6>
+                                        <table class="w-100">
+                                            <tr>
+                                                <td class="data-label text-start" width="45%">تاريخ الفاتورة / Date:</td>
+                                                <td class="data-value text-start fw-bolder">{{ $previewData['issue_date'] }}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="data-label text-start">الفرع / Branch:</td>
+                                                <td class="data-value text-start">{{ $previewData['branch_name'] }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="data-label text-start">رقم الفاتورة (المرجع):</td>
+                                                <td class="data-value text-start fw-bold">
+                                                    #{{ $previewData['customer_invoice_number'] }}</td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <!-- جدول الأصناف -->
+                                <table class="table-zatca">
+                                    <thead>
+                                        <tr>
+                                            @if($templateConfig['show_item_number'])
+                                                <th width="5%">#</th>
+                                            @endif
+                                            @if($templateConfig['show_item_image'])
+                                                <th width="6%">صورة<br>Img</th>
+                                            @endif
+                                            <th width="15%">اسم الصنف<br>Item Name</th>
+                                            <th width="15%">الوصف<br>Description</th>
+                                            @if($templateConfig['show_item_unit'])
+                                                <th width="8%">الوحدة<br>Unit</th>
+                                            @endif
+                                            <th width="10%">سعر الوحدة<br>Unit Price</th>
+                                            <th width="10%">الكمية<br>Qty</th>
+                                            @if($templateConfig['show_item_discount'])
+                                                <th width="10%">الخصم<br>Discount</th>
+                                            @endif
+                                            @if($templateConfig['show_item_subtotal'])
+                                                <th width="10%">الخاضع للضريبة<br>Taxable Amt</th>
+                                            @endif
+                                            @if($templateConfig['show_item_tax_percent'])
+                                                <th width="5%">نسبة الضريبة<br>VAT %</th>
+                                            @endif
+                                            <th width="10%">مبلغ الضريبة<br>VAT Amt</th>
+                                            @if($templateConfig['show_item_total_with_tax'])
+                                                <th width="10%">الإجمالي<br>Total</th>
+                                            @endif
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($previewData['items'] as $item)
+                                            <tr>
+                                                @if($templateConfig['show_item_number'])
+                                                    <td>{{ $loop->iteration }}</td>
+                                                @endif
+                                                @if($templateConfig['show_item_image'])
+                                                    <td class="text-center">
+                                                        @if(!empty($item['image']))
+                                                            <img src="{{ $item['image'] }}" style="max-height: 40px; max-width: 40px;">
+                                                        @endif
+                                                    </td>
+                                                @endif
+                                                <td class="text-start">
+                                                    <div class="d-flex align-items-center">
+                                                        <div>
+                                                            <div class="fw-bold">{{ $item['product_name'] }}</div>
+                                                            @if($templateConfig['show_item_barcode'])
+                                                                <div class="d-flex align-items-center mt-1"
+                                                                    style="font-family: monospace; font-size: 0.75rem; letter-spacing: 1px;">
+                                                                    ||||| {{ $item['barcode'] }} |||||</div>
+                                                            @endif
+                                                            @if($templateConfig['show_item_options'])
+                                                                <div style="font-size: 0.8rem; color: #6b7280;">ملحقات: حقيبة وفأرة
+                                                                    لاسلكية</div>
+                                                            @endif
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td class="text-start">{{ $item['description'] }}</td>
+                                                @if($templateConfig['show_item_unit'])
+                                                    <td>{{ $item['unit_name'] }}</td>
+                                                @endif
+                                                <td>{{ $item['unit_price'] }}</td>
+                                                <td>{{ $item['quantity'] }}</td>
+                                                @if($templateConfig['show_item_discount'])
+                                                    <td class="text-danger small">{{ $item['discount'] }}</td>
+                                                @endif
+                                                @if($templateConfig['show_item_subtotal'])
+                                                    <td>{{ $item['unit_price'] }}</td>
+                                                @endif
+                                                @if($templateConfig['show_item_tax_percent'])
+                                                    <td>{{ $item['vat_rate'] }}%</td>
+                                                @endif
+                                                <td>{{ $item['vat_amount'] }}</td>
+                                                @if($templateConfig['show_item_total_with_tax'])
+                                                    <td class="fw-bolder">{{ $item['total'] }}</td>
+                                                @endif
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+
+                                <!-- الملخص المالي -->
+                                <div class="row mt-8 g-10 justify-content-end">
+                                    <div class="col-7 no-print">
+                                        @if($templateConfig['show_payment_status'])
+                                            <div class="mt-2">
+                                                <span class="fw-bold me-2" style="font-size: 0.85rem;">تفاصيل السداد:</span>
+                                                <span class="text-muted small">شبكة مدى / Mada</span>
+                                            </div>
+                                        @endif
+                                    </div>
+
+                                    <div class="col-5">
+                                        <table class="w-100 border border-dark border-2">
+                                            <tr>
+                                                <td
+                                                    class="p-2 border-bottom border-dark data-label bg-row text-start text-dark">
+                                                    الإجمالي (Excl. VAT)</td>
+                                                <td class="p-2 border-bottom border-dark text-end fw-bold">
+                                                    {{ $previewData['total_exclusive_vat'] }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td
+                                                    class="p-2 border-bottom border-dark data-label bg-row text-start text-dark">
+                                                    إجمالي الخصم (Discount)</td>
+                                                <td class="p-2 border-bottom border-dark text-end text-danger fw-bold">-
+                                                    {{ $previewData['total_discount'] }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td
+                                                    class="p-2 border-bottom border-dark data-label bg-row text-start text-dark">
+                                                    الضريبة (VAT 15%)</td>
+                                                <td class="p-2 border-bottom border-dark text-end fw-bold">+
+                                                    {{ $previewData['total_vat'] }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td
+                                                    class="p-2 border-bottom border-dark data-label bg-row text-start text-dark">
+                                                    مصاريف الشحن (Shipping)</td>
+                                                <td class="p-2 border-bottom border-dark text-end fw-bold">+
+                                                    {{ $previewData['shipping_cost'] }}</td>
+                                            </tr>
+                                            <tr style="background: #f0f0f0; color: #000; border-top: 2px solid #000;">
+                                                <td class="p-3 text-start fw-bolder fs-4">الإجمالي النهائي<br><small>Grand
+                                                        Total</small></td>
+                                                <td class="p-3 text-end fw-bolder fs-3">
+                                                    {{ $previewData['total_inclusive_vat'] }}</td>
+                                            </tr>
+                                        </table>
+                                        @if($templateConfig['show_total_in_words'])
+                                            <div class="mt-2 text-start fw-bold">فقط {{ $previewData['total_in_words'] }} لا غير
+                                            </div>
+                                        @endif
+                                    </div>
+                                </div>
+
+                                <!-- التذيل -->
+                                <div class="mt-8 text-center small text-muted no-print">
+                                    @if($templateConfig['show_invoice_description'])
+                                        <div class="mb-4 text-start p-3 border rounded bg-light text-dark text-wrap">
+                                            <strong>ملاحظات / الوصف:</strong> هذه مساحة مخصصة لوصف الفاتورة أو الشروط والأحكام
+                                            الخاصة بها...
+                                        </div>
+                                    @endif
+                                    <div class="line-divider"></div>
+                                    <div class="d-flex justify-content-between px-3 fw-bold text-dark">
+                                        @if($templateConfig['show_seller_name'])
+                                            <span>إنشاء: {{ $previewData['created_by_name'] }}</span>
+                                        @else
+                                            <span></span>
+                                        @endif
+                                        @if($templateConfig['show_payment_status'])
+                                            <span>الحالة: {{ $previewData['status_text'] }}</span>
+                                        @else
+                                            <span></span>
+                                        @endif
+                                    </div>
+                                    @if(!empty($templateConfig['small_receipt_notes']))
+                                        <div class="mt-3 text-center fw-semibold text-dark">
+                                            {{ $templateConfig['small_receipt_notes'] }}</div>
+                                    @endif
+                                    <div class="mt-2 text-center" style="font-size: 0.7rem;">
+                                        تم استخراج هذه الفاتورة من نظام EVIX ERP وتعتبر صالحة لأغراض ضريبة القيمة المضافة طبقاً
+                                        للوائح السعودية.
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
+                    </div>
+                @else
+                    <!-- Thermal Layout Preview -->
+                    <div class="saudi-invoice w-100" style="font-size: {{ $templateConfig['font_size'] ?? 12 }}px;">
+
+                        @if(($templateConfig['layout_design'] ?? 'design1') == 'design2')
+                            <!-- ================== THERMAL DESIGN 2: MODERN POS PREVIEW ================== -->
+                            <div class="invoice-border">
+                                <div class="text-center">
+                                    @if($templateConfig['show_logo'])
+                                        <div class="mb-2">
+                                            <div
+                                                style="width: 80px; height: 40px; background-color: #e5e7eb; display: inline-flex; justify-content: center; align-items: center; border-radius: 4px; color: #9ca3af; font-weight: bold; font-size: 0.7rem; margin: 0 auto;">
+                                                <img src="{{ $previewData['company_logo'] ?? '' }}" alt="Logo" style="max-height: 100%; max-width: 100%;"></div>
+                                        </div>
+                                    @endif
+                                    @if($templateConfig['show_company_name'])
+                                        <div class="fw-bolder fs-4 mb-1">{{ $previewData['organization_name'] }}</div>
+                                    @endif
+                                    @if($templateConfig['show_branch_name'])
+                                        <div class="fw-bold fs-6 mb-2 text-muted">{{ $previewData['branch_name'] }}</div>
+                                    @endif
+                                    @if($templateConfig['show_tax_number'])
+                                        <div class="small fw-bold">الرقم الضريبي (VAT ID): {{ $previewData['seller_vat'] }}</div>
+                                    @endif
+                                    @if($templateConfig['show_address'])
+                                        <div class="small mt-1 text-muted">{{ $previewData['seller_address'] }}</div>
+                                    @endif
+                                </div>
+
+                                <div class="text-center" style="margin-top: 15px;">
+                                    <div class="mock-thermal-d2-box"
+                                        style="width: auto; height: auto; border: 1px solid #000; border-radius: 4px; padding: 4px 10px; display: inline-block; font-weight: bold;">
+                                        {{ $document_type == 'SalesInvoice' ? 'فاتورة ضريبية مبسطة' : ($document_type == 'SalesReturn' ? 'مرتجع مبسط' : ($document_type == 'PurchaseInvoice' ? 'فاتورة مشتريات مبسطة' : 'عرض سعر مبسط')) }}
+                                    </div>
+                                    @if($templateConfig['enable_english'])
+                                        <h5 class="text-muted mb-2 mt-1" style="font-size: 0.9rem;">
+                                            {{ $document_type == 'SalesInvoice' ? 'Simplified Tax Invoice' : ($document_type == 'SalesReturn' ? 'Simplified Return' : ($document_type == 'PurchaseInvoice' ? 'Simplified Purchase Invoice' : 'Simplified Quotation')) }}
+                                        </h5>
+                                    @endif
+                                </div>
+
+                                <div style="border-top: 1px dotted #000; margin: 10px 0;"></div>
+
+                                <div style="font-size: 0.8rem; margin-bottom: 10px;">
+                                    <table class="w-100">
+                                        <tr>
+                                            <td class="data-label" width="40%">رقم الفاتورة:</td>
+                                            <td class="data-value fw-bold">#{{ $previewData['invoice_number'] }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="data-label">تاريخ الإصدار:</td>
+                                            <td class="data-value">{{ $previewData['issue_date'] }}</td>
+                                        </tr>
+                                    </table>
+                                </div>
+
+                                @if($templateConfig['show_customer_data'])
+                                    <div style="margin-bottom: 10px; border-bottom: 1px dashed #000; padding-bottom: 10px; font-size: 0.8rem;">
+                                        <div class="fw-bold mb-2">بيانات المشتري / Buyer Info:</div>
+                                        <table class="w-100">
+                                            <tr>
+                                                <td class="data-label text-right" width="40%">الاسم / Name:</td>
+                                                <td class="data-value text-left fw-bolder">{{ $previewData['customer_name'] }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="data-label text-right">الرقم الضريبي / VAT ID:</td>
+                                                <td class="data-value text-left">{{ $previewData['customer_tax'] }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="data-label text-right">العنوان / Address:</td>
+                                                <td class="data-value text-left text-muted" style="font-size: 0.75rem;">{{ $previewData['customer_address_full'] }}</td>
+                                            </tr>
+                                            @if($templateConfig['show_customer_phone'])
+                                                <tr><td class="data-label text-right">الجوال / Phone:</td><td class="data-value text-left">{{ $previewData['customer_phone'] }}</td></tr>
+                                            @endif
+                                            @if($templateConfig['show_customer_cr'])
+                                                <tr><td class="data-label text-right">السجل التجاري / CR:</td><td class="data-value text-left">{{ $previewData['customer_cr'] }}</td></tr>
+                                            @endif
+                                        </table>
+                                    </div>
+                                @endif
+
+                                <table class="table-zatca">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-right" width="50%">الصنف / Item</th>
+                                            <th class="text-center" width="25%">الكمية × السعر</th>
+                                            @if($templateConfig['show_item_total_with_tax'])
+                                            <th class="text-left" width="25%">الإجمالي / Total</th>
+                                            @else
+                                            <th class="text-left" width="25%"></th>
+                                            @endif
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($previewData['items'] as $item)
+                                            <tr>
+                                                <td class="text-right">
+                                                    @if($templateConfig['show_item_number'])<span class="me-1">{{ $loop->iteration }} -</span>@endif<strong>{{ $item['product_name'] }}</strong>
+                                                    @if($templateConfig['show_item_image'] && !empty($item['image']))
+                                                    <div class="mt-1 mb-1"><img src="{{ $item['image'] }}" style="max-height: 25px; max-width: 25px; object-fit: contain; border-radius: 2px;"></div>
+                                                    @endif
+                                                    @if($templateConfig['show_item_barcode'])
+                                                        <div class="small text-muted" style="font-family: monospace;">|||
+                                                            {{ $item['barcode'] }} |||</div>
+                                                    @endif
+                                                    @if($templateConfig['show_item_discount'])
+                                                        <div style="font-size: 0.75rem; color: #dc3545;">خصم: {{ $item['discount'] }}</div>
+                                                    @endif
+                                                    @if($templateConfig['show_item_subtotal'])
+                                                        <div style="font-size: 0.75rem; color: #6b7280;">الخاضع للضريبة: {{ $item['unit_price'] }}</div>
+                                                    @endif
+                                                    @if($templateConfig['show_item_tax_percent'])
+                                                        <div style="font-size: 0.75rem; color: #6b7280;">ضريبة: {{ $item['vat_rate'] }}%</div>
+                                                    @endif
+                                                </td>
+                                                <td class="text-center" style="font-size: 0.8rem;">
+                                                    <div class="fw-bold">x 1.00@if($templateConfig['show_item_unit']) {{ $item['unit_name'] }}@endif</div>
+                                                    <span class="text-muted">{{ $item['unit_price'] }}</span>
+                                                </td>
+                                                <td class="text-left fw-bold">@if($templateConfig['show_item_total_with_tax']){{ $item['total'] }}@endif</td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+
+                                <div
+                                    style="font-size: 0.85rem; margin-top: 10px; border-top: 1px dotted #000; padding-top: 8px;">
+                                    <table class="w-100">
+                                        <tr>
+                                            <td class="text-right" width="60%">الإجمالي قبل الضريبة</td>
+                                            <td class="text-left fw-bold">3,000.00</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-right">إجمالي الخصم</td>
+                                            <td class="text-left text-danger fw-bold">- {{ $previewData['total_discount'] }}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-right">الضريبة 15%</td>
+                                            <td class="text-left fw-bold">+ 450.00</td>
+                                        </tr>
+                                        <tr style="border-top: 1px dotted #000; font-size: 1rem;">
+                                            <td class="text-right fw-bold" style="padding-top: 6px;">الإجمالي النهائي</td>
+                                            <td class="text-left fw-bold" style="padding-top: 6px;">3,450.00</td>
+                                        </tr>
+                                    </table>
+                                </div>
+
+                                <div class="mt-4 text-center small text-muted">
+                                    <div style="border-top: 1px dotted #000; margin: 10px 0;"></div>
+                                    @if($templateConfig['qr_size'] != 'none')
+                                        <div class="qr-container"
+                                            style="width: {{ $templateConfig['qr_size'] == 'small' ? '80px' : ($templateConfig['qr_size'] == 'large' ? '140px' : '110px') }}; height: {{ $templateConfig['qr_size'] == 'small' ? '80px' : ($templateConfig['qr_size'] == 'large' ? '140px' : '110px') }}; margin: 10px auto;">
+                                            <div
+                                                style="width: 100%; height: 100%; background: #e5e7eb; display: flex; justify-content: center; align-items: center; color: #9ca3af; font-size: 0.7rem; font-weight: bold; border: 1px solid #ddd;">
+                                                <img src="{{ (new \chillerlan\QRCode\QRCode(new \chillerlan\QRCode\QROptions(['addQuietzone' => false])))->render($previewData['qr_code'] ?? 'AQRFVklYAg8wMDAwMDAwMDAwMDAwMDADFDIwMjYtMDYtMjJUMDg6NTg6MDBaBAQyLjg4BQQwLjM4') }}" alt="QR" style="width: 100%; height: 100%;"></div>
+                                        </div>
+                                    @endif
+                                    @if(!empty($templateConfig['small_receipt_notes']))
+                                        <div class="mt-2 text-center" style="font-size: 0.8rem; font-weight: 600; color: #000;">
+                                            {{ $templateConfig['small_receipt_notes'] }}</div>
+                                    @endif
+                                </div>
+                            </div>
+
+                        @elseif(($templateConfig['layout_design'] ?? 'design1') == 'design3')
+                            <!-- ================== THERMAL DESIGN 3: COMPACT RESTAURANT PREVIEW ================== -->
+                            <div class="invoice-border" style="border: 1px dashed #000; padding: 8px; border-radius: 4px;">
+                                <!-- Prominent Order Header -->
+                                <div class="text-center"
+                                    style="border-bottom: 2px dashed #000; padding-bottom: 8px; margin-bottom: 10px;">
+                                    <h1 class="mb-1 fw-bolder" style="font-size: 1.8rem;">طلب
+                                        #{{ $previewData['invoice_number'] }}</h1>
+                                    <div class="small fw-bold">تاريخ: {{ $previewData['issue_date'] }}</div>
+                                    <div class="small mt-1">كاشير: {{ $previewData['created_by_name'] }}</div>
+                                </div>
+
+                                <div class="text-center mb-3">
+                                    @if($templateConfig['show_logo'])
+                                        <div class="mb-2">
+                                            <div
+                                                style="width: 80px; height: 35px; background-color: #e5e7eb; display: inline-flex; justify-content: center; align-items: center; border-radius: 4px; color: #9ca3af; font-weight: bold; font-size: 0.7rem; margin: 0 auto;">
+                                                <img src="{{ $previewData['company_logo'] ?? '' }}" alt="Logo" style="max-height: 100%; max-width: 100%;"></div>
+                                        </div>
+                                    @endif
+                                    @if($templateConfig['show_company_name'])
+                                        <div class="fw-bolder fs-5 mb-1">{{ $previewData['organization_name'] }}</div>
+                                    @endif
+                                    @if($templateConfig['show_branch_name'])
+                                        <div class="fw-bold fs-7 mb-2 text-muted">{{ $previewData['branch_name'] }}</div>
+                                    @endif
+                                    @if($templateConfig['show_tax_number'])
+                                        <div class="small fw-bold">الرقم الضريبي (VAT): {{ $previewData['seller_vat'] }}</div>
+                                    @endif
+                                    @if($templateConfig['show_address'])
+                                        <div class="small mt-1 text-center text-muted">{{ $previewData['seller_address'] }}</div>
+                                    @endif
+                                </div>`n`n                                <div class="text-center mb-3">`n                                    <h2 class="fw-bolder mb-1" style="font-size: 1.1rem;">`n                                        {{ $document_type == 'SalesInvoice' ? '?????? ?????? ?????' : ($document_type == 'SalesReturn' ? '????? ????' : ($document_type == 'PurchaseInvoice' ? '?????? ??????? ?????' : '??? ??? ????')) }}`n                                    </h2>`n                                    @if($templateConfig['enable_english'])`n                                        <h5 class="text-muted mb-2" style="font-size: 0.9rem;">`n                                            {{ $document_type == 'SalesInvoice' ? 'Simplified Tax Invoice' : ($document_type == 'SalesReturn' ? 'Simplified Return' : ($document_type == 'PurchaseInvoice' ? 'Simplified Purchase Invoice' : 'Simplified Quotation')) }}`n                                        </h5>`n                                    @endif`n                                </div>
+
+                                @if($templateConfig['show_customer_data'])
+                                    <div style="margin-bottom: 10px; border-bottom: 1px dashed #000; padding-bottom: 10px; font-size: 0.8rem;">
+                                        <div class="fw-bold mb-2">بيانات المشتري / Buyer Info:</div>
+                                        <table class="w-100">
+                                            <tr>
+                                                <td class="data-label text-right" width="40%">الاسم / Name:</td>
+                                                <td class="data-value text-left fw-bolder">{{ $previewData['customer_name'] }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="data-label text-right">الرقم الضريبي / VAT ID:</td>
+                                                <td class="data-value text-left">{{ $previewData['customer_tax'] }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="data-label text-right">العنوان / Address:</td>
+                                                <td class="data-value text-left text-muted" style="font-size: 0.75rem;">{{ $previewData['customer_address_full'] }}</td>
+                                            </tr>
+                                            @if($templateConfig['show_customer_phone'])
+                                                <tr><td class="data-label text-right">الجوال / Phone:</td><td class="data-value text-left">{{ $previewData['customer_phone'] }}</td></tr>
+                                            @endif
+                                            @if($templateConfig['show_customer_cr'])
+                                                <tr><td class="data-label text-right">السجل التجاري / CR:</td><td class="data-value text-left">{{ $previewData['customer_cr'] }}</td></tr>
+                                            @endif
+                                        </table>
+                                    </div>
+                                @endif
+
+                                <table class="table-zatca" style="margin-top: 8px;">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-right"
+                                                style="border-bottom: 2px dashed #000; border-top: 2px dashed #000; padding: 5px 2px;"
+                                                width="60%">العنصر / Item</th>
+                                            <th class="text-center"
+                                                style="border-bottom: 2px dashed #000; border-top: 2px dashed #000; padding: 5px 2px;"
+                                                width="20%">الكمية</th>
+                                            @if($templateConfig['show_item_total_with_tax'])
+                                            <th class="text-left"
+                                                style="border-bottom: 2px dashed #000; border-top: 2px dashed #000; padding: 5px 2px;"
+                                                width="20%">المجموع</th>
+                                            @else
+                                            <th class="text-left"
+                                                style="border-bottom: 2px dashed #000; border-top: 2px dashed #000; padding: 5px 2px;"
+                                                width="20%"></th>
+                                            @endif
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($previewData['items'] as $item)
+                                            <tr>
+                                                <td class="text-right">
+                                                    @if($templateConfig['show_item_number'])<span class="me-1">{{ $loop->iteration }} -</span>@endif<strong>{{ $item['product_name'] }}</strong>
+                                                    @if($templateConfig['show_item_image'] && !empty($item['image']))
+                                                    <div class="mt-1 mb-1"><img src="{{ $item['image'] }}" style="max-height: 25px; max-width: 25px; object-fit: contain; border-radius: 2px;"></div>
+                                                    @endif
+                                                    @if($templateConfig['show_item_barcode'])
+                                                        <div class="small text-muted" style="font-family: monospace;">|||
+                                                            {{ $item['barcode'] }} |||</div>
+                                                    @endif
+                                                    @if($templateConfig['show_item_discount'])
+                                                        <div style="font-size: 0.75rem; color: #dc3545;">خصم: {{ $item['discount'] }}</div>
+                                                    @endif
+                                                    @if($templateConfig['show_item_subtotal'])
+                                                        <div style="font-size: 0.75rem; color: #6b7280;">الخاضع للضريبة: {{ $item['unit_price'] }}</div>
+                                                    @endif
+                                                    @if($templateConfig['show_item_tax_percent'])
+                                                        <div style="font-size: 0.75rem; color: #6b7280;">ضريبة: {{ $item['vat_rate'] }}%</div>
+                                                    @endif
+                                                </td>
+                                                <td class="text-center"><div class="fw-bold">1.00@if($templateConfig['show_item_unit']){{ $item['unit_name'] }}@endif</div></td>
+                                                <td class="text-left fw-bold">@if($templateConfig['show_item_total_with_tax']){{ $item['total'] }}@endif</td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+
+                                <div style="font-size: 0.85rem; margin-top: 8px;">
+                                    <table class="w-100">
+                                        <tr>
+                                            <td class="text-right" width="60%">إجمالي غير شامل الضريبة</td>
+                                            <td class="text-left">3,000.00</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-right">الضريبة 15%:</td>
+                                            <td class="text-left">+ 450.00</td>
+                                        </tr>
+                                        <tr style="border-top: 2px dashed #000; font-size: 1.1rem;">
+                                            <td class="text-right fw-bold" style="padding-top: 6px;">الصافي النهائي:</td>
+                                            <td class="text-left fw-bold" style="padding-top: 6px;">3,450.00</td>
+                                        </tr>
+                                    </table>
+                                </div>
+
+                                <div class="text-center small text-muted mt-4">
+                                    <div style="border-top: 2px dashed #000; margin: 8px 0;"></div>
+                                    @if($templateConfig['qr_size'] != 'none')
+                                        <div class="qr-container" style="width: 100px; height: 100px; margin: 10px auto;">
+                                            <div
+                                                style="width: 100%; height: 100%; background: #e5e7eb; display: flex; justify-content: center; align-items: center; color: #9ca3af; font-size: 0.7rem; font-weight: bold; border: 1px solid #ddd;">
+                                                <img src="{{ (new \chillerlan\QRCode\QRCode(new \chillerlan\QRCode\QROptions(['addQuietzone' => false])))->render($previewData['qr_code'] ?? 'AQRFVklYAg8wMDAwMDAwMDAwMDAwMDADFDIwMjYtMDYtMjJUMDg6NTg6MDBaBAQyLjg4BQQwLjM4') }}" alt="QR" style="width: 100%; height: 100%;"></div>
+                                        </div>
+                                    @endif
+                                    @if(!empty($templateConfig['small_receipt_notes']))
+                                        <div class="mt-2 text-center" style="font-size: 0.8rem;">
+                                            {{ $templateConfig['small_receipt_notes'] }}</div>
+                                    @endif
+                                </div>
+                            </div>
+
+                        @else
+                            <!-- ================== THERMAL DESIGN 1: CLASSIC RECEIPT PREVIEW (DEFAULT) ================== -->
+                            <div class="invoice-border shadow-sm">
+                                <!-- الرأس (Header) - Centered Stacked -->
+                                <div class="text-center">
+                                    @if($templateConfig['show_logo'])
+                                        <div class="mb-2">
+                                            <div
+                                                style="width: 80px; height: 40px; background-color: #e5e7eb; display: inline-flex; justify-content: center; align-items: center; border-radius: 4px; color: #9ca3af; font-weight: bold; font-size: 0.7rem; margin: 0 auto;">
+                                                <img src="{{ $previewData['company_logo'] ?? '' }}" alt="Logo" style="max-height: 100%; max-width: 100%;"></div>
+                                        </div>
+                                    @endif
+                                    @if($templateConfig['show_company_name'])
+                                        <div class="fw-bolder fs-4 mb-1">{{ $previewData['organization_name'] }}</div>
+                                    @endif
+                                    @if($templateConfig['show_branch_name'])
+                                        <div class="fw-bold fs-6 mb-2 text-muted">{{ $previewData['branch_name'] }}</div>
+                                    @endif
+                                    @if($templateConfig['show_tax_number'])
+                                        <div class="small fw-bold">الرقم الضريبي (VAT ID): {{ $previewData['seller_vat'] }}</div>
+                                    @endif
+                                    @if($templateConfig['show_address'])
+                                        <div class="small mt-1 text-muted">{{ $previewData['seller_address'] }}</div>
+                                    @endif
+                                </div>
+
+                                <div class="text-center" style="margin-top: 15px;">
+                                    <h2 class="fw-bolder mb-1" style="font-size: 1.15rem;">
+                                        {{ $document_type == 'SalesInvoice' ? 'فاتورة ضريبية مبسطة' : ($document_type == 'SalesReturn' ? 'مرتجع مبسط' : ($document_type == 'PurchaseInvoice' ? 'فاتورة مشتريات مبسطة' : 'عرض سعر مبسط')) }}
+                                    </h2>
+                                    @if($templateConfig['enable_english'])
+                                        <h5 class="text-muted mb-2" style="font-size: 0.9rem;">
+                                            {{ $document_type == 'SalesInvoice' ? 'Simplified Tax Invoice' : ($document_type == 'SalesReturn' ? 'Simplified Return' : ($document_type == 'PurchaseInvoice' ? 'Simplified Purchase Invoice' : 'Simplified Quotation')) }}
+                                        </h5>
+                                    @endif
+                                </div>
+
+                                <div class="line-divider"></div>
+
+                                <!-- بيانات الفاتورة الأساسية -->
+                                <div style="font-size: 0.8rem; margin-bottom: 10px;">
+                                    <table class="w-100">
+                                        <tr>
+                                            <td class="data-label" width="40%">رقم الفاتورة:</td>
+                                            <td class="data-value fw-bold">#{{ $previewData['invoice_number'] }}</td>
+                                        </tr>
+                                        @if($templateConfig['show_order_number'])
+                                            <tr>
+                                                <td class="data-label">رقم الطلب:</td>
+                                                <td class="data-value fw-bold">#ORD-505</td>
+                                            </tr>
+                                        @endif
+                                        <tr>
+                                            <td class="data-label">تاريخ الإصدار:</td>
+                                            <td class="data-value">{{ $previewData['issue_date'] }}</td>
+                                        </tr>
+                                    </table>
+                                </div>
+
+                                @if($templateConfig['show_customer_data'])
+                                    <div
+                                        style="margin-bottom: 10px; border-top: 1px dashed #000; padding-top: 10px; font-size: 0.8rem;">
+                                        <div class="fw-bold" style="margin-bottom: 4px;">بيانات العميل:</div>
+                                        <table class="w-100">
+                                            <tr>
+                                                <td class="data-label" width="40%">الاسم:</td>
+                                                <td class="data-value fw-bold">{{ $previewData['customer_name'] }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="data-label">الرقم الضريبي:</td>
+                                                <td class="data-value">{{ $previewData['customer_tax'] }}</td>
+                                            </tr>
+                                            @if($templateConfig['show_customer_phone'])
+                                                <tr>
+                                                    <td class="data-label">الجوال:</td>
+                                                    <td class="data-value">{{ $previewData['customer_phone'] }}</td>
+                                                </tr>
+                                            @endif
+                                            @if($templateConfig['show_customer_cr'])
+                                                <tr>
+                                                    <td class="data-label">السجل التجاري:</td>
+                                                    <td class="data-value">{{ $previewData['customer_cr'] }}</td>
+                                                </tr>
+                                            @endif
+                                        </table>
+                                    </div>
+                                @endif
+
+                                <!-- جدول الأصناف POS (3 أعمدة فقط) -->
+                                <table class="table-zatca">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-right" width="50%">الصنف / Item</th>
+                                            <th class="text-center" width="25%">الكمية × السعر</th>
+                                            @if($templateConfig['show_item_total_with_tax'])
+                                            <th class="text-left" width="25%">الإجمالي / Total</th>
+                                            @else
+                                            <th class="text-left" width="25%"></th>
+                                            @endif
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($previewData['items'] as $item)
+                                            <tr>
+                                                <td class="text-right">
+                                                    @if($templateConfig['show_item_number'])<span class="me-1">{{ $loop->iteration }} -</span>@endif<strong>{{ $item['product_name'] }}</strong>
+                                                    @if($templateConfig['show_item_image'] && !empty($item['image']))
+                                                    <div class="mt-1 mb-1"><img src="{{ $item['image'] }}" style="max-height: 25px; max-width: 25px; object-fit: contain; border-radius: 2px;"></div>
+                                                    @endif
+                                                    @if($templateConfig['show_item_barcode'])
+                                                        <div class="small text-muted" style="font-family: monospace;">|||
+                                                            {{ $item['barcode'] }} |||</div>
+                                                    @endif
+                                                    @if($templateConfig['show_item_discount'])
+                                                        <div style="font-size: 0.75rem; color: #dc3545;">خصم: {{ $item['discount'] }}</div>
+                                                    @endif
+                                                    @if($templateConfig['show_item_subtotal'])
+                                                        <div style="font-size: 0.75rem; color: #6b7280;">الخاضع للضريبة: {{ $item['unit_price'] }}</div>
+                                                    @endif
+                                                    @if($templateConfig['show_item_tax_percent'])
+                                                        <div style="font-size: 0.75rem; color: #6b7280;">ضريبة: {{ $item['vat_rate'] }}%</div>
+                                                    @endif
+                                                </td>
+                                                <td class="text-center" style="font-size: 0.8rem;">
+                                                    <div class="fw-bold">1.00@if($templateConfig['show_item_unit']) {{ $item['unit_name'] }}@endif</div>
+                                                </td>
+                                                <td class="text-left fw-bold">@if($templateConfig['show_item_total_with_tax']){{ $item['total'] }}@endif</td>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+
+                                <!-- الملخص المالي -->
+                                <div
+                                    style="font-size: 0.85rem; margin-top: 10px; border-top: 1px dashed #000; padding-top: 8px;">
+                                    <table class="w-100">
+                                        <tr>
+                                            <td class="text-right" width="60%">الإجمالي قبل الضريبة (Excl. VAT)</td>
+                                            <td class="text-left fw-bold">{{ $previewData['total_exclusive_vat'] }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-right">إجمالي الخصم (Discount)</td>
+                                            <td class="text-left text-danger fw-bold">- {{ $previewData['total_discount'] }}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-right">الضريبة 15% (VAT)</td>
+                                            <td class="text-left fw-bold">+ {{ $previewData['total_vat'] }}</td>
+                                        </tr>
+                                        <tr style="border-top: 1px dashed #000; font-size: 1rem;">
+                                            <td class="text-right fw-bold" style="padding-top: 6px;">الإجمالي النهائي (Grand
+                                                Total)</td>
+                                            <td class="text-left fw-bold" style="padding-top: 6px;">
+                                                {{ $previewData['total_inclusive_vat'] }}</td>
+                                        </tr>
+                                    </table>
+                                    @if($templateConfig['show_total_in_words'])
+                                        <div class="mt-2 text-start fw-bold" style="font-size: 0.8rem;">فقط
+                                            {{ $previewData['total_in_words'] }} لا غير</div>
+                                    @endif
+                                </div>
+
+                                <!-- التذيل -->
+                                <div class="mt-4 text-center small text-muted">
+                                    <div class="line-divider"></div>
+                                    @if($templateConfig['qr_size'] != 'none')
+                                        <div class="text-center">
+                                            <div class="qr-container"
+                                                style="width: {{ $templateConfig['qr_size'] == 'small' ? '80px' : ($templateConfig['qr_size'] == 'large' ? '140px' : '110px') }}; height: {{ $templateConfig['qr_size'] == 'small' ? '80px' : ($templateConfig['qr_size'] == 'large' ? '140px' : '110px') }}; margin: 10px auto; border: none !important;">
+                                                <div
+                                                    style="width: 100%; height: 100%; background: #e5e7eb; display: flex; justify-content: center; align-items: center; color: #9ca3af; font-size: 0.7rem; font-weight: bold; border: 1px solid #ddd;">
+                                                    <img src="{{ (new \chillerlan\QRCode\QRCode(new \chillerlan\QRCode\QROptions(['addQuietzone' => false])))->render($previewData['qr_code'] ?? 'AQRFVklYAg8wMDAwMDAwMDAwMDAwMDADFDIwMjYtMDYtMjJUMDg6NTg6MDBaBAQyLjg4BQQwLjM4') }}" alt="QR" style="width: 100%; height: 100%;"></div>
+                                            </div>
+                                        </div>
+                                    @endif
+                                    @if($templateConfig['show_small_barcode'])
+                                        <div class="text-center my-2"
+                                            style="font-family: monospace; font-size: 0.7rem; letter-spacing: 1px;">|||||| BARCODE
+                                            ||||||</div>
+                                    @endif
+                                    @if($templateConfig['show_invoice_description'])
+                                        <div class="mt-2 text-center text-dark"
+                                            style="font-size: 0.8rem; font-weight: 600; border-top: 1px dashed #000; padding-top: 5px;">
+                                            هذه مساحة مخصصة لوصف الفاتورة أو الشروط والأحكام الخاصة بها...
+                                        </div>
+                                    @endif
+                                    @if(!empty($templateConfig['small_receipt_notes']))
+                                        <div class="mt-2 text-center" style="font-size: 0.8rem; color: #000; font-weight: 600;">
+                                            {{ $templateConfig['small_receipt_notes'] }}</div>
+                                    @else
+                                        <div class="mt-2 text-center" style="font-size: 0.75rem;">
+                                            فاتورة ضريبية مبسطة {{ $previewData['status_text'] }} من هيئة الزكاة والضريبة
+                                            والجمارك<br>
+                                            Simplified Tax Invoice approved by ZATCA
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
+                        @endif
+                    </div>
+                @endif
+            </div> <!-- Close invoice-preview-wrapper -->
+        </div> <!-- Close tb-preview-area -->
+
+        <!-- Sidebar (Settings) -->
+        <div class="tb-sidebar">
+            <div class="tb-sidebar-header">
+                {{ __('models/Templates.builder.template_settings') }}
+            </div>
+
+            <!-- Header Section -->
+            <div class="tb-section" x-data="{ open: true }">
+                <div class="tb-section-title" @click="open = !open">
+                    <span><i class="fa fa-window-maximize text-muted me-2" style="width: 16px;"></i>
+                        {{ __('models/Templates.builder.section_header') }}</span>
+                    <i class="fa" :class="open ? 'fa-chevron-up text-primary' : 'fa-chevron-down text-muted'"
+                        style="font-size: 0.8rem;"></i>
+                </div>
+
+                <div x-show="open" x-collapse>
+                    <label class="tb-toggle-row">
+                        <span class="tb-toggle-label">{{ __('models/Templates.builder.show_logo') }}</span>
+                        <div class="toggle-switch">
+                            <input type="checkbox" wire:model.live="templateConfig.show_logo">
+                            <span class="slider"></span>
+                        </div>
+                    </label>
+
+                    <label class="tb-toggle-row">
+                        <span class="tb-toggle-label">{{ __('models/Templates.builder.show_company_name') }}</span>
+                        <div class="toggle-switch">
+                            <input type="checkbox" wire:model.live="templateConfig.show_company_name">
+                            <span class="slider"></span>
+                        </div>
+                    </label>
+
+                    <label class="tb-toggle-row">
+                        <span class="tb-toggle-label">{{ __('models/Templates.builder.enable_english') }}</span>
+                        <div class="toggle-switch">
+                            <input type="checkbox" wire:model.live="templateConfig.enable_english">
+                            <span class="slider"></span>
+                        </div>
+                    </label>
+
+                    <label class="tb-toggle-row">
+                        <span class="tb-toggle-label">{{ __('models/Templates.builder.show_tax_number') }}</span>
+                        <div class="toggle-switch">
+                            <input type="checkbox" wire:model.live="templateConfig.show_tax_number">
+                            <span class="slider"></span>
+                        </div>
+                    </label>
+
+                    <label class="tb-toggle-row">
+                        <span class="tb-toggle-label">{{ __('models/Templates.builder.show_address') }}</span>
+                        <div class="toggle-switch">
+                            <input type="checkbox" wire:model.live="templateConfig.show_address">
+                            <span class="slider"></span>
+                        </div>
+                    </label>
+
+                    <label class="tb-toggle-row">
+                        <span class="tb-toggle-label">{{ __('models/Templates.builder.show_order_number') }}</span>
+                        <div class="toggle-switch">
+                            <input type="checkbox" wire:model.live="templateConfig.show_order_number">
+                            <span class="slider"></span>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Customer Section -->
+            <div class="tb-section" x-data="{ open: false }">
+                <div class="tb-section-title" @click="open = !open">
+                    <span><i class="fa fa-user-tag text-muted me-2" style="width: 16px;"></i>
+                        {{ __('models/Templates.builder.section_customer') }}</span>
+                    <i class="fa" :class="open ? 'fa-chevron-up text-primary' : 'fa-chevron-down text-muted'"
+                        style="font-size: 0.8rem;"></i>
+                </div>
+
+                <div x-show="open" x-collapse>
+                    <label class="tb-toggle-row">
+                        <span class="tb-toggle-label">{{ __('models/Templates.builder.show_customer_data') }}</span>
+                        <div class="toggle-switch">
+                            <input type="checkbox" wire:model.live="templateConfig.show_customer_data">
+                            <span class="slider"></span>
+                        </div>
+                    </label>
+
+                    <label class="tb-toggle-row">
+                        <span class="tb-toggle-label">{{ __('models/Templates.builder.show_customer_phone') }}</span>
+                        <div class="toggle-switch">
+                            <input type="checkbox" wire:model.live="templateConfig.show_customer_phone">
+                            <span class="slider"></span>
+                        </div>
+                    </label>
+
+                    <label class="tb-toggle-row">
+                        <span class="tb-toggle-label">{{ __('models/Templates.builder.show_customer_cr') }}</span>
+                        <div class="toggle-switch">
+                            <input type="checkbox" wire:model.live="templateConfig.show_customer_cr">
+                            <span class="slider"></span>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Products Section -->
+            <div class="tb-section" x-data="{ open: false }">
+                <div class="tb-section-title" @click="open = !open">
+                    <span><i class="fa fa-box-open text-muted me-2" style="width: 16px;"></i>
+                        {{ __('models/Templates.builder.section_products') }}</span>
+                    <i class="fa" :class="open ? 'fa-chevron-up text-primary' : 'fa-chevron-down text-muted'"
+                        style="font-size: 0.8rem;"></i>
+                </div>
+
+                <div x-show="open" x-collapse>
+                    <label class="tb-toggle-row">
+                        <span class="tb-toggle-label">{{ __('models/Templates.builder.show_item_number') }}</span>
+                        <div class="toggle-switch">
+                            <input type="checkbox" wire:model.live="templateConfig.show_item_number">
+                            <span class="slider"></span>
+                        </div>
+                    </label>
+
+                    <label class="tb-toggle-row">
+                        <span class="tb-toggle-label">{{ __('models/Templates.builder.show_item_barcode') }}</span>
+                        <div class="toggle-switch">
+                            <input type="checkbox" wire:model.live="templateConfig.show_item_barcode">
+                            <span class="slider"></span>
+                        </div>
+                    </label>
+
+                    <label class="tb-toggle-row">
+                        <span class="tb-toggle-label">{{ __('models/Templates.builder.show_item_image') }}</span>
+                        <div class="toggle-switch">
+                            <input type="checkbox" wire:model.live="templateConfig.show_item_image">
+                            <span class="slider"></span>
+                        </div>
+                    </label>
+
+                    <label class="tb-toggle-row">
+                        <span class="tb-toggle-label">{{ __('models/Templates.builder.show_item_unit') }}</span>
+                        <div class="toggle-switch">
+                            <input type="checkbox" wire:model.live="templateConfig.show_item_unit">
+                            <span class="slider"></span>
+                        </div>
+                    </label>
+
+                    <label class="tb-toggle-row">
+                        <span class="tb-toggle-label">{{ __('models/Templates.builder.show_item_discount') }}</span>
+                        <div class="toggle-switch">
+                            <input type="checkbox" wire:model.live="templateConfig.show_item_discount">
+                            <span class="slider"></span>
+                        </div>
+                    </label>
+
+                    <label class="tb-toggle-row">
+                        <span class="tb-toggle-label">{{ __('models/Templates.builder.show_item_tax_percent') }}</span>
+                        <div class="toggle-switch">
+                            <input type="checkbox" wire:model.live="templateConfig.show_item_tax_percent">
+                            <span class="slider"></span>
+                        </div>
+                    </label>
+
+                    <label class="tb-toggle-row">
+                        <span class="tb-toggle-label">{{ __('models/Templates.builder.show_item_subtotal') }}</span>
+                        <div class="toggle-switch">
+                            <input type="checkbox" wire:model.live="templateConfig.show_item_subtotal">
+                            <span class="slider"></span>
+                        </div>
+                    </label>
+
+                    <label class="tb-toggle-row">
+                        <span
+                            class="tb-toggle-label">{{ __('models/Templates.builder.show_item_total_with_tax') }}</span>
+                        <div class="toggle-switch">
+                            <input type="checkbox" wire:model.live="templateConfig.show_item_total_with_tax">
+                            <span class="slider"></span>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Footer Section -->
+            <div class="tb-section" x-data="{ open: false }">
+                <div class="tb-section-title" @click="open = !open">
+                    <span><i class="fa fa-window-minimize text-muted me-2" style="width: 16px;"></i>
+                        {{ __('models/Templates.builder.section_footer') }}</span>
+                    <i class="fa" :class="open ? 'fa-chevron-up text-primary' : 'fa-chevron-down text-muted'"
+                        style="font-size: 0.8rem;"></i>
+                </div>
+
+                <div x-show="open" x-collapse>
+                    <label class="tb-toggle-row">
+                        <span class="tb-toggle-label">{{ __('models/Templates.builder.show_total_in_words') }}</span>
+                        <div class="toggle-switch">
+                            <input type="checkbox" wire:model.live="templateConfig.show_total_in_words">
+                            <span class="slider"></span>
+                        </div>
+                    </label>
+
+                    <label class="tb-toggle-row">
+                        <span class="tb-toggle-label">{{ __('models/Templates.builder.show_payment_status') }}</span>
+                        <div class="toggle-switch">
+                            <input type="checkbox" wire:model.live="templateConfig.show_payment_status">
+                            <span class="slider"></span>
+                        </div>
+                    </label>
+
+                    <label class="tb-toggle-row">
+                        <span class="tb-toggle-label">{{ __('models/Templates.builder.show_seller_name') }}</span>
+                        <div class="toggle-switch">
+                            <input type="checkbox" wire:model.live="templateConfig.show_seller_name">
+                            <span class="slider"></span>
+                        </div>
+                    </label>
+
+                    <label class="tb-toggle-row">
+                        <span class="tb-toggle-label">{{ __('models/Templates.builder.show_small_barcode') }}</span>
+                        <div class="toggle-switch">
+                            <input type="checkbox" wire:model.live="templateConfig.show_small_barcode">
+                            <span class="slider"></span>
+                        </div>
+                    </label>
+
+                    <label class="tb-toggle-row">
+                        <span
+                            class="tb-toggle-label">{{ __('models/Templates.builder.show_invoice_description') }}</span>
+                        <div class="toggle-switch">
+                            <input type="checkbox" wire:model.live="templateConfig.show_invoice_description">
+                            <span class="slider"></span>
+                        </div>
+                    </label>
+
+                    <div style="padding: 12px 20px;">
+                        <div style="margin-bottom: 5px; font-size: 0.9rem; font-weight: 500;">
+                            {{ __('models/Templates.builder.qr_size') }}</div>
+                        <select wire:model.live="templateConfig.qr_size" class="tb-sidebar-select">
+                            <option value="small">{{ __('models/Templates.builder.qr_small') }}</option>
+                            <option value="medium">{{ __('models/Templates.builder.qr_medium') }}</option>
+                            <option value="large">{{ __('models/Templates.builder.qr_large') }}</option>
+                            <option value="none">{{ __('models/Templates.builder.qr_none') }}</option>
+                        </select>
+                    </div>
+
+                    <div style="padding: 12px 20px 20px 20px;">
+                        <div style="margin-bottom: 5px; font-size: 0.9rem; font-weight: 500;">
+                            {{ __('models/Templates.builder.notes_thermal') }}</div>
+                        <textarea wire:model.live="templateConfig.small_receipt_notes" class="tb-sidebar-input" rows="3"
+                            placeholder="{{ __('models/Templates.builder.notes_placeholder') }}"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Global Styling Section -->
+            <div class="tb-section" x-data="{ open: false }" style="padding-bottom: 30px;">
+                <div class="tb-section-title" @click="open = !open">
+                    <span><i class="fa fa-palette text-muted me-2" style="width: 16px;"></i>
+                        {{ __('models/Templates.builder.section_styling') }}</span>
+                    <i class="fa" :class="open ? 'fa-chevron-up text-primary' : 'fa-chevron-down text-muted'"
+                        style="font-size: 0.8rem;"></i>
+                </div>
+
+                <div x-show="open" x-collapse>
+                    <div style="padding: 12px 20px;">
+                        <div style="margin-bottom: 5px; font-size: 0.9rem; font-weight: 500;">
+                            {{ __('models/Templates.builder.font_size') }}</div>
+                        <select wire:model.live="templateConfig.font_size" class="tb-sidebar-select">
+                            <option value="10">10px</option>
+                            <option value="11">11px</option>
+                            <option value="12">12px</option>
+                            <option value="14">14px</option>
+                            <option value="16">16px</option>
+                            <option value="18">18px</option>
+                            <option value="20">20px</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function testPrint() {
+        const previewEl = document.querySelector('.invoice-preview-wrapper');
+        if (!previewEl) return;
+
+        // Create an iframe to contain the printable invoice
+        const iframe = document.createElement('iframe');
+        iframe.style.position = 'fixed';
+        iframe.style.right = '0';
+        iframe.style.bottom = '0';
+        iframe.style.width = '0';
+        iframe.style.height = '0';
+        iframe.style.border = '0';
+        document.body.appendChild(iframe);
+
+        const doc = iframe.contentWindow.document;
+
+        // Get the styles from the page or define a custom print stylesheet
+        const styles = Array.from(document.querySelectorAll('style')).map(s => s.innerHTML).join('\n');
+
+        // Standard Bootstrap style injection
+        const bootstrapLink = '<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css" rel="stylesheet">';
+        const fontAwesomeLink = '<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">';
+        const fontsLink = '<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">';
+
+        // Check if thermal layout
+        const isThermal = previewEl.classList.contains('invoice-thermal');
+
+        doc.open();
+        doc.write(`
+        <!DOCTYPE html>
+        <html dir="${document.documentElement.dir || 'rtl'}">
+        <head>
+            <title>تجربة الطباعة</title>
+            ${bootstrapLink}
+            ${fontAwesomeLink}
+            ${fontsLink}
+            <style>
+                /* Include the page styles */
+                ${styles}
+                
+                /* Custom overrides for raw print page */
+                body {
+                    background: #fff !important;
+                    margin: 0;
+                    padding: 0;
+                    font-family: 'Cairo', 'Arial', sans-serif;
+                    -webkit-print-color-adjust: exact;
+                    print-color-adjust: exact;
+                }
+                
+                .invoice-preview-wrapper {
+                    box-shadow: none !important;
+                    margin: 0 !important;
+                    padding: ${isThermal ? '0' : '1cm'} !important;
+                    width: ${isThermal ? '100%' : '100%'} !important;
+                }
+                
+                .saudi-invoice {
+                    padding: 0 !important;
+                }
+                
+                @media print {
+                    @page {
+                        size: ${isThermal ? '80mm auto' : 'A4'};
+                        margin: 0;
+                    }
+                    body {
+                        margin: 0;
+                    }
+                }
+            </style>
+        </head>
+        <body>
+            <div class="${previewEl.className}" style="${previewEl.getAttribute('style') || ''}">
+                ${previewEl.innerHTML}
+            </div>
+            <script>
+                // Auto trigger print and close frame after print dialog finishes/closes
+                window.onload = function() {
+                    window.focus();
+                    setTimeout(() => {
+                        window.print();
+                        setTimeout(() => {
+                            window.parent.document.body.removeChild(window.frameElement);
+                        }, 1000);
+                    }, 500);
+                };
+            <\/script>
+        </body>
+        </html>
+    `);
+        doc.close();
+    }
+</script>
+
+
+
+
+
+

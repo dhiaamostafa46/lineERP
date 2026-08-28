@@ -1,0 +1,38 @@
+# ==============================================================================
+# Security Hardening for Uploads Directory
+# Disables direct script execution (PHP, CGI, Perl, Python, Shell, etc.)
+# ==============================================================================
+
+# Disable script execution engines
+<IfModule mod_php.c>
+    php_flag engine off
+</IfModule>
+<IfModule mod_php7.c>
+    php_flag engine off
+</IfModule>
+<IfModule mod_php8.c>
+    php_flag engine off
+</IfModule>
+
+# Remove any handlers that could execute files as scripts
+RemoveHandler .php .phtml .php3 .php4 .php5 .php7 .php8 .phar .cgi .pl .fcgi .asp .aspx .jsp .shtml .sh .py
+RemoveType .php .phtml .php3 .php4 .php5 .php7 .php8 .phar .cgi .pl .fcgi .asp .aspx .jsp .shtml .sh .py
+
+# Block access to executable, script, configuration, hidden and dangerous files
+<FilesMatch "(?i)\.(php|phtml|phar|php[0-9]|pl|py|jsp|asp|aspx|cgi|sh|bash|zsh|exe|bat|cmd|com|vbs|vbe|wsf|wsh|ps1|ps2|dll|so|htaccess|htpasswd|ini|env|config|log|bak|sql|svg|svgz|xml|html|htm|shtml)$">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Order allow,deny
+        Deny from all
+    </IfModule>
+</FilesMatch>
+
+# Disable directory indexing and CGI execution
+Options -Indexes -ExecCGI
+
+# Prevent MIME sniffing (defense against disguised HTML/script files)
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+</IfModule>

@@ -1,0 +1,11 @@
+{
+    "name": "AccuSoft",
+    "alias": "accusoft",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\AccuSoft\\App\\Providers\\AccuSoftServiceProvider"
+    ],
+    "files": []
+}

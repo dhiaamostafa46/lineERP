@@ -1,0 +1,35 @@
+<?php
+
+return [
+    'singular' => 'Customer',
+    'plural'   => 'Customers',
+    'fields'   => [
+        'id'              => 'ID',
+        'name'            => 'Customer Name',
+        'phone'           => 'Phone Number',
+        'email'           => 'Email Address',
+        'vat_number'      => 'VAT Number',
+        'cr_number'       => 'Commercial Registration',
+        'address'         => 'Address',
+        'tree_account_id' => 'Linked Account',
+        'branch_id'       => 'Branch',
+        'credit_limit'    => 'Credit Limit',
+        'status'          => 'Status',
+        'created_at'      => 'Created At',
+        'country'         => 'Country',
+        'city'            => 'City',
+        'district'        => 'District',
+        'street'          => 'Street',
+        'building_number' => 'Building Number',
+        'postal_code'     => 'Postal Code',
+        'additional_number' => 'Additional Number',
+        'file'            => 'File',
+    ],
+    'sections' => [
+        'contact_info'   => 'Contact Info',
+        'tax_info'       => 'Tax Info',
+        'address_info'   => 'Address Info',
+        'financial_info' => 'Financial Info',
+        'attachments'    => 'Attachments',
+    ],
+];

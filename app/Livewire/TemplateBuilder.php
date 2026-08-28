@@ -1,0 +1,1961 @@
+<?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+use App\Models\Template;
+
+class TemplateBuilder extends Component
+{
+    public $template_id;
+    public $name;
+    public $document_type = 'SalesInvoice';
+    public $print_format = 'A4';
+    public $is_default = true;
+    public $language = 'ar';
+    public $branch_id;
+    public $branches = [];
+    public $layoutDesigns = [];
+
+    public $previewData = [];
+
+    
+    public $templateConfig = [
+        'layout_design' => 'design1',
+
+        // Header
+        'show_logo' => true,
+        'show_company_name' => true,
+        'show_branch_name' => true,
+        'show_tax_number' => true,
+        'show_company_cr' => false,
+        'show_address' => true,
+        'enable_english' => false,
+        'show_order_number' => false,
+
+        // Customer
+        'show_customer_data' => true,
+        'show_customer_phone' => true,
+        'show_customer_cr' => true,
+
+        // Items
+        'show_item_number' => false,
+        'show_item_barcode' => false,
+        'show_item_image' => false,
+        'show_item_unit' => true,
+        'show_item_discount' => false,
+        'show_item_tax_percent' => true,
+        'show_item_subtotal' => false,
+        'show_item_total_with_tax' => true,
+        'show_item_options' => true,
+        'show_item_characteristics' => false,
+        'show_item_tailoring' => false,
+
+        // Footer
+        'show_payment_methods' => false,
+        'show_total_in_words' => true,
+        'show_seller_name' => true,
+        'show_payment_status' => true,
+        'show_small_barcode' => false,
+        'show_footer_logo' => false,
+        'show_custom_data' => false,
+        'show_invoice_description' => false,
+        'qr_size' => 'medium',
+        'show_qr_code' => true,
+        'addQuietzone' => false,
+        'small_receipt_notes' => '',
+        
+        // styling
+        'font_size' => 12,
+    ];
+
+    public function mount($template = null)
+    {
+        $this->branches = \App\Models\Branch::all()->pluck('name', 'id')->toArray();
+        $this->layoutDesigns = $this->layoutDesigns();
+        $this->branch_id = auth()->check() && auth()->user()->branch_id ? auth()->user()->branch_id : null;
+
+        if ($template) {
+            $this->template_id = $template->id;
+            $this->name = $template->name ?? __('models/Templates.singular');
+            $this->document_type = $template->document_type;
+            $this->print_format = $template->print_format;
+            $this->is_default = $template->is_default;
+            if ($template->branch_id) {
+                $this->branch_id = $template->branch_id;
+            }
+            
+            if ($template->variables && is_array($template->variables)) {
+                $this->templateConfig = array_merge($this->templateConfig, $template->variables);
+            }
+
+            if (!isset($this->templateConfig['layout_design'])) {
+                $this->templateConfig['layout_design'] = 'design1';
+            }
+        }
+        
+        $this->loadPreviewData();
+    }
+
+    public function loadPreviewData()
+    {
+        $this->previewData = [
+           'organization_name' => 'شركة إيفيكس للتجارة',
+            'branch_name' => 'الفرع الرئيسي',
+            'seller_vat' => '300000000000003',
+            'seller_cr' => '1010123456',
+            'seller_address' => 'الرياض، المملكة العربية السعودية',
+            'invoice_number' => 'INV-2026-001',
+            'order_number' => 'ORD-999',
+            'customer_invoice_number' => 'REF-00123',
+            'issue_date' => date('Y-m-d'),
+            'customer_name' => 'أحمد محمد عبد الله',
+            'customer_tax' => '310000000000002',
+            'customer_address_full' => 'حي الصحافة، الرياض',
+            'customer_phone' => '0500000000',
+            'customer_cr' => '1010000000',
+             
+            'items' => [
+                [
+                    'product_name' => 'جهاز كمبيوتر محمول',
+                    'image' => asset('admin_assets/media/stock/600x400/img-1.jpg'),
+                    'description' => 'Intel i7, 512GB SSD',
+                    'unit_name' => 'حبة',
+                    'unit_price' => '3,000.00',
+                    'quantity' => '1.00',
+                    'discount' => '0.00',
+                    'discount_value' => '0.00',
+                    'taxable_amount' => '3,000.00',
+                    'vat_rate' => '15',
+                    'tax_percent' => '15',
+                    'vat_amount' => '450.00',
+                    'total' => '3,450.00',
+                    'barcode' => 'SKU-10091',
+                    'characteristics' => 'اللون: أسود',
+                    'options' => '',
+                    'item_barcode_rendered' => '<div style="font-family: monospace; font-size: 0.75rem; letter-spacing: 1px;">||||| SKU-10091 |||||</div>',
+                ],
+                [
+                    'product_name' => 'فأرة لاسلكية ذكية',
+                    'image' => asset('admin_assets/media/stock/600x400/img-2.jpg'),
+                    'description' => 'فأرة قابلة لإعادة الشحن',
+                    'unit_name' => 'حبة',
+                    'unit_price' => '100.00',
+                    'quantity' => '2.00',
+                    'discount' => '10.00',
+                    'discount_value' => '10.00',
+                    'taxable_amount' => '190.00',
+                    'vat_rate' => '15',
+                    'tax_percent' => '15',
+                    'vat_amount' => '28.50',
+                    'total' => '218.50',
+                    'barcode' => 'SKU-20033',
+                    'characteristics' => '',
+                    'options' => '',
+                    'item_barcode_rendered' => '<div style="font-family: monospace; font-size: 0.75rem; letter-spacing: 1px;">||||| SKU-20033 |||||</div>',
+                ]
+            ],
+            'total_exclusive_vat' => '3,200.00',
+            'total_discount' => '10.00',
+            'total_vat' => '478.50',
+            'shipping_cost' => '50.00',
+            'shipping_cost_total' => '50.00',
+            'total_inclusive_vat' => '3,718.50',
+            'total_in_words' => 'ثلاثة آلاف وسبعمائة وثمانية عشر ريالاً وخمسون هللة',
+            'created_by_name' => 'مدير النظام',
+            'status_text' => 'معتمدة',
+            'payment_method' => 'نقدي / Cash',
+            'payment_status' => 'مدفوعة',
+            'invoice_description' => 'فاتورة مبيعات معدة لأغراض العرض',
+            'notes' => 'ملاحظة عامة: الفاتورة مدفوعة ولا تحتاج للمتابعة.',
+            'invoice_title_ar' => 'فاتورة ضريبية',
+            'invoice_title_en' => 'Tax Invoice',
+            'issue_datetime' => date('Y-m-d H:i:s'),
+            'invoice_type_text' => 'فاتورة ضريبية',
+            'invoice_type_code' => '388',
+            'invoice_subtype_text' => 'مبسطة',
+            'invoice_subtype_code' => '0200000',
+            'qr_code_rendered' => '<div style="width: 100%; height: 100%; background: #e5e7eb; display: flex; justify-content: center; align-items: center; color: #9ca3af; font-size: 0.8rem; font-weight: bold;">QR Code</div>',
+            'barcode_rendered' => '<div style="width: 150px; height: 30px; background: #e5e7eb; margin: 0 auto; display: flex; justify-content: center; align-items: center; color: #9ca3af; font-size: 0.8rem; font-weight: bold;">BARCODE</div>',
+            'company_logo' => asset('admin_assets/media/logos/Logoevix.png'),
+            'qr_code' => 'AQRFVklYAg8wMDAwMDAwMDAwMDAwMDADFDIwMjYtMDYtMjJUMDg6NTg6MDBaBAQyLjg4BQQwLjM4',
+            'zatca_details' => '1',
+            'zatca_request_id' => 'REQ-2026-99912',
+            'zatca_response_payload' => '{"validationResults":{"errorMessages":[]},"reportingStatus":"REPORTED"}',
+            'status_badge' => 'badge bg-success',
+        ];
+    }
+
+    public function layoutDesigns()
+    {
+        return [
+            'A4' => [
+                'design1' => __('models/Templates.designs.a4.design1'),
+                'design2' => __('models/Templates.designs.a4.design2'),
+                'design3' => __('models/Templates.designs.a4.design3'),
+                'design4' => __('models/Templates.designs.a4.design4'),
+                'design5' => __('models/Templates.designs.a4.design5'),
+                'design6' => __('models/Templates.designs.a4.design6'),
+            ],
+            'thermal' => [
+                'design1' => __('models/Templates.designs.thermal.design1'),
+                'design2' => __('models/Templates.designs.thermal.design2'),
+                'design3' => __('models/Templates.designs.thermal.design3'),
+                'design4' => __('models/Templates.designs.thermal.design4'),
+            ],
+        ];
+    }
+
+    public function updatedPrintFormat($value)
+    {
+        $this->templateConfig['layout_design'] = 'design1';
+    }
+
+    public function save()
+    {
+        $this->validate([
+            'name' => 'required|string|max:255',
+            'document_type' => 'required|string',
+            'print_format' => 'required|string',
+        ]);
+
+        $data = [
+            'document_type' => $this->document_type,
+            'print_format' => $this->print_format,
+            'is_default' => $this->is_default ? 1 : 0,
+            'variables' => $this->templateConfig,
+            'branch_id' => $this->branch_id ?: null,
+        ];
+
+        $htmls = $this->generateHtmls();
+        $data = array_merge($data, $htmls);
+
+        // Only set name for new templates to avoid overwriting existing translations
+        if (!$this->template_id) {
+            foreach (config('langs', ['ar' => 'Arabic', 'en' => 'English']) as $locale => $language) {
+                $data[$locale] = ['name' => $this->name];
+            }
+        }
+
+        if ($this->template_id) {
+            $template = Template::findOrFail($this->template_id);
+            $template->update($data);
+        } else {
+            $template = Template::create($data);
+            $this->template_id = $template->id;
+        }
+
+        if ($this->is_default) {
+            Template::where('document_type', $this->document_type)
+                ->where('id', '!=', $template->id)
+                ->update(['is_default' => false]);
+        }
+
+        if ($this->template_id) {
+            flash()->success(__('messages.updated', ['model' => __('models/Templates.singular')]));
+        } else {
+            flash()->success(__('messages.saved', ['model' => __('models/Templates.singular')]));
+        }
+        
+        return redirect()->route('Templates.index');
+    }
+
+    public function render()
+    {
+        return view('livewire.template-builder');
+    }
+
+    private function generateHtmls()
+    {
+        $c = $this->templateConfig;
+        $format = $this->print_format;
+        $fontSize = $c['font_size'] ?? 12;
+        $design = $c['layout_design'] ?? 'design1';
+
+        if ($format == 'A4') {
+            return $this->generateA4Layout($c, $fontSize, $design);
+        } else {
+            return $this->generateThermalLayout($c, $fontSize, $design);
+        }
+    }
+
+    private function generateA4Layout($c, $fontSize, $design)
+    {
+        $activeCols = 5;
+        if (!empty($c['show_item_number'])) $activeCols++;
+        if (!empty($c['show_item_image'])) $activeCols++;
+        if (!empty($c['show_item_unit'])) $activeCols++;
+        if (!empty($c['show_item_discount'])) $activeCols++;
+        if (!empty($c['show_item_subtotal'])) $activeCols++;
+        if (!empty($c['show_item_tax_percent'])) $activeCols++;
+        if (!empty($c['show_item_total_with_tax'])) $activeCols++;
+
+        if ($activeCols >= 11) {
+            $tableFontSize = '0.68rem';
+        } elseif ($activeCols >= 9) {
+            $tableFontSize = '0.75rem';
+        } else {
+            $tableFontSize = '0.85rem';
+        }
+
+        // ------------------ COMMON PIECES ------------------
+        $qrHtml = ($c['show_qr_code'] && $c['qr_size'] != 'none') ? '<div class="qr-container" style="width: ' . ($c['qr_size'] == 'small' ? '120px' : ($c['qr_size'] == 'large' ? '200px' : '160px')) . '; height: ' . ($c['qr_size'] == 'small' ? '120px' : ($c['qr_size'] == 'large' ? '200px' : '160px')) . '; padding: 0 !important; margin: 0; overflow: hidden;">
+                    @if(\'{{ qr_code }}\')
+                        <img src="{{ (new \chillerlan\QRCode\QRCode(new \chillerlan\QRCode\QROptions([\'addQuietzone\' => false])))->render(\'{{ qr_code }}\') }}" alt="QR Code" style="width: 100%; height: 100%; object-fit: contain; margin: 0; padding: 0;">
+                    @else
+                        <div class="small text-muted pt-10 text-center">QR Code</div>
+                    @endif
+                </div>' : '';
+        $titleEnHtml = $c['enable_english'] ? '<h5 class="text-muted mb-3">{{ invoice_title_en }}</h5>' : '';
+        $barcodeHtml = $c['show_small_barcode'] ? '<img src="data:image/png;base64,{{ base64_encode((new \Picqer\Barcode\BarcodeGeneratorPNG())->getBarcode(\'{{ invoice_number }}\', \Picqer\Barcode\BarcodeGeneratorPNG::TYPE_CODE_128)) }}" alt="Barcode" style="max-width: 250px; height: 40px;">' : '';
+        $logoHtml = $c['show_logo'] ? '<div class="mb-2">@if(\'{{ company_logo }}\')<img src="{{ company_logo }}" alt="Logo" style="max-height: 80px; max-width: 150px;">@endif</div>' : '';
+        $companyNameHtml = $c['show_company_name'] ? '<div class="fw-bolder fs-4 mb-1">{{ organization_name }}</div>' : '';
+        $branchNameHtml = $c['show_branch_name'] ? '<div class="fw-bold fs-6 mb-2 text-muted">{{ branch_name }}</div>' : '';
+        $sellerVatHtml = $c['show_tax_number'] ? '<div class="small fw-bold">الرقم الضريبي (VAT ID):</div><div class="fw-bolder fs-4 border-bottom border-dark border-2 d-inline-block">{{ seller_vat }}</div>' : '';
+        $sellerAddressHtml = $c['show_address'] ? '<div class="small mt-1">{{ seller_address }}</div>' : '';
+        $customerPhoneRow = $c['show_customer_phone'] ? '<tr><td class="data-label">الجوال / Phone:</td><td class="data-value">{{ customer_phone }}</td></tr>' : '';
+        $customerCrRow = $c['show_customer_cr'] ? '<tr><td class="data-label">السجل التجاري / CR:</td><td class="data-value">{{ customer_cr }}</td></tr>' : '';
+        
+        $customerInfoTable = '';
+        if ($c['show_customer_data']) {
+            $customerInfoTable = <<<HTML
+            <table class="w-100">
+                <tr>
+                    <td class="data-label" width="45%">الاسم / Name:</td>
+                    <td class="data-value fw-bolder">{{ customer_name }}</td>
+                </tr>
+                <tr>
+                    <td class="data-label">الرقم الضريبي / VAT ID:</td>
+                    <td class="data-value">{{ customer_tax }}</td>
+                </tr>
+                <tr>
+                    <td class="data-label">العنوان / Address:</td>
+                    <td class="data-value text-muted small">{{ customer_address_full }}</td>
+                </tr>
+                {$customerPhoneRow}
+                {$customerCrRow}
+            </table>
+HTML;
+        }
+
+        // Table Elements
+        $itemBarcodeHtml = $c['show_item_barcode'] ? '<div class="d-flex align-items-center mt-1">{{ item.item_barcode_rendered }}</div>' : '';
+        $itemCharHtml = $c['show_item_characteristics'] ? '<div style="font-size: 0.8rem; color: #6b7280;">{{ item.characteristics }}</div>' : '';
+        $itemOptionsHtml = $c['show_item_options'] ? '<div style="font-size: 0.8rem; color: #6b7280;">{{ item.options }}</div>' : '';
+
+        // Dynamic Columns
+        $numHD1 = $c['show_item_number'] ? '<th width="3%">#</th>' : '';
+        $numHD2 = $c['show_item_number'] ? '<th width="3%">#</th>' : '';
+        $numHD3 = $c['show_item_number'] ? '<th style="background: #1e293b !important; color: #ffffff !important; border: 1px solid #1e293b;" width="3%">#</th>' : '';
+        $numHD4 = $c['show_item_number'] ? '<th style="border-bottom: 2px solid #0f172a; border-top: 1px solid #e2e8f0; background: #fff !important; color: #0f172a;" width="3%">#</th>' : '';
+
+        $imgHD1 = $c['show_item_image'] ? '<th width="5%">صورة<br>Img</th>' : '';
+        $imgHD2 = $c['show_item_image'] ? '<th width="5%">صورة / Img</th>' : '';
+        $imgHD3 = $c['show_item_image'] ? '<th style="background: #1e293b !important; color: #ffffff !important; border: 1px solid #1e293b;" width="5%">صورة / Img</th>' : '';
+        $imgHD4 = $c['show_item_image'] ? '<th style="border-bottom: 2px solid #0f172a; border-top: 1px solid #e2e8f0; background: #fff !important; color: #0f172a;" width="5%">صورة</th>' : '';
+
+        $unitHeaderD1 = $c['show_item_unit'] ? '<th width="6%">الوحدة<br>Unit</th>' : '';
+        $unitHeaderD2 = $c['show_item_unit'] ? '<th width="6%">الوحدة / Unit</th>' : '';
+        $unitHeaderD3 = $c['show_item_unit'] ? '<th style="background: #1e293b !important; color: #ffffff !important; border: 1px solid #1e293b;" width="6%">الوحدة / Unit</th>' : '';
+        $unitHeaderD4 = $c['show_item_unit'] ? '<th style="border-bottom: 2px solid #0f172a; border-top: 1px solid #e2e8f0; background: #fff !important; color: #0f172a;" width="6%">الوحدة</th>' : '';
+
+        $discHD1 = $c['show_item_discount'] ? '<th width="7%">الخصم<br>Discount</th>' : '';
+        $discHD2 = $c['show_item_discount'] ? '<th width="7%">الخصم / Disc</th>' : '';
+        $discHD3 = $c['show_item_discount'] ? '<th style="background: #1e293b !important; color: #ffffff !important; border: 1px solid #1e293b;" width="7%">الخصم</th>' : '';
+        $discHD4 = $c['show_item_discount'] ? '<th style="border-bottom: 2px solid #0f172a; border-top: 1px solid #e2e8f0; background: #fff !important; color: #0f172a;" width="7%">الخصم</th>' : '';
+
+        $subtotalHeaderD1 = $c['show_item_subtotal'] ? '<th width="9%">الخاضع للضريبة<br>Taxable Amt</th>' : '';
+        $subtotalHeaderD2 = $c['show_item_subtotal'] ? '<th width="9%">الخاضع للضريبة</th>' : '';
+        $subtotalHeaderD3 = $c['show_item_subtotal'] ? '<th style="background: #1e293b !important; color: #ffffff !important; border: 1px solid #1e293b;" width="9%">الخاضع للضريبة</th>' : '';
+        $subtotalHeaderD4 = $c['show_item_subtotal'] ? '<th style="border-bottom: 2px solid #0f172a; border-top: 1px solid #e2e8f0; background: #fff !important; color: #0f172a;" width="9%">الخاضع للضريبة</th>' : '';
+
+        $taxPercHD1 = $c['show_item_tax_percent'] ? '<th width="8%">الضريبة %</th>' : '';
+        $taxPercHD2 = $c['show_item_tax_percent'] ? '<th width="8%">الضريبة</th>' : '';
+        $taxPercHD3 = $c['show_item_tax_percent'] ? '<th style="background: #1e293b !important; color: #ffffff !important; border: 1px solid #1e293b;" width="8%">نسبة الضريبة</th>' : '';
+        $taxPercHD4 = $c['show_item_tax_percent'] ? '<th style="border-bottom: 2px solid #0f172a; border-top: 1px solid #e2e8f0; background: #fff !important; color: #0f172a;" width="8%">الضريبة %</th>' : '';
+
+        $totalHD1 = $c['show_item_total_with_tax'] ? '<th width="10%">الإجمالي / Total</th>' : '';
+        $totalHD2 = $c['show_item_total_with_tax'] ? '<th width="10%">الإجمالي / Total</th>' : '';
+        $totalHD3 = $c['show_item_total_with_tax'] ? '<th style="background: #1e293b !important; color: #ffffff !important; border: 1px solid #1e293b;" width="10%">الإجمالي / Total</th>' : '';
+        $totalHD4 = $c['show_item_total_with_tax'] ? '<th style="border-bottom: 2px solid #0f172a; border-top: 1px solid #e2e8f0; background: #fff !important; color: #0f172a;" width="10%">الإجمالي / Total</th>' : '';
+
+        $numColHtml = $c['show_item_number'] ? '<td class="text-center">{{ loop.iteration }}</td>' : '';
+        $imgColHtml = $c['show_item_image'] ? '<td class="text-center">@if(\'{{ item.image }}\')<img src="{{ item.image }}" style="max-height: 40px; max-width: 40px;">@endif</td>' : '';
+        $unitColHtml = $c['show_item_unit'] ? '<td>{{ item.unit_name }}</td>' : '';
+        $discColHtml = $c['show_item_discount'] ? '<td class="text-danger small">{{ item.discount_value }}</td>' : '';
+        $subtotalColHtml = $c['show_item_subtotal'] ? '<td>{{ item.taxable_amount }}</td>' : '';
+        $taxPercColHtml = $c['show_item_tax_percent'] ? '<td>{{ item.tax_percent }}%</td>' : '';
+        $totalColHtml = $c['show_item_total_with_tax'] ? '<td class="fw-bolder">{{ item.total }}</td>' : '';
+
+        $contentHtml = <<<HTML
+            <tr>
+                {$numColHtml}
+                {$imgColHtml}
+                <td class="text-start">
+                    <div class="fw-bold">{{ item.product_name }}</div>
+                    {$itemBarcodeHtml}
+                    {$itemCharHtml}
+                    {$itemOptionsHtml}
+                </td>
+                <td class="text-start">{{ item.description }}</td>
+                {$unitColHtml}
+                <td>{{ item.unit_price }}</td>
+                <td>{{ item.quantity }}</td>
+                {$discColHtml}
+                {$subtotalColHtml}
+                {$taxPercColHtml}
+                <td>{{ item.vat_amount }}</td>
+                {$totalColHtml}
+            </tr>
+HTML;
+
+        $totalInWordsHtml = $c['show_total_in_words'] ? '<div class="mt-2 text-start fw-bold">فقط {{ total_in_words }} لا غير</div>' : '';
+        $footerCreatedBy = $c['show_seller_name'] ? '<span>إنشاء: {{ created_by_name }}</span>' : '<span></span>';
+        $footerStatus = $c['show_payment_status'] ? '<span>الحالة: {{ status_text }}</span>' : '<span></span>';
+        $customNotesHtml = !empty($c['small_receipt_notes']) ? '<div class="mt-3 text-center fw-semibold text-dark">' . e($c['small_receipt_notes']) . '</div>' : '';
+
+        $zatcaHtml = <<<'ZATCA'
+            @if('{{ zatca_details }}')
+                <div class="mt-4 p-3 border rounded text-start" style="background: #fcfcfc; border-style: dashed !important;">
+                    <h6 class="fw-bold small mb-2"><i class="fas fa-shield-alt me-1"></i> حالة الربط مع الزكاة (ZATCA Status):</h6>
+                    <div class="d-flex align-items-center">
+                        <span class="{{ status_badge }} me-3">{{ status_text }}</span>
+                        <span class="small text-muted">رقم العملية: {{ zatca_request_id }}</span>
+                    </div>
+                    
+                    @php $res = json_decode('{{ zatca_response_payload }}', true); @endphp
+                    @if(isset($res['validationResults']) && count($res['validationResults']['errorMessages']) > 0)
+                        <div class="alert alert-danger mt-2 py-2 px-3 small">
+                            <ul class="mb-0">
+                                @foreach($res['validationResults']['errorMessages'] as $err)
+                                    <li>{{ $err['message'] }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @elseif(isset($res['reportingStatus']) && $res['reportingStatus'] == 'REPORTED')
+                        <div class="text-success small mt-1"><i class="fas fa-check-circle"></i> تم قبول الفاتورة وإرسالها للهيئة بنجاح.</div>
+                    @elseif(isset($res['clearanceStatus']) && $res['clearanceStatus'] == 'CLEARED')
+                        <div class="text-success small mt-1"><i class="fas fa-check-circle"></i> تم اعتماد الفاتورة وتطهيرها من الهيئة بنجاح.</div>
+                    @endif
+                </div>
+            @endif
+ZATCA;
+
+        // ------------------ DESIGN SWITCH ------------------
+        if ($design == 'design2') {
+            // ================== DESIGN 2: MODERN GRID ==================
+            $css = <<<CSS
+    .saudi-invoice { background: #fff; font-family: 'Arial', sans-serif; color: #000; padding: 10px; font-size: {$fontSize}px; }
+    .invoice-border { border: 1px solid #ddd; padding: 25px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+    .line-divider { border-top: 2px solid #333; margin: 20px 0; }
+    .table-zatca { width: 100% !important; table-layout: fixed !important; border-collapse: collapse !important; margin-top: 20px; word-wrap: break-word !important; word-break: break-word !important; }
+    .table-zatca th { border: 1px solid #e2e8f0; background: #f8fafc !important; padding: 12px 10px; font-weight: bold; text-align: center; font-size: {$tableFontSize}; color: #1e293b; white-space: normal !important; overflow: hidden; word-wrap: break-word !important; word-break: break-word !important; }
+    .table-zatca td { border: 1px solid #e2e8f0; padding: 12px 10px; text-align: center; vertical-align: middle; font-size: {$tableFontSize}; white-space: normal !important; overflow: hidden; word-wrap: break-word !important; word-break: break-word !important; }
+    .qr-container { border: 1px solid #333; padding: 0; width: 150px; height: 150px; display: inline-block; background: #fff; }
+    .qr-container svg, .qr-container img { width: 100% !important; height: 100% !important; }
+    .data-label { font-weight: bold; font-size: 0.80rem; color: #475569; }
+    .data-value { font-size: 0.90rem; }
+    .bg-row { background: #f8fafc; }
+    .text-right { text-align: right !important; }
+    .text-left { text-align: left !important; }
+    .info-box { border: 1px solid #e2e8f0; border-radius: 6px; padding: 15px; height: 100%; background: #f8fafc; }
+    .meta-table { width: 100%; }
+    .meta-table td { padding: 6px 4px; border-bottom: 1px dashed #e2e8f0; }
+    .meta-table tr:last-child td { border-bottom: none; }
+
+    @media print {
+        @page { size: A4; margin: 0; }
+        #kt_app_sidebar, #kt_app_header, #kt_app_toolbar, #kt_app_footer, .btn, .icon-btn, .breadcrumb, .alert, .card-header, .no-print { display: none !important; }
+        body, .app-wrapper, .app-main, .app-content, .container-xxl, .card, .card-body, .content { background-color: #fff !important; margin: 0 !important; padding: 0 !important; box-shadow: none !important; border: none !important; width: 100% !important; }
+        .saudi-invoice { padding: 10px !important; }
+        th, td, tr, .bg-row, .table-zatca th, .info-box { background-color: transparent !important; background: transparent !important; }
+        .invoice-border { border: 1px solid #000 !important; box-shadow: none !important; }
+    }
+CSS;
+
+            $headerHtml = <<<HTML
+<div class="saudi-invoice w-100" style="font-size: {$fontSize}px;">
+    <div class="invoice-border">
+        <!-- الرأس (Header) -->
+        <div class="row align-items-stretch mb-5">
+            <!-- Left: Company Info -->
+            <div class="col-6">
+                <div class="info-box">
+                    {$logoHtml}
+                    {$companyNameHtml}
+                    {$branchNameHtml}
+                    {$sellerVatHtml}
+                    {$sellerAddressHtml}
+                </div>
+            </div>
+            <!-- Right: Invoice Metadata Grid -->
+            <div class="col-6">
+                <div class="info-box d-flex flex-column justify-content-between">
+                    <div>
+                        <h2 class="fw-bolder mb-1 text-primary">{{ invoice_title_ar }}</h2>
+                        {$titleEnHtml}
+                    </div>
+                    <table class="meta-table mt-3">
+                        <tr>
+                            <td class="data-label text-start" width="50%">رقم الفاتورة:</td>
+                            <td class="data-value text-end fw-bolder">#{{ invoice_number }}</td>
+                        </tr>
+                        <tr>
+                            <td class="data-label text-start">تاريخ الإصدار:</td>
+                            <td class="data-value text-end">{{ issue_date }}</td>
+                        </tr>
+                        <tr>
+                            <td class="data-label text-start">الفرع:</td>
+                            <td class="data-value text-end">{{ branch_name }}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="line-divider"></div>
+
+        <!-- أطراف المعاملة -->
+        <div class="row g-6 mb-5">
+            <div class="col-6">
+                <div class="info-box">
+                    <h6 class="fw-bolder border-bottom pb-2 mb-3"><i class="fa fa-user me-2"></i> بيانات المشتري / Buyer Info</h6>
+                    {$customerInfoTable}
+                </div>
+            </div>
+            <div class="col-6 text-end">
+                <div class="info-box">
+                    <h6 class="fw-bolder border-bottom pb-2 mb-3 text-end"><i class="fa fa-file-invoice me-2"></i> تفاصيل إضافية / Additional</h6>
+                    <table class="w-100">
+                        <tr>
+                            <td class="data-label text-start" width="45%">رقم المرجع / Ref:</td>
+                            <td class="data-value text-start fw-bold">#{{ customer_invoice_number }}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- جدول الأصناف -->
+        <table class="table-zatca">
+            <thead>
+                <tr>
+                    {$numHD2}
+                    {$imgHD2}
+                    <th width="16%">اسم الصنف / Item</th>
+                    <th width="12%">الوصف / Desc</th>
+                    {$unitHeaderD2}
+                    <th width="9%">سعر الوحدة / Price</th>
+                    <th width="6%">الكمية / Qty</th>
+                    {$discHD2}
+                    {$subtotalHeaderD2}
+                    {$taxPercHD2}
+                    <th width="9%">مبلغ الضريبة</th>
+                    {$totalHD2}
+                </tr>
+            </thead>
+            <tbody>
+HTML;
+
+            $footerHtml = <<<HTML
+            </tbody>
+        </table>
+
+        <!-- الملخص المالي -->
+        <div class="row mt-8 g-10 justify-content-end">
+            <div class="col-7">
+                <div class="info-box d-flex align-items-center justify-content-between">
+                    <div>
+                        <h6 class="fw-bolder border-bottom pb-2 mb-3">تفاصيل السداد / Payment Method</h6>
+                        <div class="text-muted small">طرق الدفع تظهر هنا بناءً على النظام</div>
+                    </div>
+                    {$qrHtml}
+                </div>
+            </div>
+            
+            <div class="col-5">
+                <table class="w-100 border border-2 rounded">
+                    <tr>
+                        <td class="p-2 border-bottom data-label bg-row text-start text-dark">الإجمالي (Excl. VAT)</td>
+                        <td class="p-2 border-bottom text-end fw-bold">{{ total_exclusive_vat }}</td>
+                    </tr>
+                    <tr>
+                        <td class="p-2 border-bottom data-label bg-row text-start text-dark">إجمالي الخصم (Discount)</td>
+                        <td class="p-2 border-bottom text-end text-danger fw-bold">- {{ total_discount }}</td>
+                    </tr>
+                    <tr>
+                        <td class="p-2 border-bottom data-label bg-row text-start text-dark">الضريبة (VAT)</td>
+                        <td class="p-2 border-bottom text-end fw-bold">+ {{ total_vat }}</td>
+                    </tr>
+                    
+                @if({{ shipping_cost }} > 0)
+                    <tr>
+                        <td class="p-2 border-bottom border-dark data-label bg-row text-start text-dark">مصاريف الشحن (Shipping)</td>
+                        <td class="p-2 border-bottom border-dark text-end fw-bold">+ {{ shipping_cost_total }}</td>
+                    </tr>
+                @endif
+
+                    <tr style="background: #f1f5f9; color: #000; border-top: 2px solid #000;">
+                        <td class="p-3 text-start fw-bolder fs-4">الإجمالي النهائي<br><small>Grand Total</small></td>
+                        <td class="p-3 text-end fw-bolder fs-3">{{ total_inclusive_vat }}</td>
+                    </tr>
+                </table>
+                {$totalInWordsHtml}
+            </div>
+        </div>
+
+        <!-- التذيل -->
+        <div class="mt-8 text-center small text-muted no-print">
+            <div class="line-divider"></div>
+            <div class="d-flex justify-content-between px-3 fw-bold text-dark">
+                {$footerCreatedBy}
+                {$barcodeHtml}
+                {$footerStatus}
+            </div>
+            {$zatcaHtml}
+            {$customNotesHtml}
+
+        </div>
+    </div>
+</div>
+HTML;
+
+        } elseif ($design == 'design3') {
+            // ================== DESIGN 3: ELEGANT STRIPE ==================
+            $css = <<<CSS
+    .saudi-invoice { background: #fff; font-family: 'Cairo', 'Arial', sans-serif; color: #000; padding: 10px; font-size: {$fontSize}px; }
+    .invoice-border { border: 2px solid #000; padding: 0; border-radius: 0; }
+    .header-banner { background: #1e293b; color: #ffffff; padding: 20px; display: flex; justify-content: space-between; align-items: center; }
+    .header-banner h2 { margin: 0; font-weight: bold; }
+    .inner-padding { padding: 25px; }
+    .line-divider { border-top: 2px solid #1e293b; margin: 15px 0; }
+    .table-zatca { width: 100% !important; table-layout: fixed !important; border-collapse: collapse !important; margin-top: 20px; word-wrap: break-word !important; word-break: break-word !important; }
+    .table-zatca th { border: 1px solid #1e293b; background: #1e293b !important; padding: 10px; font-weight: bold; text-align: center; font-size: {$tableFontSize}; color: #ffffff !important; white-space: normal !important; overflow: hidden; word-wrap: break-word !important; word-break: break-word !important; }
+    .table-zatca td { border: 1px solid #1e293b; padding: 10px; text-align: center; vertical-align: middle; font-size: {$tableFontSize}; white-space: normal !important; overflow: hidden; word-wrap: break-word !important; word-break: break-word !important; }
+    .qr-container { border: 1px solid #1e293b; padding: 0; width: 140px; height: 140px; display: inline-block; background: #fff; }
+    .qr-container svg, .qr-container img { width: 100% !important; height: 100% !important; }
+    .data-label { font-weight: bold; font-size: 0.80rem; }
+    .data-value { font-size: 0.90rem; }
+    .bg-row { background: #f8fafc; }
+    .text-right { text-align: right !important; }
+    .text-left { text-align: left !important; }
+
+    @media print {
+        @page { size: A4; margin: 0; }
+        #kt_app_sidebar, #kt_app_header, #kt_app_toolbar, #kt_app_footer, .btn, .icon-btn, .breadcrumb, .alert, .card-header, .no-print { display: none !important; }
+        body, .app-wrapper, .app-main, .app-content, .container-xxl, .card, .card-body, .content { background-color: #fff !important; margin: 0 !important; padding: 0 !important; box-shadow: none !important; border: none !important; width: 100% !important; }
+        .saudi-invoice { padding: 10px !important; }
+        th, td, tr, .bg-row, .table-zatca th { background-color: transparent !important; background: transparent !important; color: #000 !important; border: 1px solid #000 !important; }
+        .header-banner { background: transparent !important; color: #000 !important; padding: 10px 0 !important; border-bottom: 2px solid #000; }
+        .invoice-border { border: 1px solid #000 !important; box-shadow: none !important; }
+    }
+CSS;
+
+            $headerHtml = <<<HTML
+<div class="saudi-invoice w-100" style="font-size: {$fontSize}px;">
+    <div class="invoice-border shadow-sm">
+        <!-- Top banner with dark background -->
+        <div class="header-banner">
+            <div>
+                <h2 class="text-white">{{ invoice_title_ar }}</h2>
+                <div class="small text-light">{$titleEnHtml}</div>
+            </div>
+            <div class="text-end">
+                <h3 class="text-white mb-0">#{{ invoice_number }}</h3>
+                <span class="small text-light">تاريخ: {{ issue_date }}</span>
+            </div>
+        </div>
+
+        <div class="inner-padding">
+            <!-- معلومات الشركة والمورد -->
+            <div class="row align-items-center mb-5">
+                <div class="col-4 text-start">
+                    
+                </div>
+                <div class="col-4 text-center">
+                    {$logoHtml}
+                </div>
+                <div class="col-4 text-end">
+                    {$companyNameHtml}
+                    {$branchNameHtml}
+                    {$sellerVatHtml}
+                    {$sellerAddressHtml}
+                </div>
+            </div>
+
+            <div class="line-divider"></div>
+
+            <!-- أطراف المعاملة -->
+            <div class="row g-10 mb-5">
+                <div class="col-6">
+                    <h6 class="fw-bolder border-bottom border-dark pb-2 mb-3">بيانات المشتري / Buyer Info</h6>
+                    {$customerInfoTable}
+                </div>
+                <div class="col-6 text-end">
+                    <h6 class="fw-bolder border-bottom border-dark pb-2 mb-3">بيانات الفاتورة / Invoice Stats</h6>
+                    <table class="w-100">
+                        <tr>
+                            <td class="data-label text-start" width="45%">تاريخ الإصدار:</td>
+                            <td class="data-value text-start fw-bold">{{ issue_date }}</td>
+                        </tr>
+                        <tr>
+                            <td class="data-label text-start" width="45%">الفرع:</td>
+                            <td class="data-value text-start fw-bold">{{ branch_name }}</td>
+                        </tr>
+                        <tr>
+                            <td class="data-label text-start" width="45%">رقم المرجع (العميل):</td>
+                            <td class="data-value text-start fw-bold">#{{ customer_invoice_number }}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <!-- جدول الأصناف -->
+            <table class="table-zatca">
+                <thead>
+                    <tr>
+                        {$numHD3}
+                        {$imgHD3}
+                        <th style="background: #1e293b !important; color: #ffffff !important; border: 1px solid #1e293b;" width="16%">اسم الصنف / Item</th>
+                        <th style="background: #1e293b !important; color: #ffffff !important; border: 1px solid #1e293b;" width="12%">الوصف / Desc</th>
+                        {$unitHeaderD3}
+                        <th style="background: #1e293b !important; color: #ffffff !important; border: 1px solid #1e293b;" width="9%">سعر الوحدة</th>
+                        <th style="background: #1e293b !important; color: #ffffff !important; border: 1px solid #1e293b;" width="6%">الكمية</th>
+                        {$discHD3}
+                        {$subtotalHeaderD3}
+                        {$taxPercHD3}
+                        <th style="background: #1e293b !important; color: #ffffff !important; border: 1px solid #1e293b;" width="9%">مبلغ الضريبة</th>
+                        {$totalHD3}
+                    </tr>
+                </thead>
+                <tbody>
+HTML;
+
+            $footerHtml = <<<HTML
+                </tbody>
+            </table>
+
+            <!-- الملخص المالي -->
+            <div class="row mt-8 g-10 justify-content-end">
+                <div class="col-7">
+                    <div class="p-4 border border-dark h-100 d-flex align-items-center justify-content-between">
+                        <div>
+                            <h6 class="fw-bolder border-bottom border-dark pb-2 mb-3">تفاصيل السداد / Payment Methods</h6>
+                            <div class="text-muted small italic">طرق الدفع تظهر هنا بناءً على النظام</div>
+                        </div>
+                        {$qrHtml}
+                    </div>
+                </div>
+                
+                <div class="col-5">
+                    <table class="w-100 border border-dark border-2">
+                        <tr>
+                            <td class="p-2 border-bottom border-dark data-label bg-row text-start text-dark">الإجمالي (Excl. VAT)</td>
+                            <td class="p-2 border-bottom border-dark text-end fw-bold">{{ total_exclusive_vat }}</td>
+                        </tr>
+                        <tr>
+                            <td class="p-2 border-bottom border-dark data-label bg-row text-start text-dark">إجمالي الخصم (Discount)</td>
+                            <td class="p-2 border-bottom border-dark text-end text-danger fw-bold">- {{ total_discount }}</td>
+                        </tr>
+                        <tr>
+                            <td class="p-2 border-bottom border-dark data-label bg-row text-start text-dark">الضريبة (VAT)</td>
+                            <td class="p-2 border-bottom border-dark text-end fw-bold">+ {{ total_vat }}</td>
+                        </tr>
+                        
+                @if({{ shipping_cost }} > 0)
+                    <tr>
+                        <td class="p-2 border-bottom border-dark data-label bg-row text-start text-dark">مصاريف الشحن (Shipping)</td>
+                        <td class="p-2 border-bottom border-dark text-end fw-bold">+ {{ shipping_cost_total }}</td>
+                    </tr>
+                @endif
+
+                        <tr style="background: #f0f0f0; color: #000; border-top: 2px solid #000;">
+                            <td class="p-3 text-start fw-bolder fs-4">الإجمالي النهائي<br><small>Grand Total</small></td>
+                            <td class="p-3 text-end fw-bolder fs-3">{{ total_inclusive_vat }}</td>
+                        </tr>
+                    </table>
+                    {$totalInWordsHtml}
+                </div>
+            </div>
+
+            <!-- التذيل -->
+            <div class="mt-8 text-center small text-muted no-print">
+                <div class="line-divider"></div>
+                <div class="d-flex justify-content-between px-3 fw-bold text-dark">
+                    {$footerCreatedBy}
+                    {$barcodeHtml}
+                    {$footerStatus}
+                </div>
+                {$zatcaHtml}
+                {$customNotesHtml}
+
+            </div>
+        </div>
+    </div>
+</div>
+HTML;
+
+        } elseif ($design == 'design4') {
+            // ================== DESIGN 4: VERTICAL SPLIT ==================
+            $css = <<<CSS
+    .saudi-invoice { background: #fff; font-family: 'Arial', sans-serif; color: #000; padding: 10px; font-size: {$fontSize}px; }
+    .invoice-border { border: none; border-top: 6px solid #0f172a; padding: 20px 0; }
+    .line-divider { border-top: 1px solid #e2e8f0; margin: 15px 0; }
+    .table-zatca { width: 100% !important; table-layout: fixed !important; border-collapse: collapse !important; margin-top: 20px; word-wrap: break-word !important; word-break: break-word !important; }
+    .table-zatca th { border-bottom: 2px solid #0f172a; border-top: 1px solid #e2e8f0; padding: 12px; font-weight: bold; text-align: center; font-size: {$tableFontSize}; color: #0f172a; background: #fff !important; white-space: normal !important; overflow: hidden; word-wrap: break-word !important; word-break: break-word !important; }
+    .table-zatca td { border-bottom: 1px solid #e2e8f0; padding: 12px; text-align: center; vertical-align: middle; font-size: {$tableFontSize}; white-space: normal !important; overflow: hidden; word-wrap: break-word !important; word-break: break-word !important; }
+    .table-zatca tr:nth-child(even) { background-color: #f8fafc; }
+    .qr-container { padding: 0; width: 130px; height: 130px; display: inline-block; background: #fff; }
+    .qr-container svg, .qr-container img { width: 100% !important; height: 100% !important; }
+    .data-label { font-weight: bold; font-size: 0.80rem; color: #64748b; }
+    .data-value { font-size: 0.90rem; color: #0f172a; }
+    .bg-row { background: #f8fafc; }
+    .text-right { text-align: right !important; }
+    .text-left { text-align: left !important; }
+    .title-block { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 30px; }
+
+    @media print {
+        @page { size: A4; margin: 0; }
+        #kt_app_sidebar, #kt_app_header, #kt_app_toolbar, #kt_app_footer, .btn, .icon-btn, .breadcrumb, .alert, .card-header, .no-print { display: none !important; }
+        body, .app-wrapper, .app-main, .app-content, .container-xxl, .card, .card-body, .content { background-color: #fff !important; margin: 0 !important; padding: 0 !important; box-shadow: none !important; border: none !important; width: 100% !important; }
+        .saudi-invoice { padding: 10px !important; }
+        th, td, tr, .bg-row, .table-zatca th { background-color: transparent !important; background: transparent !important; }
+        .invoice-border { border-top: 4px solid #000 !important; box-shadow: none !important; }
+    }
+CSS;
+
+            $headerHtml = <<<HTML
+<div class="saudi-invoice w-100" style="font-size: {$fontSize}px;">
+    <div class="invoice-border">
+        <!-- Title & Logo block -->
+        <div class="title-block">
+            <div>
+                <h1 class="fw-bolder mb-1 text-dark" style="font-size: 2.2rem; letter-spacing: -1px;">{{ invoice_title_ar }}</h1>
+                {$titleEnHtml}
+                <div class="fs-4 mt-2">رقم المستند: <strong class="text-dark">#{{ invoice_number }}</strong></div>
+            </div>
+            <div class="text-end">
+                {$logoHtml}
+            </div>
+        </div>
+
+        <div class="line-divider"></div>
+
+        <!-- Meta Details Vertical split -->
+        <div class="row mb-5">
+            <!-- Left Side: Client & QR -->
+            <div class="col-7">
+                <h6 class="fw-bold text-dark text-uppercase mb-3" style="letter-spacing: 0.05em;">بيانات المشتري / Invoice To:</h6>
+                {$customerInfoTable}
+                <div class="mt-4">
+                    {$qrHtml}
+                </div>
+            </div>
+            <!-- Right Side: Org details -->
+            <div class="col-5 text-end border-start ps-5">
+                <h6 class="fw-bold text-dark text-uppercase mb-3" style="letter-spacing: 0.05em;">بيانات المورد / From:</h6>
+                {$companyNameHtml}
+                {$branchNameHtml}
+                {$sellerVatHtml}
+                {$sellerAddressHtml}
+                
+                <div class="mt-4 text-start d-inline-block">
+                    <table class="table-sm table-borderless">
+                        <tr>
+                            <td class="data-label text-start" style="padding: 2px 10px;">التاريخ / Date:</td>
+                            <td class="data-value text-start fw-bold" style="padding: 2px 10px;">{{ issue_date }}</td>
+                        </tr>
+                        <tr>
+                            <td class="data-label text-start" style="padding: 2px 10px;">الفرع / Branch:</td>
+                            <td class="data-value text-start fw-bold" style="padding: 2px 10px;">{{ branch_name }}</td>
+                        </tr>
+                        <tr>
+                            <td class="data-label text-start" style="padding: 2px 10px;">المرجع / Ref:</td>
+                            <td class="data-value text-start fw-bold" style="padding: 2px 10px;">#{{ customer_invoice_number }}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- جدول الأصناف -->
+        <table class="table-zatca">
+            <thead>
+                <tr>
+                    {$numHD4}
+                    {$imgHD4}
+                    <th style="border-bottom: 2px solid #0f172a; border-top: 1px solid #e2e8f0; background: #fff !important; color: #0f172a;" class="text-start" width="16%">اسم الصنف</th>
+                    <th style="border-bottom: 2px solid #0f172a; border-top: 1px solid #e2e8f0; background: #fff !important; color: #0f172a;" class="text-start" width="12%">الوصف</th>
+                    {$unitHeaderD4}
+                    <th style="border-bottom: 2px solid #0f172a; border-top: 1px solid #e2e8f0; background: #fff !important; color: #0f172a;" width="9%">سعر الوحدة</th>
+                    <th style="border-bottom: 2px solid #0f172a; border-top: 1px solid #e2e8f0; background: #fff !important; color: #0f172a;" width="6%">الكمية</th>
+                    {$discHD4}
+                    {$subtotalHeaderD4}
+                    {$taxPercHD4}
+                    <th style="border-bottom: 2px solid #0f172a; border-top: 1px solid #e2e8f0; background: #fff !important; color: #0f172a;" width="9%">مبلغ الضريبة</th>
+                    {$totalHD4}
+                </tr>
+            </thead>
+            <tbody>
+HTML;
+
+            $footerHtml = <<<HTML
+            </tbody>
+        </table>
+
+        <!-- الملخص المالي -->
+        <div class="row mt-8 g-10 justify-content-end">
+            <div class="col-7 no-print">
+                <div class="p-4 border h-100">
+                    <h6 class="fw-bold mb-3">تفاصيل السداد / Payment Method</h6>
+                    <div class="text-muted small italic">طرق الدفع تظهر هنا بناءً على النظام</div>
+                </div>
+            </div>
+            
+            <div class="col-5">
+                <table class="w-100 border border-dark">
+                    <tr>
+                        <td class="p-2 border-bottom border-dark data-label bg-row text-start text-dark">الإجمالي الخاضع للضريبة</td>
+                        <td class="p-2 border-bottom border-dark text-end fw-bold">{{ total_exclusive_vat }}</td>
+                    </tr>
+                    <tr>
+                        <td class="p-2 border-bottom border-dark data-label bg-row text-start text-dark">إجمالي الخصم (Discount)</td>
+                        <td class="p-2 border-bottom border-dark text-end text-danger fw-bold">- {{ total_discount }}</td>
+                    </tr>
+                    <tr>
+                        <td class="p-2 border-bottom border-dark data-label bg-row text-start text-dark">ضريبة القيمة المضافة (VAT)</td>
+                        <td class="p-2 border-bottom border-dark text-end fw-bold">+ {{ total_vat }}</td>
+                    </tr>
+                    
+                @if({{ shipping_cost }} > 0)
+                    <tr>
+                        <td class="p-2 border-bottom border-dark data-label bg-row text-start text-dark">مصاريف الشحن (Shipping)</td>
+                        <td class="p-2 border-bottom border-dark text-end fw-bold">+ {{ shipping_cost_total }}</td>
+                    </tr>
+                @endif
+
+                    <tr style="background: #0f172a; color: #ffffff; border-top: 2px solid #000;">
+                        <td class="p-3 text-start fw-bolder fs-4 text-white">الإجمالي النهائي<br><small class="text-light">Grand Total</small></td>
+                        <td class="p-3 text-end fw-bolder fs-3 text-white">{{ total_inclusive_vat }}</td>
+                    </tr>
+                </table>
+                {$totalInWordsHtml}
+            </div>
+        </div>
+
+        <!-- التذيل -->
+        <div class="mt-8 text-center small text-muted no-print">
+            <div class="line-divider"></div>
+            <div class="d-flex justify-content-between px-3 fw-bold text-dark">
+                {$footerCreatedBy}
+                {$barcodeHtml}
+                {$footerStatus}
+            </div>
+            <div class="mt-3 text-center">{$qrHtml}</div>
+            {$zatcaHtml}
+            {$customNotesHtml}
+
+        </div>
+    </div>
+</div>
+HTML;
+
+        } elseif ($design == 'design5') {
+            // ================== DESIGN 5: ZATCA OFFICIAL PANEL ==================
+            $css = <<<CSS
+    .saudi-invoice { background: #fff; font-family: 'Cairo', 'Arial', sans-serif; color: #000; padding: 10px; font-size: {$fontSize}px; }
+    .invoice-border { border: 1px solid #cbd5e1; border-top: 6px solid #0f766e; padding: 0; border-radius: 0; }
+    .zatca-strip { background: #0f766e; color: #ffffff; padding: 18px 25px; display: flex; justify-content: space-between; align-items: center; }
+    .zatca-strip h2 { margin: 0; font-weight: 900; }
+    .zatca-panel { border: 1px solid #cbd5e1; border-radius: 8px; padding: 16px; background: #f8fafc; }
+    .zatca-meta { width: 100%; }
+    .zatca-meta td { padding: 7px 0; border-bottom: 1px dashed #e2e8f0; }
+    .zatca-meta tr:last-child td { border-bottom: none; }
+    .line-divider { border-top: 1px solid #e2e8f0; margin: 20px 0; }
+    .table-zatca { width: 100% !important; table-layout: fixed !important; border-collapse: collapse !important; margin-top: 20px; word-wrap: break-word !important; word-break: break-word !important; }
+    .table-zatca th { border: 1px solid #cbd5e1; background: #ecfdf5 !important; padding: 10px; font-weight: bold; text-align: center; font-size: {$tableFontSize}; color: #065f46; white-space: normal !important; overflow: hidden; word-wrap: break-word !important; word-break: break-word !important; }
+    .table-zatca td { border: 1px solid #cbd5e1; padding: 10px; text-align: center; vertical-align: middle; font-size: {$tableFontSize}; white-space: normal !important; overflow: hidden; word-wrap: break-word !important; word-break: break-word !important; }
+    .qr-container { border: 1px solid #0f766e; padding: 0; width: 145px; height: 145px; display: inline-block; background: #fff; }
+    .qr-container svg, .qr-container img { width: 100% !important; height: 100% !important; }
+    .data-label { font-weight: bold; font-size: 0.80rem; color: #475569; }
+    .data-value { font-size: 0.90rem; color: #0f172a; }
+    .bg-row { background: #f8fafc; }
+    .text-right { text-align: right !important; }
+    .text-left { text-align: left !important; }
+    .zatca-summary { width: 100%; border: 2px solid #0f766e; border-radius: 8px; overflow: hidden; }
+    .zatca-summary td { padding: 10px; border-bottom: 1px solid #e2e8f0; }
+    .zatca-summary tr:last-child td { border-bottom: none; }
+
+    @media print {
+        @page { size: A4; margin: 0; }
+        #kt_app_sidebar, #kt_app_header, #kt_app_toolbar, #kt_app_footer, .btn, .icon-btn, .breadcrumb, .alert, .card-header, .no-print { display: none !important; }
+        body, .app-wrapper, .app-main, .app-content, .container-xxl, .card, .card-body, .content { background-color: #fff !important; margin: 0 !important; padding: 0 !important; box-shadow: none !important; border: none !important; width: 100% !important; }
+        .saudi-invoice { padding: 10px !important; }
+        th, td, tr, .bg-row, .table-zatca th { background-color: transparent !important; background: transparent !important; }
+        .invoice-border { border: 1px solid #000 !important; box-shadow: none !important; }
+        .zatca-strip { background: transparent !important; color: #000 !important; border-bottom: 2px solid #000; }
+    }
+CSS;
+
+            $headerHtml = <<<HTML
+<div class="saudi-invoice w-100" style="font-size: {$fontSize}px;">
+    <div class="invoice-border">
+        <div class="zatca-strip">
+            <div>
+                <h2>{{ invoice_title_ar }}</h2>
+                {$titleEnHtml}
+            </div>
+            <div class="text-end">
+                <div class="small">رقم الفاتورة</div>
+                <h3 class="mb-0">#{{ invoice_number }}</h3>
+            </div>
+        </div>
+
+        <div class="p-4">
+            <div class="row g-4 mb-4">
+                <div class="col-7">
+                    <div class="zatca-panel">
+                        <h6 class="fw-bolder border-bottom pb-2 mb-3">بيانات المورد / Supplier</h6>
+                        <div class="d-flex align-items-start gap-3">
+                            {$logoHtml}
+                            <div>
+                                {$companyNameHtml}
+                                {$branchNameHtml}
+                                {$sellerVatHtml}
+                                {$sellerAddressHtml}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-5">
+                    <div class="zatca-panel">
+                        <h6 class="fw-bolder border-bottom pb-2 mb-3">بيانات المستند / Document</h6>
+                        <table class="zatca-meta">
+                            <tr><td class="data-label text-start">تاريخ ووقت الإصدار:</td><td class="data-value text-end fw-bold">{{ issue_datetime }}</td></tr>
+                            <tr><td class="data-label text-start">نوع الفاتورة:</td><td class="data-value text-end">{{ invoice_type_text }} ({{ invoice_type_code }})</td></tr>
+                            <tr><td class="data-label text-start">النوع الفرعي:</td><td class="data-value text-end">{{ invoice_subtype_text }} ({{ invoice_subtype_code }})</td></tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-4 mb-4">
+                <div class="col-6">
+                    <h6 class="fw-bolder border-bottom pb-2 mb-3">بيانات المشتري / Buyer Info</h6>
+                    {$customerInfoTable}
+                </div>
+                <div class="col-6 text-end">
+                    <h6 class="fw-bolder border-bottom pb-2 mb-3 text-end">بيانات إضافية / Additional</h6>
+                    <table class="w-100">
+                        <tr><td class="data-label text-start" width="45%">رقم مرجع العميل:</td><td class="data-value text-start fw-bold">#{{ customer_invoice_number }}</td></tr>
+                        <tr><td class="data-label text-start">الفرع:</td><td class="data-value text-start">{{ branch_name }}</td></tr>
+                        <tr><td class="data-label text-start">الحالة:</td><td class="data-value text-start">{{ status_text }}</td></tr>
+                        <tr><td class="data-label text-start">تم الإنشاء بواسطة:</td><td class="data-value text-start">{{ created_by_name }}</td></tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <table class="table-zatca">
+            <thead>
+                <tr>
+                    {$numHD2}
+                    {$imgHD2}
+                    <th width="16%">اسم الصنف / Item</th>
+                    <th width="12%">الوصف / Desc</th>
+                    {$unitHeaderD2}
+                    <th width="9%">سعر الوحدة</th>
+                    <th width="6%">الكمية</th>
+                    {$discHD2}
+                    {$subtotalHeaderD2}
+                    {$taxPercHD2}
+                    <th width="9%">مبلغ الضريبة</th>
+                    {$totalHD2}
+                </tr>
+            </thead>
+            <tbody>
+HTML;
+
+            $footerHtml = <<<HTML
+            </tbody>
+        </table>
+
+        <div class="p-4">
+            <div class="row g-4 align-items-end">
+                <div class="col-7">
+                    <div class="zatca-panel d-flex align-items-center justify-content-between">
+                        <div>
+                            <h6 class="fw-bolder mb-2">رمز الاستجابة السريعة / QR</h6>
+                            <div class="small text-muted">QR code generated from ZATCA invoice data</div>
+                        </div>
+                        {$qrHtml}
+                    </div>
+                </div>
+                <div class="col-5">
+                    <table class="zatca-summary">
+                        <tr><td class="data-label bg-row text-start">الإجمالي قبل الضريبة</td><td class="text-end fw-bold">{{ total_exclusive_vat }}</td></tr>
+                        <tr><td class="data-label bg-row text-start">إجمالي الخصم</td><td class="text-end text-danger fw-bold">- {{ total_discount }}</td></tr>
+                        <tr><td class="data-label bg-row text-start">ضريبة القيمة المضافة</td><td class="text-end fw-bold">+ {{ total_vat }}</td></tr>
+                @if({{ shipping_cost }} > 0)
+                        <tr><td class="data-label bg-row text-start">مصاريف الشحن</td><td class="text-end fw-bold">+ {{ shipping_cost_total }}</td></tr>
+                @endif
+                        <tr class="bg-row"><td class="text-start fw-bolder fs-4">الإجمالي النهائي</td><td class="text-end fw-bolder fs-3">{{ total_inclusive_vat }}</td></tr>
+                    </table>
+                    {$totalInWordsHtml}
+                </div>
+            </div>
+
+            <div class="mt-5 text-center small text-muted no-print">
+                <div class="line-divider"></div>
+                <div class="d-flex justify-content-between px-3 fw-bold text-dark">
+                    {$footerCreatedBy}
+                    {$barcodeHtml}
+                    {$footerStatus}
+                </div>
+                {$zatcaHtml}
+                {$customNotesHtml}
+                <div class="mt-3 text-center" style="font-size: 0.72rem;">
+                    فاتورة متوافقة مع متطلبات هيئة الزكاة والضريبة والجمارك عند اكتمال بيانات المورد والعميل ورمز QR.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+HTML;
+
+        } elseif ($design == 'design6') {
+            // ================== DESIGN 6: TEMPLATEIMG INSPIRED ==================
+            $css = <<<CSS
+    .saudi-invoice { background: #fff; font-family: 'Cairo', 'Arial', sans-serif; color: #000; padding: 10px; font-size: {$fontSize}px; }
+    .invoice-border { border: 1px solid #dbeafe; padding: 0; border-radius: 0; }
+    .zatca-hero { background: linear-gradient(135deg, #eff6ff 0%, #ffffff 100%); border-bottom: 3px solid #2563eb; padding: 22px 28px; display: flex; justify-content: space-between; align-items: flex-start; }
+    .zatca-hero h1 { margin: 0 0 6px; font-size: 2rem; color: #1d4ed8; }
+    .zatca-card { border: 1px solid #bfdbfe; border-radius: 10px; padding: 16px; background: #ffffff; margin-bottom: 16px; }
+    .zatca-card h6 { border-bottom: 2px solid #bfdbfe; padding-bottom: 8px; margin-bottom: 12px; color: #1d4ed8; }
+    .line-divider { border-top: 1px dashed #bfdbfe; margin: 18px 0; }
+    .table-zatca { width: 100% !important; table-layout: fixed !important; border-collapse: collapse !important; margin-top: 18px; word-wrap: break-word !important; word-break: break-word !important; }
+    .table-zatca th { border: 1px solid #bfdbfe; background: #dbeafe !important; padding: 10px; font-weight: bold; text-align: center; font-size: {$tableFontSize}; color: #1e3a8a; white-space: normal !important; overflow: hidden; word-wrap: break-word !important; word-break: break-word !important; }
+    .table-zatca td { border: 1px solid #bfdbfe; padding: 10px; text-align: center; vertical-align: middle; font-size: {$tableFontSize}; white-space: normal !important; overflow: hidden; word-wrap: break-word !important; word-break: break-word !important; }
+    .qr-container { border: 1px solid #2563eb; padding: 0; width: 145px; height: 145px; display: inline-block; background: #fff; }
+    .qr-container svg, .qr-container img { width: 100% !important; height: 100% !important; }
+    .data-label { font-weight: bold; font-size: 0.80rem; color: #475569; }
+    .data-value { font-size: 0.90rem; color: #0f172a; }
+    .bg-row { background: #eff6ff; }
+    .text-right { text-align: right !important; }
+    .text-left { text-align: left !important; }
+    .zatca-summary { width: 100%; border-collapse: collapse; }
+    .zatca-summary td { padding: 10px; border: 1px solid #bfdbfe; }
+    .zatca-summary tr:last-child td { background: #1d4ed8 !important; color: #ffffff !important; }
+
+    @media print {
+        @page { size: A4; margin: 0; }
+        #kt_app_sidebar, #kt_app_header, #kt_app_toolbar, #kt_app_footer, .btn, .icon-btn, .breadcrumb, .alert, .card-header, .no-print { display: none !important; }
+        body, .app-wrapper, .app-main, .app-content, .container-xxl, .card, .card-body, .content { background-color: #fff !important; margin: 0 !important; padding: 0 !important; box-shadow: none !important; border: none !important; width: 100% !important; }
+        .saudi-invoice { padding: 10px !important; }
+        th, td, tr, .bg-row, .table-zatca th { background-color: transparent !important; background: transparent !important; }
+        .invoice-border { border: 1px solid #000 !important; box-shadow: none !important; }
+        .zatca-hero { background: transparent !important; border-bottom: 2px solid #000; }
+    }
+CSS;
+
+            $headerHtml = <<<HTML
+<div class="saudi-invoice w-100" style="font-size: {$fontSize}px;">
+    <div class="invoice-border">
+        <div class="zatca-hero">
+            <div>
+                <h1>{{ invoice_title_ar }}</h1>
+                {$titleEnHtml}
+                <div class="small text-muted">رقم الفاتورة: <strong>#{{ invoice_number }}</strong></div>
+            </div>
+            <div class="text-end">
+                {$logoHtml}
+                <div class="small fw-bold">{{ issue_datetime }}</div>
+            </div>
+        </div>
+
+        <div class="p-4">
+            <div class="row g-4 mb-4">
+                <div class="col-6">
+                    <div class="zatca-card">
+                        <h6 class="fw-bolder">بيانات المورد</h6>
+                        {$companyNameHtml}
+                        {$branchNameHtml}
+                        {$sellerVatHtml}
+                        {$sellerAddressHtml}
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="zatca-card text-center">
+                        <h6 class="fw-bolder">رمز QR</h6>
+                        {$qrHtml}
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="zatca-card">
+                        <h6 class="fw-bolder">معلومات الفاتورة</h6>
+                        <table class="w-100">
+                            <tr><td class="data-label text-start">الرقم:</td><td class="data-value text-end">#{{ invoice_number }}</td></tr>
+                            <tr><td class="data-label text-start">التاريخ:</td><td class="data-value text-end">{{ issue_date }}</td></tr>
+                            <tr><td class="data-label text-start">الفرع:</td><td class="data-value text-end">{{ branch_name }}</td></tr>
+                            <tr><td class="data-label text-start">النوع:</td><td class="data-value text-end">{{ invoice_subtype_text }}</td></tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="zatca-card">
+                <h6 class="fw-bolder">بيانات المشتري / Buyer Info</h6>
+                {$customerInfoTable}
+            </div>
+        </div>
+
+        <table class="table-zatca">
+            <thead>
+                <tr>
+                    {$numHD2}
+                    {$imgHD2}
+                    <th width="16%">اسم الصنف / Item</th>
+                    <th width="12%">الوصف / Desc</th>
+                    {$unitHeaderD2}
+                    <th width="9%">سعر الوحدة</th>
+                    <th width="6%">الكمية</th>
+                    {$discHD2}
+                    {$subtotalHeaderD2}
+                    {$taxPercHD2}
+                    <th width="9%">مبلغ الضريبة</th>
+                    {$totalHD2}
+                </tr>
+            </thead>
+            <tbody>
+HTML;
+
+            $footerHtml = <<<HTML
+            </tbody>
+        </table>
+
+        <div class="p-4">
+            <div class="row g-4">
+                <div class="col-7">
+                    <div class="zatca-card">
+                        <h6 class="fw-bolder">ملاحظات وضمانات</h6>
+                        <div class="small text-muted">تم إعداد هذه الفاتورة وفق متطلبات الفوترة الإلكترونية السعودية.</div>
+                        {$zatcaHtml}
+            {$customNotesHtml}
+                    </div>
+                </div>
+                <div class="col-5">
+                    <table class="zatca-summary">
+                        <tr><td class="data-label bg-row text-start">الإجمالي (Excl. VAT)</td><td class="text-end fw-bold">{{ total_exclusive_vat }}</td></tr>
+                        <tr><td class="data-label bg-row text-start">إجمالي الخصم</td><td class="text-end text-danger fw-bold">- {{ total_discount }}</td></tr>
+                        <tr><td class="data-label bg-row text-start">الضريبة (VAT)</td><td class="text-end fw-bold">+ {{ total_vat }}</td></tr>
+                @if({{ shipping_cost }} > 0)
+                        <tr><td class="data-label bg-row text-start">الشحن</td><td class="text-end fw-bold">+ {{ shipping_cost_total }}</td></tr>
+                @endif
+                        <tr><td class="text-start fw-bolder fs-4">الإجمالي النهائي</td><td class="text-end fw-bolder fs-3">{{ total_inclusive_vat }}</td></tr>
+                    </table>
+                    {$totalInWordsHtml}
+                </div>
+            </div>
+
+            <div class="mt-5 text-center small text-muted no-print">
+                <div class="line-divider"></div>
+                <div class="d-flex justify-content-between px-3 fw-bold text-dark">
+                    {$footerCreatedBy}
+                    {$barcodeHtml}
+                    {$footerStatus}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+HTML;
+
+        } else {
+            // ================== DESIGN 1: CLASSIC SIMPLE (DEFAULT) ==================
+            $css = <<<CSS
+    .saudi-invoice { background: #fff; font-family: 'Arial', sans-serif; color: #000; padding: 10px; font-size: {$fontSize}px; }
+    .invoice-border { border: 2px solid #000; padding: 20px; border-radius: 0; }
+    .line-divider { border-top: 1px solid #000; margin: 15px 0; }
+    .table-zatca { width: 100% !important; table-layout: fixed !important; border-collapse: collapse !important; margin-top: 20px; word-wrap: break-word !important; word-break: break-word !important; }
+    .table-zatca th { border: 1px solid #000; background: #f0f0f0 !important; padding: 10px; font-weight: bold; text-align: center; font-size: {$tableFontSize}; color: #000; white-space: normal !important; overflow: hidden; word-wrap: break-word !important; word-break: break-word !important; }
+    .table-zatca td { border: 1px solid #000; padding: 10px; text-align: center; vertical-align: middle; font-size: {$tableFontSize}; white-space: normal !important; overflow: hidden; word-wrap: break-word !important; word-break: break-word !important; }
+    .qr-container { border: 1px solid #000; padding: 0; width: 160px; height: 160px; display: inline-block; background: #fff; }
+    .qr-container svg, .qr-container img { width: 100% !important; height: 100% !important; }
+    .data-label { font-weight: bold; font-size: 0.80rem; }
+    .data-value { font-size: 0.90rem; }
+    .bg-row { background: #f9f9f9; }
+    .text-right { text-align: right !important; }
+    .text-left { text-align: left !important; }
+
+    @media print {
+        @page { size: A4; margin: 0; }
+        #kt_app_sidebar, #kt_app_header, #kt_app_toolbar, #kt_app_footer, .btn, .icon-btn, .breadcrumb, .alert, .card-header, .no-print { display: none !important; }
+        body, .app-wrapper, .app-main, .app-content, .container-xxl, .card, .card-body, .content { background-color: #fff !important; margin: 0 !important; padding: 0 !important; box-shadow: none !important; border: none !important; width: 100% !important; }
+        .saudi-invoice { padding: 10px !important; }
+        th, td, tr, .bg-row, .table-zatca th { background-color: transparent !important; background: transparent !important; }
+        .invoice-border { border: 1px solid #000 !important; box-shadow: none !important; }
+    }
+CSS;
+
+            $headerHtml = <<<HTML
+<div class="saudi-invoice w-100" style="font-size: {$fontSize}px;">
+    <div class="invoice-border shadow-sm">
+        <!-- الرأس (Header) -->
+        <div class="row align-items-center mb-5">
+            <div class="col-4 text-start">
+                {$qrHtml}
+            </div>
+            <div class="col-4 text-center">
+                <h2 class="fw-bolder mb-1">{{ invoice_title_ar }}</h2>
+                {$titleEnHtml}
+                <div class="fw-bold fs-4">رقم الفاتورة: #{{ invoice_number }}</div>
+                {$barcodeHtml}
+            </div>
+            <div class="col-4 text-end">
+                {$logoHtml}
+                {$companyNameHtml}
+                {$branchNameHtml}
+                {$sellerVatHtml}
+                {$sellerAddressHtml}
+            </div>
+        </div>
+
+        <div class="line-divider"></div>
+
+        <!-- أطراف المعاملة -->
+        <div class="row g-10 mb-5">
+            <div class="col-6">
+                <h6 class="fw-bolder border-bottom border-dark pb-1 mb-3">بيانات المشتري / Buyer Info</h6>
+                {$customerInfoTable}
+            </div>
+            <div class="col-6 text-end">
+                <h6 class="fw-bolder border-bottom border-dark pb-1 mb-3">بيانات الفاتورة / Invoice Stats</h6>
+                <table class="w-100">
+                    <tr>
+                        <td class="data-label text-start" width="45%">تاريخ الفاتورة / Date:</td>
+                        <td class="data-value text-start fw-bolder">{{ issue_date }}</td>
+                    </tr>
+                    <tr>
+                        <td class="data-label text-start">الفرع / Branch:</td>
+                        <td class="data-value text-start">{{ branch_name }}</td>
+                    </tr>
+                    <tr>
+                        <td class="data-label text-start">رقم الفاتورة (المرجع):</td>
+                        <td class="data-value text-start fw-bold">#{{ customer_invoice_number }}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <!-- جدول الأصناف -->
+        <table class="table-zatca">
+            <thead>
+                <tr>
+                    {$numHD1}
+                    {$imgHD1}
+                    <th width="16%">اسم الصنف<br>Item Name</th>
+                    <th width="12%">الوصف<br>Description</th>
+                    {$unitHeaderD1}
+                    <th width="9%">سعر الوحدة<br>Unit Price</th>
+                    <th width="6%">الكمية<br>Qty</th>
+                    {$discHD1}
+                    {$subtotalHeaderD1}
+                    {$taxPercHD1}
+                    <th width="9%">مبلغ الضريبة<br>VAT Amt</th>
+                    {$totalHD1}
+                </tr>
+            </thead>
+            <tbody>
+HTML;
+
+            $footerHtml = <<<HTML
+            </tbody>
+        </table>
+
+        <!-- الملخص المالي -->
+        <div class="row mt-8 g-10 justify-content-end">
+            <div class="col-7 no-print">
+                <div class="p-4 border border-dark h-100">
+                    <h6 class="fw-bolder border-bottom border-dark pb-2 mb-3">تفاصيل السداد / Payment Methods</h6>
+                    <div class="text-muted small italic">طرق الدفع تظهر هنا بناءً على النظام</div>
+                </div>
+            </div>
+            
+            <div class="col-5">
+                <table class="w-100 border border-dark border-2">
+                    <tr>
+                        <td class="p-2 border-bottom border-dark data-label bg-row text-start text-dark">الإجمالي (Excl. VAT)</td>
+                        <td class="p-2 border-bottom border-dark text-end fw-bold">{{ total_exclusive_vat }}</td>
+                    </tr>
+                    <tr>
+                        <td class="p-2 border-bottom border-dark data-label bg-row text-start text-dark">إجمالي الخصم (Discount)</td>
+                        <td class="p-2 border-bottom border-dark text-end text-danger fw-bold">- {{ total_discount }}</td>
+                    </tr>
+                    <tr>
+                        <td class="p-2 border-bottom border-dark data-label bg-row text-start text-dark">الضريبة (VAT 15%)</td>
+                        <td class="p-2 border-bottom border-dark text-end fw-bold">+ {{ total_vat }}</td>
+                    </tr>
+                    
+                @if({{ shipping_cost }} > 0)
+                    <tr>
+                        <td class="p-2 border-bottom border-dark data-label bg-row text-start text-dark">مصاريف الشحن (Shipping)</td>
+                        <td class="p-2 border-bottom border-dark text-end fw-bold">+ {{ shipping_cost_total }}</td>
+                    </tr>
+                @endif
+
+                    <tr style="background: #f0f0f0; color: #000; border-top: 2px solid #000;">
+                        <td class="p-3 text-start fw-bolder fs-4">الإجمالي النهائي<br><small>Grand Total</small></td>
+                        <td class="p-3 text-end fw-bolder fs-3">{{ total_inclusive_vat }}</td>
+                    </tr>
+                </table>
+                {$totalInWordsHtml}
+            </div>
+        </div>
+
+        <!-- التذيل -->
+        <div class="mt-8 text-center small text-muted no-print">
+            <div class="line-divider"></div>
+            <div class="d-flex justify-content-between px-3 fw-bold text-dark">
+                {$footerCreatedBy}
+                {$footerStatus}
+            </div>
+            {$zatcaHtml}
+            {$customNotesHtml}
+
+        </div>
+    </div>
+</div>
+HTML;
+        }
+
+        $bladePath = resource_path('views/livewire/template-designs/' . strtolower('a4_' . $design) . '.blade.php');
+        $htmlContent = file_exists($bladePath) ? file_get_contents($bladePath) : '';
+
+        return [
+            'header_html' => $htmlContent,
+            'content_html' => '',
+            'footer_html' => '',
+            'css_styles' => $css
+        ];
+    }
+
+    private function generateThermalLayout($c, $fontSize, $design)
+    {
+        $activeDetails = 0;
+        if (!empty($c['show_item_number'])) $activeDetails++;
+        if (!empty($c['show_item_image'])) $activeDetails++;
+        if (!empty($c['show_item_unit'])) $activeDetails++;
+        if (!empty($c['show_item_discount'])) $activeDetails++;
+        if (!empty($c['show_item_subtotal'])) $activeDetails++;
+        if (!empty($c['show_item_tax_percent'])) $activeDetails++;
+        if (!empty($c['show_item_barcode'])) $activeDetails++;
+        if (!empty($c['show_item_options'])) $activeDetails++;
+
+        if ($activeDetails >= 6) {
+            $thermalTableFontSize = '0.68rem';
+        } elseif ($activeDetails >= 4) {
+            $thermalTableFontSize = '0.73rem';
+        } else {
+            $thermalTableFontSize = '0.8rem';
+        }
+
+        // ------------------ COMMON PIECES FOR THERMAL ------------------
+        $qrHtml = ($c['show_qr_code'] && $c['qr_size'] != 'none') ? '<div class="qr-container" style="width: ' . ($c['qr_size'] == 'small' ? '100px' : ($c['qr_size'] == 'large' ? '180px' : '140px')) . '; height: ' . ($c['qr_size'] == 'small' ? '100px' : ($c['qr_size'] == 'large' ? '180px' : '140px')) . '; padding: 0 !important; margin: 10px auto; border: none !important; overflow: hidden;">
+                    @if(\'{{ qr_code }}\')
+                        <img src="{{ (new \chillerlan\QRCode\QRCode(new \chillerlan\QRCode\QROptions([\'addQuietzone\' => false])))->render(\'{{ qr_code }}\') }}" alt="QR Code" style="width: 100%; height: 100%; object-fit: contain; margin: 0; padding: 0;">
+                    @else
+                        <div class="small text-muted pt-10 text-center">QR Code</div>
+                    @endif
+                </div>' : '';
+        $titleEnHtml = $c['enable_english'] ? '<div class="text-muted mb-2 text-center" style="font-size: 0.9rem;">{{ invoice_title_en }}</div>' : '';
+        $barcodeHtml = $c['show_small_barcode'] ? '<div class="text-center mb-2"><img src="data:image/png;base64,{{ base64_encode((new \Picqer\Barcode\BarcodeGeneratorPNG())->getBarcode(\'{{ invoice_number }}\', \Picqer\Barcode\BarcodeGeneratorPNG::TYPE_CODE_128)) }}" alt="Barcode" style="max-width: 250px; height: 40px;"></div>' : '';
+        $logoHtml = $c['show_logo'] ? '<div class="mb-2 text-center" style="max-height: 80px;">@if(\'{{ company_logo }}\')<img src="{{ company_logo }}" alt="Logo" style="max-height: 80px; max-width: 150px;">@endif</div>' : '';
+        $companyNameHtml = $c['show_company_name'] ? '<div class="fw-bolder fs-4 mb-1 text-center">{{ organization_name }}</div>' : '';
+        $branchNameHtml = $c['show_branch_name'] ? '<div class="fw-bold fs-6 mb-1 text-muted text-center">{{ branch_name }}</div>' : '';
+        $sellerVatHtml = $c['show_tax_number'] ? '<div class="small fw-bold text-center">الرقم الضريبي (VAT ID): {{ seller_vat }}</div>' : '';
+        $sellerAddressHtml = $c['show_address'] ? '<div class="small mt-1 text-center">{{ seller_address }}</div>' : '';
+
+        $customerInfoHtml = '';
+        if ($c['show_customer_data']) {
+            $customerPhoneRow = $c['show_customer_phone'] ? '<tr><td class="data-label text-right">الجوال / Phone:</td><td class="data-value text-left">{{ customer_phone }}</td></tr>' : '';
+            $customerCrRow = $c['show_customer_cr'] ? '<tr><td class="data-label text-right">السجل التجاري / CR:</td><td class="data-value text-left">{{ customer_cr }}</td></tr>' : '';
+            
+            $customerInfoHtml = <<<HTML
+        <div style="margin-bottom: 10px; border-bottom: 1px dashed #000; padding-bottom: 10px; font-size: 0.8rem;">
+            <div class="fw-bold mb-2">بيانات المشتري / Buyer Info:</div>
+            <table class="w-100">
+                <tr>
+                    <td class="data-label text-right" width="40%">الاسم / Name:</td>
+                    <td class="data-value text-left fw-bolder">{{ customer_name }}</td>
+                </tr>
+                <tr>
+                    <td class="data-label text-right">الرقم الضريبي / VAT ID:</td>
+                    <td class="data-value text-left">{{ customer_tax }}</td>
+                </tr>
+                <tr>
+                    <td class="data-label text-right">العنوان / Address:</td>
+                    <td class="data-value text-left text-muted" style="font-size: 0.75rem;">{{ customer_address_full }}</td>
+                </tr>
+                {$customerPhoneRow}
+                {$customerCrRow}
+            </table>
+        </div>
+HTML;
+        }
+
+        $itemNumHtml = $c['show_item_number'] ? '<span class="me-1">{{ loop.iteration }} -</span> ' : '';
+        $itemImgHtml = $c['show_item_image'] ? '<div class="mt-1 mb-1">@if(\'{{ item.image }}\')<img src="{{ item.image }}" style="max-height: 25px; max-width: 25px; object-fit: contain; border-radius: 2px;">@endif</div>' : '';
+        $itemUnitHtml = $c['show_item_unit'] ? ' {{ item.unit_name }}' : '';
+        $itemSubtotalHtml = $c['show_item_subtotal'] ? '<div style="font-size: 0.75rem; color: #6b7280;">الخاضع للضريبة: {{ item.taxable_amount }}</div>' : '';
+        $itemTotalHtml = $c['show_item_total_with_tax'] ? '{{ item.total }}' : '';
+        $totalHeaderThermal = $c['show_item_total_with_tax'] ? '<th class="text-left" width="25%">الإجمالي</th>' : '<th class="text-left" width="25%"></th>';
+        $totalHeaderThermalD3 = $c['show_item_total_with_tax'] ? '<th class="text-left" width="20%">المجموع</th>' : '<th class="text-left" width="20%"></th>';
+
+        $itemBarcodeHtml = $c['show_item_barcode'] ? '<div class="small text-muted" style="font-family: monospace;">{{ item.item_barcode_rendered }}</div>' : '';
+        $itemCharHtml = $c['show_item_characteristics'] ? '<div style="font-size: 0.75rem; color: #6b7280;">{{ item.characteristics }}</div>' : '';
+        $itemOptionsHtml = $c['show_item_options'] ? '<div style="font-size: 0.75rem; color: #6b7280;">{{ item.options }}</div>' : '';
+        $itemDiscountHtml = $c['show_item_discount'] ? '<div style="font-size: 0.75rem; color: #dc3545;">خصم: {{ item.discount_value }}</div>' : '';
+        $itemTaxHtml = $c['show_item_tax_percent'] ? '<div style="font-size: 0.75rem; color: #6b7280;">ضريبة: {{ item.tax_percent }}%</div>' : '';
+        $orderNumberRow = $c['show_order_number'] ? '<tr><td class="data-label text-right" width="40%">رقم الطلب:</td><td class="data-value text-left fw-bold">#{{ order_number }}</td></tr>' : '';
+        $cashierRow = $c['show_seller_name'] ? '<tr><td class="data-label text-right">الكاشير:</td><td class="data-value text-left">{{ created_by_name }}</td></tr>' : '';
+        $paymentStatusRow = $c['show_payment_status'] ? '<tr><td class="data-label text-right">الدفع:</td><td class="data-value text-left">{{ payment_status }}</td></tr>' : '';
+        $invoiceDescHtml = $c['show_invoice_description'] ? '<div class="small mt-2 p-1 text-center" style="border: 1px dashed #ccc;">الوصف: {{ invoice_description }}</div>' : '';
+        $d3OrderHtml = $c['show_order_number'] ? '<div class="small fw-bold">رقم الطلب: #{{ order_number }}</div>' : '';
+        $d3CashierHtml = $c['show_seller_name'] ? '<div class="small mt-1">كاشير: {{ created_by_name }}</div>' : '';
+        $d3PaymentHtml = $c['show_payment_status'] ? '<div class="small mt-1">الدفع: {{ payment_status }}</div>' : '';
+
+        $qtyPriceThermal = $c['show_item_unit']
+            ? '{{ item.quantity }} {{ item.unit_name }} × {{ item.unit_price }}'
+            : '{{ item.quantity }} × {{ item.unit_price }}';
+
+        $qtyThermal = $c['show_item_unit']
+            ? 'x {{ item.quantity }} {{ item.unit_name }}'
+            : 'x {{ item.quantity }}';
+
+        $totalInWordsHtml = $c['show_total_in_words'] ? '<div class="mt-2 text-start fw-bold" style="font-size: 0.8rem;">فقط {{ total_in_words }} لا غير</div>' : '';
+        $receiptNotesThermal = !empty($c['small_receipt_notes']) ? '<div class="mt-2 text-center" style="font-size: 0.8rem;">' . e($c['small_receipt_notes']) . '</div>' : '<div class="mt-2 text-center" style="font-size: 0.75rem;">فاتورة ضريبية مبسطة معتمدة من هيئة الزكاة والضريبة والجمارك<br>Simplified Tax Invoice approved by ZATCA</div>';
+
+        // ------------------ DESIGN SWITCH FOR THERMAL ------------------
+        if ($design == 'design2') {
+            // ================== DESIGN 2: MODERN POS ==================
+            $css = <<<CSS
+    .saudi-invoice { background: #fff; font-family: 'Arial', sans-serif; color: #000; padding: 5px; font-size: {$fontSize}px; line-height: 1.4; width: 100%; box-sizing: border-box; }
+    .invoice-border { border: none; padding: 0; }
+    .line-divider { border-top: 1px dotted #000; margin: 8px 0; }
+    .title-box { border: 1px solid #000; border-radius: 4px; padding: 5px 8px; margin: 10px auto; display: inline-block; font-weight: bold; }
+    .table-zatca { width: 100% !important; table-layout: fixed !important; border-collapse: collapse !important; margin-top: 10px; margin-bottom: 10px; word-wrap: break-word !important; word-break: break-word !important; }
+    .table-zatca th { border: none; border-top: 1px dotted #000; border-bottom: 1px dotted #000; padding: 5px 2px; font-weight: bold; text-align: right; font-size: {$thermalTableFontSize}; color: #000; white-space: normal !important; overflow: hidden; word-wrap: break-word !important; word-break: break-word !important; }
+    .table-zatca td { border: none; border-bottom: 1px dashed #ddd; padding: 5px 2px; text-align: right; vertical-align: middle; font-size: {$thermalTableFontSize}; white-space: normal !important; overflow: hidden; word-wrap: break-word !important; word-break: break-word !important; }
+    .qr-container { border: none; padding: 0; width: 110px; height: 110px; display: block; margin: 10px auto; background: #fff; }
+    .qr-container svg, .qr-container img { width: 100% !important; height: 100% !important; }
+    .data-label { font-weight: bold; font-size: 0.75rem; }
+    .data-value { font-size: 0.75rem; }
+    
+    .text-right { text-align: right !important; }
+    .text-left { text-align: left !important; }
+    .text-center { text-align: center !important; }
+
+    @media print {
+        @page { size: 80mm auto; margin: 0; }
+        #kt_app_sidebar, #kt_app_header, #kt_app_toolbar, #kt_app_footer, .btn, .icon-btn, .breadcrumb, .alert, .card-header, .no-print { display: none !important; }
+        body, .app-wrapper, .app-main, .app-content, .container-xxl, .card, .card-body, .content { background-color: #fff !important; margin: 0 !important; padding: 0 !important; box-shadow: none !important; border: none !important; width: 100% !important; }
+        .saudi-invoice { padding: 0 !important; width: 80mm !important; }
+        .invoice-border { border: none !important; box-shadow: none !important; padding: 0 !important; }
+    }
+CSS;
+
+            $headerHtml = <<<HTML
+<div class="saudi-invoice w-100" style="font-size: {$fontSize}px;">
+    <div class="invoice-border shadow-sm">
+        <div class="text-center mb-3">
+            {$logoHtml}
+            {$companyNameHtml}
+            {$branchNameHtml}
+            {$sellerVatHtml}
+            {$sellerAddressHtml}
+        </div>
+
+        <div class="text-center">
+            <div class="title-box">
+                {{ invoice_title_ar }}
+            </div>
+            {$titleEnHtml}
+            {$barcodeHtml}
+        </div>
+
+        <div class="line-divider"></div>
+        
+        <div style="font-size: 0.8rem; margin-bottom: 10px;">
+            <table class="w-100">
+                <tr>
+                    <td class="data-label text-right" width="40%">رقم الفاتورة:</td>
+                    <td class="data-value text-left fw-bold">#{{ invoice_number }}</td>
+                </tr>
+                {$orderNumberRow}
+                <tr>
+                    <td class="data-label text-right">تاريخ الإصدار:</td>
+                    <td class="data-value text-left">{{ issue_date }}</td>
+                </tr>
+                {$paymentStatusRow}
+                {$cashierRow}
+            </table>
+            {$invoiceDescHtml}
+        </div>
+
+        {$customerInfoHtml}
+
+        <table class="table-zatca">
+            <thead>
+                <tr>
+                    <th class="text-right" width="50%">الصنف / Item</th>
+                    <th class="text-center" width="25%">الكمية × السعر</th>
+                    {$totalHeaderThermal}
+                </tr>
+            </thead>
+            <tbody>
+HTML;
+
+            $qtyPriceThermal = '<div class="fw-bold">x {{ item.quantity }}'.$itemUnitHtml.'</div><div class="small text-muted">{{ item.unit_price }}</div>';
+            
+            $contentHtml = <<<HTML
+                <tr>
+                    <td class="text-right">
+                        {$itemNumHtml}<strong>{{ item.product_name }}</strong>
+                        {$itemImgHtml}
+                        {$itemBarcodeHtml}
+                        {$itemCharHtml}
+                        {$itemOptionsHtml}
+                        {$itemDiscountHtml}
+                        {$itemSubtotalHtml}
+                        {$itemTaxHtml}
+                    </td>
+                    <td class="text-center">{$qtyPriceThermal}</td>
+                    <td class="text-left fw-bold">{$itemTotalHtml}</td>
+                </tr>
+HTML;
+
+            $footerHtml = <<<HTML
+            </tbody>
+        </table>
+
+        <div style="font-size: 0.85rem; margin-top: 10px; border-top: 1px dotted #000; padding-top: 8px;">
+            <table class="w-100">
+                <tr>
+                    <td class="text-right" width="60%">الإجمالي قبل الضريبة</td>
+                    <td class="text-left">{{ total_exclusive_vat }}</td>
+                </tr>
+                <tr>
+                    <td class="text-right">إجمالي الخصم</td>
+                    <td class="text-left text-danger">- {{ total_discount }}</td>
+                </tr>
+                <tr>
+                    <td class="text-right">الضريبة 15%</td>
+                    <td class="text-left">+ {{ total_vat }}</td>
+                </tr>
+                @if({{ shipping_cost }} > 0)
+                <tr>
+                    <td class="text-right">مصاريف الشحن</td>
+                    <td class="text-left">+ {{ shipping_cost_total }}</td>
+                </tr>
+                @endif
+                <tr style="border-top: 1px dotted #000; font-size: 1rem;">
+                    <td class="text-right fw-bold" style="padding-top: 6px;">الإجمالي النهائي</td>
+                    <td class="text-left fw-bold" style="padding-top: 6px;">{{ total_inclusive_vat }}</td>
+                </tr>
+            </table>
+            {$totalInWordsHtml}
+        </div>
+
+        <div class="mt-4 text-center small text-muted">
+            <div class="line-divider"></div>
+            {$qrHtml}
+            {$receiptNotesThermal}
+        </div>
+    </div>
+</div>
+HTML;
+
+        } elseif ($design == 'design3') {
+            // ================== DESIGN 3: COMPACT RESTAURANT ==================
+            $css = <<<CSS
+    .saudi-invoice { background: #fff; font-family: 'Arial', sans-serif; color: #000; padding: 5px; font-size: {$fontSize}px; line-height: 1.3; width: 100%; box-sizing: border-box; }
+    .invoice-border { border: 1px dashed #000; padding: 8px; border-radius: 4px; }
+    .line-divider { border-top: 2px dashed #000; margin: 8px 0; }
+    .order-header { border-bottom: 2px dashed #000; padding-bottom: 8px; margin-bottom: 10px; }
+    .table-zatca { width: 100% !important; table-layout: fixed !important; border-collapse: collapse !important; margin-top: 8px; word-wrap: break-word !important; word-break: break-word !important; }
+    .table-zatca th { border-bottom: 2px dashed #000; border-top: 2px dashed #000; padding: 5px 2px; font-weight: bold; text-align: right; font-size: {$thermalTableFontSize}; white-space: normal !important; overflow: hidden; word-wrap: break-word !important; word-break: break-word !important; }
+    .table-zatca td { border-bottom: 1px dashed #eee; padding: 5px 2px; text-align: right; font-size: {$thermalTableFontSize}; white-space: normal !important; overflow: hidden; word-wrap: break-word !important; word-break: break-word !important; }
+    .qr-container { width: 100px; height: 100px; display: block; margin: 10px auto; background: #fff; }
+    .qr-container svg, .qr-container img { width: 100% !important; height: 100% !important; }
+    
+    .text-right { text-align: right !important; }
+    .text-left { text-align: left !important; }
+    .text-center { text-align: center !important; }
+
+    @media print {
+        @page { size: 80mm auto; margin: 0; }
+        #kt_app_sidebar, #kt_app_header, #kt_app_toolbar, #kt_app_footer, .btn, .icon-btn, .breadcrumb, .alert, .card-header, .no-print { display: none !important; }
+        body, .app-wrapper, .app-main, .app-content, .container-xxl, .card, .card-body, .content { background-color: #fff !important; margin: 0 !important; padding: 0 !important; box-shadow: none !important; border: none !important; width: 100% !important; }
+        .saudi-invoice { padding: 0 !important; width: 80mm !important; }
+    }
+CSS;
+
+            $headerHtml = <<<HTML
+<div class="saudi-invoice w-100" style="font-size: {$fontSize}px;">
+    <div class="invoice-border">
+        <!-- Prominent Order info -->
+        <div class="order-header text-center">
+            <h1 class="mb-1" style="font-size: 1.8rem; font-weight: 900; letter-spacing: -0.5px;">طلب #{{ invoice_number }}</h1>
+            <div class="small fw-bold">تاريخ: {{ issue_date }}</div>
+            {$d3OrderHtml}
+            {$d3CashierHtml}
+            {$d3PaymentHtml}
+        </div>
+
+        <div class="text-center mb-3">
+            {$logoHtml}
+            {$companyNameHtml}
+            {$branchNameHtml}
+            {$sellerVatHtml}
+            {$sellerAddressHtml}
+        </div>
+
+        <div class="text-center mb-3">
+            <h2 class="fw-bolder mb-1" style="font-size: 1.1rem;">{{ invoice_title_ar }}</h2>
+            {$titleEnHtml}
+            {$barcodeHtml}
+        </div>
+
+        {$customerInfoHtml}
+        {$invoiceDescHtml}
+
+        <table class="table-zatca">
+            <thead>
+                <tr>
+                    <th class="text-right" width="60%">العنصر / Item</th>
+                    <th class="text-center" width="20%">الكمية</th>
+                    {$totalHeaderThermalD3}
+                </tr>
+            </thead>
+            <tbody>
+HTML;
+
+            $qtyThermal = '<div class="fw-bold">{{ item.quantity }}'.$itemUnitHtml.'</div>';
+            
+            $contentHtml = <<<HTML
+                <tr>
+                    <td class="text-right">
+                        {$itemNumHtml}<strong>{{ item.product_name }}</strong>
+                        {$itemImgHtml}
+                        {$itemBarcodeHtml}
+                        {$itemCharHtml}
+                        {$itemOptionsHtml}
+                        {$itemDiscountHtml}
+                        {$itemSubtotalHtml}
+                        {$itemTaxHtml}
+                    </td>
+                    <td class="text-center">{$qtyThermal}</td>
+                    <td class="text-left fw-bold">{$itemTotalHtml}</td>
+                </tr>
+HTML;
+
+            $footerHtml = <<<HTML
+            </tbody>
+        </table>
+
+        <div style="font-size: 0.85rem; margin-top: 8px;">
+            <table class="w-100">
+                <tr>
+                    <td class="text-right" width="60%">إجمالي غير شامل الضريبة</td>
+                    <td class="text-left">{{ total_exclusive_vat }}</td>
+                </tr>
+                <tr>
+                    <td class="text-right">خصم:</td>
+                    <td class="text-left text-danger">- {{ total_discount }}</td>
+                </tr>
+                <tr>
+                    <td class="text-right">الضريبة 15%:</td>
+                    <td class="text-left">+ {{ total_vat }}</td>
+                </tr>
+                @if({{ shipping_cost }} > 0)
+                <tr>
+                    <td class="text-right">الشحن:</td>
+                    <td class="text-left">+ {{ shipping_cost_total }}</td>
+                </tr>
+                @endif
+                <tr style="border-top: 2px dashed #000; font-size: 1.1rem;">
+                    <td class="text-right fw-bold" style="padding-top: 6px;">الصافي النهائي:</td>
+                    <td class="text-left fw-bold" style="padding-top: 6px;">{{ total_inclusive_vat }}</td>
+                </tr>
+            </table>
+            {$totalInWordsHtml}
+        </div>
+
+        <div class="text-center small text-muted mt-4">
+            <div class="line-divider"></div>
+            {$qrHtml}
+            {$receiptNotesThermal}
+        </div>
+    </div>
+</div>
+HTML;
+
+        } else {
+            // ================== DESIGN 1: CLASSIC RECEIPT (DEFAULT) ==================
+            $css = <<<CSS
+    /* تصميم فاتورة حرارية احترافية (80 مم) */
+    .saudi-invoice { background: #fff; font-family: 'Arial', sans-serif; color: #000; padding: 0; margin: 0 auto; font-size: {$fontSize}px; line-height: 1.4; width: 100%; box-sizing: border-box; }
+    .invoice-border { border: none; padding: 10px 15px; } /* Adding side padding */
+    .line-divider { border-top: 1px dashed #000; margin: 10px 0; }
+    .table-zatca { width: 100% !important; table-layout: fixed !important; border-collapse: collapse !important; margin-top: 10px; margin-bottom: 10px; word-wrap: break-word !important; word-break: break-word !important; }
+    .table-zatca th { border: none; border-top: 1px dashed #000; border-bottom: 1px dashed #000; padding: 6px 2px; font-weight: bold; text-align: right; font-size: {$thermalTableFontSize}; color: #000; white-space: normal !important; overflow: hidden; word-wrap: break-word !important; word-break: break-word !important; }
+    .table-zatca td { border: none; border-bottom: 1px dotted #ddd; padding: 6px 2px; text-align: right; vertical-align: middle; font-size: {$thermalTableFontSize}; white-space: normal !important; overflow: hidden; word-wrap: break-word !important; word-break: break-word !important; }
+    .qr-container { border: none; padding: 0; width: 120px; height: 120px; display: block; margin: 10px auto; background: #fff; }
+    .qr-container svg, .qr-container img { width: 100% !important; height: 100% !important; }
+    .data-label { font-weight: bold; font-size: 0.8rem; }
+    .data-value { font-size: 0.85rem; font-weight: bold; }
+    .bg-row { background: #f9f9f9; }
+    
+    .text-right { text-align: right !important; }
+    .text-left { text-align: left !important; }
+    .text-center { text-align: center !important; }
+
+    @media print {
+        @page { size: 80mm auto; margin: 0; }
+        #kt_app_sidebar, #kt_app_header, #kt_app_toolbar, #kt_app_footer, .btn, .icon-btn, .breadcrumb, .alert, .card-header, .no-print { display: none !important; }
+        body, .app-wrapper, .app-main, .app-content, .container-xxl, .card, .card-body, .content { background-color: #fff !important; margin: 0 !important; padding: 0 !important; box-shadow: none !important; border: none !important; width: 100% !important; }
+        .saudi-invoice { width: 80mm !important; margin: 0 auto !important; padding: 0 !important; }
+        .invoice-border { padding: 5mm 5mm !important; border: none !important; box-shadow: none !important; }
+    }
+CSS;
+
+            $headerHtml = <<<HTML
+<div class="saudi-invoice w-100" style="font-size: {$fontSize}px;">
+    <div class="invoice-border shadow-sm">
+        <!-- الرأس (Header) - Centered Stacked -->
+        <div class="text-center mb-3">
+            {$logoHtml}
+            {$companyNameHtml}
+            {$branchNameHtml}
+            {$sellerVatHtml}
+            {$sellerAddressHtml}
+        </div>
+
+        <div class="text-center mb-3">
+            <h2 class="fw-bolder mb-1" style="font-size: 1.2rem;">{{ invoice_title_ar }}</h2>
+            {$titleEnHtml}
+            {$barcodeHtml}
+        </div>
+
+        <div class="line-divider"></div>
+        
+        <!-- بيانات الفاتورة الأساسية -->
+        <div style="font-size: 0.8rem; margin-bottom: 10px;">
+            <table class="w-100">
+                <tr>
+                    <td class="data-label text-right" width="40%">رقم الفاتورة:</td>
+                    <td class="data-value text-left fw-bold">#{{ invoice_number }}</td>
+                </tr>
+                {$orderNumberRow}
+                <tr>
+                    <td class="data-label text-right">تاريخ الإصدار:</td>
+                    <td class="data-value text-left">{{ issue_date }}</td>
+                </tr>
+                {$paymentStatusRow}
+                {$cashierRow}
+            </table>
+            {$invoiceDescHtml}
+        </div>
+
+        {$customerInfoHtml}
+
+        <!-- جدول الأصناف -->
+        <table class="table-zatca">
+            <thead>
+                <tr>
+                    <th class="text-right" width="50%">الصنف / Item</th>
+                    <th class="text-center" width="25%">الكمية × السعر</th>
+                    {$totalHeaderThermal}
+                </tr>
+            </thead>
+            <tbody>
+HTML;
+
+            $contentHtml = <<<HTML
+                <tr>
+                    <td class="text-right fw-bold">
+                        {$itemNumHtml}{{ item.product_name }}
+                        {$itemImgHtml}
+                        {$itemBarcodeHtml}
+                        {$itemCharHtml}
+                        {$itemOptionsHtml}
+                        {$itemDiscountHtml}
+                        {$itemSubtotalHtml}
+                        {$itemTaxHtml}
+                    </td>
+                    <td class="text-center" style="font-size: 0.8rem;">
+                        x {{ item.quantity }}{$itemUnitHtml}<br>
+                        <span class="text-muted">{{ item.unit_price }}</span>
+                    </td>
+                    <td class="text-left fw-bolder">{$itemTotalHtml}</td>
+                </tr>
+HTML;
+
+            $footerHtml = <<<HTML
+            </tbody>
+        </table>
+
+        <!-- الملخص المالي -->
+        <div style="font-size: 0.85rem; margin-top: 10px; border-top: 1px dashed #000; padding-top: 8px;">
+            <table class="w-100">
+                <tr>
+                    <td class="text-right" width="60%">الإجمالي (Excl. VAT)</td>
+                    <td class="text-left fw-bold">{{ total_exclusive_vat }}</td>
+                </tr>
+                <tr>
+                    <td class="text-right">إجمالي الخصم (Discount)</td>
+                    <td class="text-left text-danger fw-bold">- {{ total_discount }}</td>
+                </tr>
+                <tr>
+                    <td class="text-right">الضريبة 15% (VAT)</td>
+                    <td class="text-left fw-bold">+ {{ total_vat }}</td>
+                </tr>
+                @if({{ shipping_cost }} > 0)
+                <tr>
+                    <td class="text-right">مصاريف الشحن (Shipping)</td>
+                    <td class="text-left fw-bold">+ {{ shipping_cost_total }}</td>
+                </tr>
+                @endif
+                <tr style="border-top: 1px dashed #000; font-size: 1rem;">
+                    <td class="text-right fw-bold" style="padding-top: 6px;">الإجمالي النهائي (Grand Total)</td>
+                    <td class="text-left fw-bold" style="padding-top: 6px;">{{ total_inclusive_vat }}</td>
+                </tr>
+            </table>
+            {$totalInWordsHtml}
+        </div>
+
+        <!-- التذيل -->
+        <div class="mt-4 text-center small text-muted">
+            <div class="line-divider"></div>
+            {$qrHtml}
+            {$receiptNotesThermal}
+        </div>
+    </div>
+</div>
+HTML;
+        }
+
+        $bladePath = resource_path('views/livewire/template-designs/' . strtolower('thermal_' . $design) . '.blade.php');
+        $htmlContent = file_exists($bladePath) ? file_get_contents($bladePath) : '';
+
+        return [
+            'header_html' => $htmlContent,
+            'content_html' => '',
+            'footer_html' => '',
+            'css_styles' => $css
+        ];
+    }
+}
+
+
+

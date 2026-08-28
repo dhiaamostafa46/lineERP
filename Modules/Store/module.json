@@ -1,0 +1,12 @@
+{
+    "name": "Store",
+    "alias": "store",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\Store\\App\\Providers\\StoreServiceProvider",
+        "Modules\\Store\\App\\Providers\\RouteServiceProvider"
+    ],
+    "files": []
+}

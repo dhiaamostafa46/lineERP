@@ -1,0 +1,1 @@
+  @livewire('template-builder', ['template' => $Template ?? null])
