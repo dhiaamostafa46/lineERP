@@ -79,12 +79,12 @@ class DbCategoryRepository extends BaseRepository
         return __('basicdata::models/db_categories.singular');
     }
 
-    public function parentCategories($id = null)
+    public function parentCategories($id = null): array
     {
         $query = Category::active();
         if ($id) {
             $query->where('id', '!=', $id);
         }
-        return $query->get()->pluck('name', 'id')->prepend(__('lang.none'), '');
+        return $query->get()->pluck('name', 'id')->toArray();
     }
 }

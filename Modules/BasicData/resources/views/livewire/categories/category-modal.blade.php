@@ -40,25 +40,35 @@
                                 @endforeach
                             </div>
 
-                            <!-- Parent Category & Status -->
+                            <!-- Parent Category & Status & Type -->
                             <div class="row g-3 mb-4">
-                                <div class="col-sm-6">
+                                <div class="col-sm-4">
                                     <label class="form-label fw-semibold fs-7">
                                         @lang('basicdata::models/db_categories.fields.parent_id')
                                     </label>
                                     <select wire:model="parent_id" class="form-select form-select-solid fs-7">
                                         <option value="">-- @lang('basicdata::lang.select') --</option>
-                                        @foreach($parentCategories as $parent)
-                                            <option value="{{ $parent->id }}">{{ $parent->name }}</option>
+                                        @foreach($parentCategories as $pId => $pName)
+                                            <option value="{{ $pId }}">{{ $pName }}</option>
                                         @endforeach
                                     </select>
                                 </div>
 
-                                <div class="col-sm-6">
+                                <div class="col-sm-4">
                                     <label class="form-label fw-semibold fs-7 required">
                                         @lang('basicdata::models/db_categories.fields.status')
                                     </label>
                                     <select wire:model="status" class="form-select form-select-solid fs-7">
+                                        <option value="1">@lang('basicdata::lang.active')</option>
+                                        <option value="0">@lang('basicdata::lang.inactive')</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-sm-4">
+                                    <label class="form-label fw-semibold fs-7 required">
+                                        @lang('basicdata::models/db_categories.fields.type')
+                                    </label>
+                                    <select wire:model="type" class="form-select form-select-solid fs-7">
                                         <option value="1">@lang('basicdata::lang.active')</option>
                                         <option value="0">@lang('basicdata::lang.inactive')</option>
                                     </select>
