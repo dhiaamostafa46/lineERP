@@ -15,18 +15,13 @@
             <span class="menu-arrow"></span>
         </span>
 
-
-
-
         <div class="menu-sub menu-sub-accordion">
             <!----------------------------------------------Start Basic Data------------------------------------------------------------------------------->
-
-
 
             @can('store.stores.index')
                 <div class="menu-item">
                     <a class="menu-link {{ Route::is('store.stores*') ? 'active' : '' }}"
-                        href="{{ route('store.stores.index') }}">
+                        href="{{ route('store.stores.index') }}" wire:navigate>
                         <span class="menu-bullet">
                             <i class="nav-icon fas fa-warehouse"></i>
                         </span>
@@ -35,11 +30,10 @@
                 </div>
             @endcan
 
-
             @can('store.openingbalance.index')
                 <div class="menu-item">
                     <a class="menu-link {{ Route::is('store.openingbalance*') ? 'active' : '' }}"
-                        href="{{ route('store.openingbalance.index') }}">
+                        href="{{ route('store.openingbalance.index') }}" wire:navigate>
                         <span class="menu-bullet">
                             <i class="nav-icon fas fa-coins"></i>
                         </span>
@@ -51,7 +45,7 @@
             @can('store.damaged.index')
                 <div class="menu-item">
                     <a class="menu-link {{ Route::is('store.damaged*') ? 'active' : '' }}"
-                        href="{{ route('store.damaged.index') }}">
+                        href="{{ route('store.damaged.index') }}" wire:navigate>
                         <span class="menu-bullet">
                             <i class="nav-icon fas fa-trash-alt"></i>
                         </span>
@@ -63,7 +57,7 @@
             @can('store.reservation.index')
                 <div class="menu-item">
                     <a class="menu-link {{ Route::is('store.reservation*') ? 'active' : '' }}"
-                        href="{{ route('store.reservation.index') }}">
+                        href="{{ route('store.reservation.index') }}" wire:navigate>
                         <span class="menu-bullet">
                             <i class="nav-icon fas fa-bookmark"></i>
                         </span>
@@ -75,7 +69,7 @@
             @can('store.receiving.index')
                 <div class="menu-item">
                     <a class="menu-link {{ Route::is('store.receiving*') ? 'active' : '' }}"
-                        href="{{ route('store.receiving.index') }}">
+                        href="{{ route('store.receiving.index') }}" wire:navigate>
                         <span class="menu-bullet">
                             <i class="nav-icon fas fa-file-import"></i>
                         </span>
@@ -87,7 +81,7 @@
             @can('store.issuing.index')
                 <div class="menu-item">
                     <a class="menu-link {{ Route::is('store.issuing*') ? 'active' : '' }}"
-                        href="{{ route('store.issuing.index') }}">
+                        href="{{ route('store.issuing.index') }}" wire:navigate>
                         <span class="menu-bullet">
                             <i class="nav-icon fas fa-file-export"></i>
                         </span>
@@ -99,7 +93,7 @@
             @can('store.direct_transfer.index')
                 <div class="menu-item">
                     <a class="menu-link {{ Route::is('store.direct_transfer*') ? 'active' : '' }}"
-                        href="{{ route('store.direct_transfer.index') }}">
+                        href="{{ route('store.direct_transfer.index') }}" wire:navigate>
                         <span class="menu-bullet">
                             <i class="nav-icon fas fa-exchange-alt"></i>
                         </span>
@@ -108,44 +102,10 @@
                 </div>
             @endcan
 
-
-
-
-
-            {{-- @can('store.transfer_out.index')
-            <div class="menu-item">
-                <a class="menu-link {{ Route::is('store.transfer_out*') ? 'active' : '' }}"
-                    href="{{ route('store.transfer_out.index') }}">
-                    <span class="menu-bullet">
-                        <i class="nav-icon fas fa-arrow-circle-right"></i>
-                    </span>
-                    <span class="menu-title"> @lang('store::models/st_transfer_outs.plural') </span>
-                </a>
-            </div>
-        @endcan
-
-
-        @can('store.transfer_in.index')
-            <div class="menu-item">
-                <a class="menu-link {{ Route::is('store.transfer_in*') ? 'active' : '' }}"
-                    href="{{ route('store.transfer_in.index') }}">
-                    <span class="menu-bullet">
-                        <i class="nav-icon fas fa-arrow-circle-left"></i>
-                    </span>
-                    <span class="menu-title">@lang('store::models/st_transfer_ins.plural')</span>
-                </a>
-            </div>
-        @endcan --}}
-
-
-
-
-
-
             @can('store.settlement.index')
                 <div class="menu-item">
                     <a class="menu-link {{ Route::is('store.settlement*') ? 'active' : '' }}"
-                        href="{{ route('store.settlement.index') }}">
+                        href="{{ route('store.settlement.index') }}" wire:navigate>
                         <span class="menu-bullet">
                             <i class="nav-icon fas fa-balance-scale"></i>
                         </span>
@@ -154,11 +114,10 @@
                 </div>
             @endcan
 
-
             @can('store.reports.index')
                 <div class="menu-item">
                     <a class="menu-link {{ Route::is('store.reports*') ? 'active' : '' }}"
-                        href="{{ route('store.reports.index') }}">
+                        href="{{ route('store.reports.index') }}" wire:navigate>
                         <span class="menu-bullet">
                             <i class="nav-icon fas fa-chart-line"></i>
                         </span>
@@ -167,11 +126,10 @@
                 </div>
             @endcan
 
-
             @can('store.setting.index')
                 <div class="menu-item">
                     <a class="menu-link {{ Route::is('store.setting*') ? 'active' : '' }}"
-                        href="{{ route('store.setting.edit', 1) }}">
+                        href="{{ route('store.setting.edit', 1) }}" wire:navigate>
                         <span class="menu-bullet">
                             <i class="nav-icon fas fa-cogs"></i>
                         </span>
@@ -179,9 +137,6 @@
                     </a>
                 </div>
             @endcan
-
-
-
 
         </div>
     </div>

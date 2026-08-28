@@ -29,9 +29,8 @@
 
 <style>
     /* ==========================================================================
-       Evix ERP Official Brand Design System (Logo Palette)
-       #1B325B (Evix Navy) | #6A669D (Evix Purple) | #9ABF80 (Evix Sage Green)
-       #E5E3D4 (Evix Cream) | #F3F5F8 (Evix Body Background)
+       LineERP Official Brand Design System & SPA Transitions
+       #1B325B (LineERP Navy) | #6A669D (LineERP Purple) | #9ABF80 (LineERP Green)
        ========================================================================== */
     :root {
         --bs-primary: #6A669D;
@@ -49,6 +48,34 @@
         --evix-purple-light: #8E84BF;
         --evix-green: #9ABF80;
         --evix-green-dark: #2D6A4F;
+    }
+
+    /* Livewire SPA Top Navigation Bar */
+    .livewire-progress-bar {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        height: 3px !important;
+        background: linear-gradient(90deg, #6A669D 0%, #9ABF80 50%, #1B325B 100%) !important;
+        z-index: 999999 !important;
+        box-shadow: 0 0 10px rgba(106, 102, 157, 0.7) !important;
+    }
+
+    /* Seamless SPA Content Transition */
+    #kt_app_content {
+        animation: spaContentFadeIn 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    @keyframes spaContentFadeIn {
+        from {
+            opacity: 0.88;
+            transform: translateY(3px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
 
     body {

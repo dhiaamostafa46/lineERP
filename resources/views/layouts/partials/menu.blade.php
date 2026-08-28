@@ -43,27 +43,9 @@
 @endpush
 
 
-{{-- @can('Subscription.index')
-    <div class="menu-item">
-        <a class="menu-link {{ Route::is('Subscription*') ? 'active' : '' }}" href="{{ route('Subscription.index') }}">
-            <span class="menu-bullet">
-
-                <i class="fas fa-layer-group fs-2 {{ Route::is('Subscription*') ? 'text-primary' : '' }}"></i>
-            </span>
-            <span class="menu-title">@lang('models/Subscription.plural')</span>
-        </a>
-
-    </div>
-@endcan --}}
-
-
-
-
-
-
     @can('dashboard')
         <div class="menu-item">
-            <a class="menu-link {{ Route::is('dashboard') ? 'active' : '' }}" href="{{ route('dashboard') }}">
+            <a class="menu-link {{ Route::is('dashboard') ? 'active' : '' }}" href="{{ route('dashboard') }}" wire:navigate>
                 <span class="menu-bullet">
                     <i class="nav-icon fas fa-home {{ Route::is('dashboard') ? 'text-primary' : '' }}"></i>
                 </span>
@@ -71,14 +53,6 @@
             </a>
         </div>
     @endcan
-
-
-
-
-
-
-
-
 
 @if (auth()->user()?->user_type !== 'service_center')
 <div data-kt-menu-trigger="click" class="menu-item menu-accordion">
@@ -97,25 +71,10 @@
     <div class="menu-sub menu-sub-accordion">
         <!---------------------------------------------- Settings ------------------------------------------------------------------------------->
 
-        {{-- <div class="menu-item">
-            <a class="menu-link {{ Route::is('applications*') ? 'active' : '' }}"
-                href="{{ route('applications.index') }}">
-                <span class="menu-bullet">
-                    <i class="ki-duotone ki-element-11 fs-2 {{ Route::is('applications*') ? 'text-primary' : '' }}">
-                        <span class="path1"></span>
-                        <span class="path2"></span>
-                        <span class="path3"></span>
-                        <span class="path4"></span>
-                    </i>
-                </span>
-                <span class="menu-title">@lang('applications.title')</span>
-            </a>
-        </div> --}}
-
         @can('Organization.edit')
             <div class="menu-item">
                 <a class="menu-link {{ Route::is('Organization*') ? 'active' : '' }}"
-                    href="{{ route('Organization.edit', 1) }}">
+                    href="{{ route('Organization.edit', 1) }}" wire:navigate>
                     <span class="menu-bullet">
                         <i class="nav-icon fas fa-info"></i>
                     </span>
@@ -124,10 +83,9 @@
             </div>
         @endcan
 
-        
         @can('Templates.index')
                 <div class="menu-item">
-                    <a class="menu-link {{ Route::is('Templates*') ? 'active' : '' }}" href="{{ route('Templates.index') }}">
+                    <a class="menu-link {{ Route::is('Templates*') ? 'active' : '' }}" href="{{ route('Templates.index') }}" wire:navigate>
                         <span class="menu-bullet">
                             <i class="nav-icon fas fa-palette"></i>
                         </span>
@@ -135,11 +93,10 @@
                     </a>
                 </div>
         @endcan
-        
 
         @can('Branches.index')
             <div class="menu-item">
-                <a class="menu-link {{ Route::is('Branches*') ? 'active' : '' }}" href="{{ route('Branches.index') }}">
+                <a class="menu-link {{ Route::is('Branches*') ? 'active' : '' }}" href="{{ route('Branches.index') }}" wire:navigate>
                     <span class="menu-bullet">
                         <i class="nav-icon fas fa-code-branch"></i>
                     </span>
@@ -151,7 +108,7 @@
         @if (\Illuminate\Support\Facades\Route::has('Areas.index'))
             @can('Areas.index')
                 <div class="menu-item">
-                    <a class="menu-link {{ Route::is('Areas*') ? 'active' : '' }}" href="{{ route('Areas.index') }}">
+                    <a class="menu-link {{ Route::is('Areas*') ? 'active' : '' }}" href="{{ route('Areas.index') }}" wire:navigate>
                         <span class="menu-bullet">
                             <i class="nav-icon fas fa-map"></i>
                         </span>
@@ -164,7 +121,7 @@
         @if (\Illuminate\Support\Facades\Route::has('Cities.index'))
             @can('Cities.index')
                 <div class="menu-item">
-                    <a class="menu-link {{ Route::is('Cities*') ? 'active' : '' }}" href="{{ route('Cities.index') }}">
+                    <a class="menu-link {{ Route::is('Cities*') ? 'active' : '' }}" href="{{ route('Cities.index') }}" wire:navigate>
                         <span class="menu-bullet">
                             <i class="nav-icon fas fa-city"></i>
                         </span>
@@ -196,7 +153,7 @@
                         @can('Companies.index')
                             <div class="menu-item">
                                 <a class="menu-link {{ \Illuminate\Support\Facades\Route::is('Companies*') ? 'active' : '' }}"
-                                    href="{{ route('Companies.index') }}">
+                                    href="{{ route('Companies.index') }}" wire:navigate>
                                     <span class="menu-bullet">
                                         <i class="nav-icon fas fa-industry"></i>
                                     </span>
@@ -209,7 +166,7 @@
                         @can('CompanyContracts.index')
                             <div class="menu-item">
                                 <a class="menu-link {{ \Illuminate\Support\Facades\Route::is('CompanyContracts*') ? 'active' : '' }}"
-                                    href="{{ route('CompanyContracts.index') }}">
+                                    href="{{ route('CompanyContracts.index') }}" wire:navigate>
                                     <span class="menu-bullet">
                                         <i class="nav-icon fas fa-file-contract"></i>
                                     </span>
@@ -224,7 +181,7 @@
 
         @can('users.index')
             <div class="menu-item">
-                <a class="menu-link {{ Route::is('users*') ? 'active' : '' }}" href="{{ route('users.index') }}">
+                <a class="menu-link {{ Route::is('users*') ? 'active' : '' }}" href="{{ route('users.index') }}" wire:navigate>
                     <span class="menu-bullet">
                         <i class="ki-duotone ki-profile-user fs-2 mx-2 {{ Route::is('users*') ? 'text-primary' : '' }}">
                             <span class="path1"></span>
@@ -240,22 +197,19 @@
 
         @can('roles.index')
             <div class="menu-item">
-                <a class="menu-link {{ Route::is('roles*') ? 'active' : '' }}" href="{{ route('roles.index') }}">
+                <a class="menu-link {{ Route::is('roles*') ? 'active' : '' }}" href="{{ route('roles.index') }}" wire:navigate>
                     <span class="menu-bullet">
                         <i class="bi bi-person-lock fs-2 {{ Route::is('roles*') ? 'text-primary' : '' }}"></i>
                     </span>
                     <span class="menu-title">@lang('models/roles.plural')</span>
                 </a>
-
             </div>
         @endcan
-
-
 
         @can('DeviceSessions.index')
             <div class="menu-item">
                 <a class="menu-link {{ Route::is('DeviceSessions*') ? 'active' : '' }}"
-                    href="{{ route('DeviceSessions.index') }}">
+                    href="{{ route('DeviceSessions.index') }}" wire:navigate>
                     <span class="menu-bullet">
                         <i class="nav-icon fas fa-code-branch"></i>
                     </span>
@@ -267,23 +221,20 @@
         @can('taxaccounts.index')
             <div class="menu-item">
                 <a class="menu-link {{ Route::is('taxaccounts*') ? 'active' : '' }}"
-                    href="{{ route('taxaccounts.index') }}">
+                    href="{{ route('taxaccounts.index') }}" wire:navigate>
                     <span class="menu-bullet">
                         <i class="bi bi-person-lock fs-2 {{ Route::is('taxaccounts*') ? 'text-primary' : '' }}"></i>
                     </span>
                     <span class="menu-title">@lang('models/tax_accounts.plural')</span>
                 </a>
-
             </div>
         @endcan
-
-
 
         @if (!config('statusSystem.modules.hr'))
             @can('employees.index')
                 <div class="menu-item">
                     <a class="menu-link {{ Route::is('employees*') ? 'active' : '' }}"
-                        href="{{ route('employees.index') }}">
+                        href="{{ route('employees.index') }}" wire:navigate>
                         <span class="menu-bullet">
                             <i class="nav-icon fas fa-home"></i>
                         </span>
@@ -293,44 +244,9 @@
             @endcan
         @endif
 
-
-
-
     </div>
 </div>
 @endif
-
-
-{{-- @can('themes.index')
-<div class="menu-item">
-    <a class="menu-link {{ Route::is('themes*') ? 'active' : '' }}" href="{{ route('themes.index') }}">
-        <span class="menu-bullet">
-            <i class="ki-duotone ki-profile-user fs-2 mx-2 {{ Route::is('themes*') ? 'text-primary' : '' }}">
-                <span class="path1"></span>
-                <span class="path2"></span>
-                <span class="path3"></span>
-                <span class="path4"></span>
-            </i>
-        </span>
-        <span class="menu-title">@lang('models/themes.plural')</span>
-    </a>
-</div>
-@endcan
-
-@can('languages.index')
-<div class="menu-item">
-    <a class="menu-link {{ Route::is('languages.index') ? 'active' : '' }}" href="{{ route('languages.index') }}">
-        <span class="menu-bullet">
-            <i class="nav-icon fas fa-home"></i>
-        </span>
-        <span class="menu-title">@lang('models/languages.plural')</span>
-    </a>
-</div>
-@endcan --}}
-
-
-
-
 
 @if (auth()->user()?->user_type !== 'service_center')
 @if (View::exists('basicdata::layouts._menu'))
@@ -358,12 +274,3 @@
     @include('hr::layouts._menu')
 @endif
 @endif
-
-
-
-
-
-
-
-
-{{-- End HR --}}

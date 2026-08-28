@@ -1,45 +1,45 @@
 <!--begin::Javascript-->
-<script>
+<script data-navigate-once>
     var hostUrl = "/{{ asset('admin_assets') }}";
 </script>
 <!--begin::Global Javascript Bundle(mandatory for all pages)-->
-<script src="{{ asset('admin_assets') }}/plugins/global/plugins.bundle.js"></script>
-<script src="{{ asset('admin_assets') }}/js/scripts.bundle.js"></script>
+<script src="{{ asset('admin_assets') }}/plugins/global/plugins.bundle.js" data-navigate-once></script>
+<script src="{{ asset('admin_assets') }}/js/scripts.bundle.js" data-navigate-once></script>
 <!--end::Global Javascript Bundle-->
 <!--begin::Vendors Javascript(used for this page only)-->
-<script src="{{ asset('admin_assets') }}/plugins/custom/fullcalendar/fullcalendar.bundle.js"></script>
-<script src="https://cdn.amcharts.com/lib/5/index.js"></script>
-<script src="https://cdn.amcharts.com/lib/5/xy.js"></script>
-<script src="https://cdn.amcharts.com/lib/5/percent.js"></script>
-<script src="https://cdn.amcharts.com/lib/5/radar.js"></script>
-<script src="https://cdn.amcharts.com/lib/5/themes/Animated.js"></script>
-<script src="https://cdn.amcharts.com/lib/5/map.js"></script>
-<script src="https://cdn.amcharts.com/lib/5/geodata/worldLow.js"></script>
-<script src="https://cdn.amcharts.com/lib/5/geodata/continentsLow.js"></script>
-<script src="https://cdn.amcharts.com/lib/5/geodata/usaLow.js"></script>
-<script src="https://cdn.amcharts.com/lib/5/geodata/worldTimeZonesLow.js"></script>
-<script src="https://cdn.amcharts.com/lib/5/geodata/worldTimeZoneAreasLow.js"></script>
+<script src="{{ asset('admin_assets') }}/plugins/custom/fullcalendar/fullcalendar.bundle.js" data-navigate-once></script>
+<script src="https://cdn.amcharts.com/lib/5/index.js" data-navigate-once></script>
+<script src="https://cdn.amcharts.com/lib/5/xy.js" data-navigate-once></script>
+<script src="https://cdn.amcharts.com/lib/5/percent.js" data-navigate-once></script>
+<script src="https://cdn.amcharts.com/lib/5/radar.js" data-navigate-once></script>
+<script src="https://cdn.amcharts.com/lib/5/themes/Animated.js" data-navigate-once></script>
+<script src="https://cdn.amcharts.com/lib/5/map.js" data-navigate-once></script>
+<script src="https://cdn.amcharts.com/lib/5/geodata/worldLow.js" data-navigate-once></script>
+<script src="https://cdn.amcharts.com/lib/5/geodata/continentsLow.js" data-navigate-once></script>
+<script src="https://cdn.amcharts.com/lib/5/geodata/usaLow.js" data-navigate-once></script>
+<script src="https://cdn.amcharts.com/lib/5/geodata/worldTimeZonesLow.js" data-navigate-once></script>
+<script src="https://cdn.amcharts.com/lib/5/geodata/worldTimeZoneAreasLow.js" data-navigate-once></script>
 {{-- <script src="{{ asset('admin_assets') }}/plugins/custom/datatables/datatables.bundle.js"></script> --}}
 <!--end::Vendors Javascript-->
 <!--begin::Custom Javascript(used for this page only)-->
-<script src="{{ asset('admin_assets') }}/js/widgets.bundle.js"></script>
-<script src="{{ asset('admin_assets') }}/js/custom/widgets.js"></script>
+<script src="{{ asset('admin_assets') }}/js/widgets.bundle.js" data-navigate-once></script>
+<script src="{{ asset('admin_assets') }}/js/custom/widgets.js" data-navigate-once></script>
 @if(!request()->routeIs('terminal') && !request()->routeIs('pos.*'))
-<script src="{{ asset('admin_assets') }}/js/custom/apps/chat/chat.js"></script>
-<script src="{{ asset('admin_assets') }}/js/custom/utilities/modals/bidding.js"></script>
-<script src="{{ asset('admin_assets') }}/js/custom/utilities/modals/users-search.js"></script>
+<script src="{{ asset('admin_assets') }}/js/custom/apps/chat/chat.js" data-navigate-once></script>
+<script src="{{ asset('admin_assets') }}/js/custom/utilities/modals/bidding.js" data-navigate-once></script>
+<script src="{{ asset('admin_assets') }}/js/custom/utilities/modals/users-search.js" data-navigate-once></script>
 @endif
 <!--end::Custom Javascript-->
 
 <!--CKEditor Build Bundles:: Only include the relevant bundles accordingly-->
-<script src="{{ asset('admin_assets') }}/plugins/custom/ckeditor/ckeditor-classic.bundle.js"></script>
+<script src="{{ asset('admin_assets') }}/plugins/custom/ckeditor/ckeditor-classic.bundle.js" data-navigate-once></script>
 
 <script type="text/javascript"
-    src='https://maps.google.com/maps/api/js?libraries=places&key=AIzaSyAJDNGhvRiWXMvI7VjALT363E3QMOqp6j8'></script>
-<script src="{{ asset('admin_assets') }}/js/locationpicker.jquery.min.js"></script>
+    src='https://maps.google.com/maps/api/js?libraries=places&key=AIzaSyAJDNGhvRiWXMvI7VjALT363E3QMOqp6j8' data-navigate-once></script>
+<script src="{{ asset('admin_assets') }}/js/locationpicker.jquery.min.js" data-navigate-once></script>
 
-<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js" data-navigate-once></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" data-navigate-once></script>
 
 
 
@@ -669,4 +669,56 @@
             applyTheme(currentMode);
         });
     })();
+</script>
+
+<script>
+    // Livewire 3 SPA Navigation Lifecycle Handler
+    document.addEventListener('livewire:navigated', function () {
+        // 1. Re-initialize Metronic UI Components
+        if (typeof KTApp !== 'undefined' && KTApp.init) {
+            try { KTApp.init(); } catch (e) { console.debug('KTApp init notice:', e); }
+        }
+        if (typeof KTMenu !== 'undefined' && KTMenu.init) {
+            try { KTMenu.init(); } catch (e) { console.debug('KTMenu init notice:', e); }
+        }
+        if (typeof KTDrawer !== 'undefined' && KTDrawer.init) {
+            try { KTDrawer.init(); } catch (e) { console.debug('KTDrawer init notice:', e); }
+        }
+        if (typeof KTScrolltop !== 'undefined' && KTScrolltop.init) {
+            try { KTScrolltop.init(); } catch (e) { console.debug('KTScrolltop init notice:', e); }
+        }
+        if (typeof KTToggle !== 'undefined' && KTToggle.init) {
+            try { KTToggle.init(); } catch (e) { console.debug('KTToggle init notice:', e); }
+        }
+        if (typeof KTScroll !== 'undefined' && KTScroll.init) {
+            try { KTScroll.init(); } catch (e) { console.debug('KTScroll init notice:', e); }
+        }
+
+        // 2. Re-initialize Bootstrap Tooltips & Popovers
+        if (typeof bootstrap !== 'undefined') {
+            try {
+                var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+                tooltipTriggerList.forEach(function (tooltipTriggerEl) {
+                    new bootstrap.Tooltip(tooltipTriggerEl);
+                });
+
+                var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
+                popoverTriggerList.forEach(function (popoverTriggerEl) {
+                    new bootstrap.Popover(popoverTriggerEl);
+                });
+            } catch (e) {}
+        }
+
+        // 3. Highlight and open active menu item in sidebar
+        if (typeof $ !== 'undefined') {
+            try {
+                $('.menu-link.active').parents('.menu-accordion').addClass('hover show');
+                $('div.alert').not('.alert-important').delay(3500).fadeOut(350);
+
+                if ($.fn.select2) {
+                    $('[data-control="select2"]:not(.select2-hidden-accessible)').select2();
+                }
+            } catch (e) {}
+        }
+    });
 </script>

@@ -8,7 +8,7 @@
 @endphp
     <div class="app-sidebar-logo px-6 w-100 border-0 bg-white" id="kt_app_sidebar_logo" style="background-color: #ffffff !important;">
         <!--begin::Logo image-->
-        <a href="{{ route('dashboard') }}" class="mx-auto">
+        <a href="{{ route('dashboard') }}" class="mx-auto" wire:navigate>
             <img alt="Logo" src="{{ asset('admin_assets') }}/media/logos/Logoevix.png"
                 class="h-70px  app-sidebar-logo-default " />
             <img alt="Logo" src="{{ asset('admin_assets') }}/media/logos/Logoevix.png"

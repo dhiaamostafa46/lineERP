@@ -16,17 +16,12 @@
         <span class="menu-arrow"></span>
     </span>
 
-
-
-
     <div class="menu-sub menu-sub-accordion">
         <!----------------------------------------------Start Basic Data------------------------------------------------------------------------------->
 
-
-
         @can('fnc.banks.index')
             <div class="menu-item">
-                <a class="menu-link {{ Route::is('fnc.banks*') ? 'active' : '' }}" href="{{ route('fnc.banks.index') }}">
+                <a class="menu-link {{ Route::is('fnc.banks*') ? 'active' : '' }}" href="{{ route('fnc.banks.index') }}" wire:navigate>
                     <span class="menu-bullet">
                         <i class="nav-icon fas fa-university"></i>
                     </span>
@@ -37,7 +32,7 @@
 
          @can('fnc.safes.index')
             <div class="menu-item">
-                <a class="menu-link {{ Route::is('fnc.safes*') ? 'active' : '' }}" href="{{ route('fnc.safes.index') }}">
+                <a class="menu-link {{ Route::is('fnc.safes*') ? 'active' : '' }}" href="{{ route('fnc.safes.index') }}" wire:navigate>
                     <span class="menu-bullet">
                         <i class="nav-icon fas fa-vault"></i>
                     </span>
@@ -48,7 +43,7 @@
 
           @can('fnc.bonds.index')
             <div class="menu-item">
-                <a class="menu-link {{ Route::is('fnc.bonds*') ? 'active' : '' }}" href="{{ route('fnc.bonds.index') }}">
+                <a class="menu-link {{ Route::is('fnc.bonds*') ? 'active' : '' }}" href="{{ route('fnc.bonds.index') }}" wire:navigate>
                     <span class="menu-bullet">
                         <i class="nav-icon fas fa-file-invoice-dollar"></i>
                     </span>
@@ -56,7 +51,6 @@
                 </a>
             </div>
         @endcan
-
 
     </div>
 </div>

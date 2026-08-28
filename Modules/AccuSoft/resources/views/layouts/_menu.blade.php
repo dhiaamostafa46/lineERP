@@ -22,25 +22,11 @@
         <span class="menu-arrow"></span>
     </span>
 
-
-
-
     <div class="menu-sub menu-sub-accordion">
-        <!----------------------------------------------Start accounts   soft--- --
-            1- شجرة الحسابات --
-            2- مركز التكلفة --
-            3-القيود اليومية --
-            4- السنوات المالية --
-            5- الاصول الثابتة
-            6-البنوك والصناديق
-
-        ---------------------------------------------------------------------------->
-
-
         @can('accusoft.TreeAccounts.index')
             <div class="menu-item">
                 <a class="menu-link {{ Route::is('accusoft.TreeAccounts*') ? 'active' : '' }}"
-                    href="{{ route('accusoft.TreeAccounts.index') }}">
+                    href="{{ route('accusoft.TreeAccounts.index') }}" wire:navigate>
                     <span class="menu-bullet">
                         <i class="nav-icon fas fa-sitemap"></i>
                     </span>
@@ -52,7 +38,7 @@
         @can('accusoft.CostCenter.index')
             <div class="menu-item">
                 <a class="menu-link {{ Route::is('accusoft.CostCenter*') ? 'active' : '' }}"
-                    href="{{ route('accusoft.CostCenter.index') }}">
+                    href="{{ route('accusoft.CostCenter.index') }}" wire:navigate>
                     <span class="menu-bullet">
                         <i class="nav-icon fas fa-chart-pie"></i>
                     </span>
@@ -69,7 +55,7 @@
             @endphp
             <div class="menu-item">
                 <a class="menu-link {{ Route::is('accusoft.JournalEntry*') ? 'active' : '' }}"
-                    href="{{ route('accusoft.JournalEntry.index') }}">
+                    href="{{ route('accusoft.JournalEntry.index') }}" wire:navigate>
                     <span class="menu-bullet">
                         <i class="nav-icon fas fa-book-open"></i>
                     </span>
@@ -91,13 +77,7 @@
                     </span>
                 </a>
             </div>
-           
         @endcan
-
-
-
-        
-                    
 
         @can('accusoft.assets.index')
             @php
@@ -111,7 +91,7 @@
             @endphp
             <div class="menu-item">
                 <a class="menu-link {{ Route::is('accusoft.assets*') ? 'active' : '' }}"
-                    href="{{ route('accusoft.assets.index') }}">
+                    href="{{ route('accusoft.assets.index') }}" wire:navigate>
                     <span class="menu-bullet">
                         <i class="nav-icon fas fa-building"></i>
                     </span>
@@ -128,13 +108,10 @@
             </div>
         @endcan
 
-      
-
-
         @can('accusoft.Setting.index')
             <div class="menu-item">
                 <a class="menu-link {{ Route::is('accusoft.Setting*') ? 'active' : '' }}"
-                    href="{{ route('accusoft.Setting.index') }}">
+                    href="{{ route('accusoft.Setting.index') }}" wire:navigate>
                     <span class="menu-bullet">
                         <i class="nav-icon fas fa-calendar-alt"></i>
                     </span>
@@ -146,7 +123,7 @@
         @can('accusoft.reports.index')
             <div class="menu-item">
                 <a class="menu-link {{ Route::is('accusoft.reports*') ? 'active' : '' }}"
-                    href="{{ route('accusoft.reports.index') }}">
+                    href="{{ route('accusoft.reports.index') }}" wire:navigate>
                     <span class="menu-bullet">
                         <i class="nav-icon fas fa-money-bill-wave"></i>
                     </span>
@@ -158,7 +135,7 @@
         @can('accusoft.banks.index')
             <div class="menu-item">
                 <a class="menu-link {{ Route::is('accusoft.banks*') ? 'active' : '' }}"
-                    href="{{ route('accusoft.banks.index') }}">
+                    href="{{ route('accusoft.banks.index') }}" wire:navigate>
                     <span class="menu-bullet">
                         <i class="nav-icon fas fa-university"></i>
                     </span>
@@ -170,7 +147,7 @@
         @can('accusoft.receipt_vouchers.index')
             <div class="menu-item">
                 <a class="menu-link {{ Route::is('accusoft.receipt_vouchers*') ? 'active' : '' }}"
-                    href="{{ route('accusoft.receipt_vouchers.index') }}">
+                    href="{{ route('accusoft.receipt_vouchers.index') }}" wire:navigate>
                     <span class="menu-bullet">
                         <i class="nav-icon fas fa-file-invoice-dollar"></i>
                     </span>
@@ -182,7 +159,7 @@
         @can('accusoft.payment_vouchers.index')
             <div class="menu-item">
                 <a class="menu-link {{ Route::is('accusoft.payment_vouchers*') ? 'active' : '' }}"
-                    href="{{ route('accusoft.payment_vouchers.index') }}">
+                    href="{{ route('accusoft.payment_vouchers.index') }}" wire:navigate>
                     <span class="menu-bullet">
                         <i class="nav-icon fas fa-file-invoice"></i>
                     </span>
@@ -190,8 +167,6 @@
                 </a>
             </div>
         @endcan
-
-       
 
     </div>
 </div>

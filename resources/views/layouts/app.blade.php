@@ -2,20 +2,19 @@
 <html lang="en" dir="{{ app()->getLocale() == 'ar' ? 'rtl' : 'ltr' }}">
 
 <head>
-    <title>@yield('title') || {{ env('APP_NAME') }}</title>
+    <title>@yield('title') || {{ config('app.name', 'LineERP') }}</title>
     <meta charset="utf-8" />
-    <meta name="description" content="Evix ERP" />
-    <meta name="keywords" content="ERP, CRM ,HR" />
+    <meta name="description" content="LineERP — Enterprise Resource Planning" />
+    <meta name="keywords" content="ERP, CRM, HR, Accounting, Invoices, POS, Store" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta property="og:locale" content="en_US" />
     <meta property="og:type" content="article" />
-    <meta property="og:title" content="Evix ERP" />
-    <meta property="og:url" content="https://evix.com.sa/ar" />
-    <meta property="og:site_name" content="Evix ERP" />
-    <link rel="canonical" href="https://evix.com.sa/ar" />
+    <meta property="og:title" content="LineERP" />
+    <meta property="og:site_name" content="LineERP" />
     <link rel="shortcut icon" href="{{ $setting->fav_icon_original_path ?? '' }}" />
     @include('layouts.partials._script_dark_mode')
     @include('layouts.partials._styles')
+    @livewireStyles
     @stack('styles')
 
      {{-- @laravelPWA --}}
@@ -52,58 +51,51 @@
         <i class="ki-outline ki-arrow-up"></i>
     </div>
 
-    {{-- Vite Scripts --}}
-
+    {{-- Scripts --}}
     @include('layouts.partials._scripts')
+    @livewireScripts
 
-<script>
-    $('div.alert').not('.alert-important').delay(3000).fadeOut(350);
-    //By Saeed
+<script data-navigate-once>
     window.confirmDelete = function ({
-    id,
-    event = 'delete-item',
-    title = @json( __('messages.confirm_Del_title')),
-    text = @json( __('messages.confirm_Del_text')),
-    confirmText = @json( __('messages.confirm_Del_btn')),
-    cancelText = @json( __('messages.cancel_btn')),
-}) {
-    Swal.fire({
-        title: title,
-        text: text,
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: confirmText,
-        cancelButtonText: cancelText,
-        reverseButtons: true
-    }).then((result) => {
-        if (result.isConfirmed) {
-            Livewire.dispatch(event, { id });
-        }
-    });
-}
-document.addEventListener('livewire:init', () => {
+        id,
+        event = 'delete-item',
+        title = @json( __('messages.confirm_Del_title')),
+        text = @json( __('messages.confirm_Del_text')),
+        confirmText = @json( __('messages.confirm_Del_btn')),
+        cancelText = @json( __('messages.cancel_btn')),
+    }) {
+        Swal.fire({
+            title: title,
+            text: text,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: confirmText,
+            cancelButtonText: cancelText,
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Livewire.dispatch(event, { id });
+            }
+        });
+    };
 
-    Livewire.on('swal-success', (data) => {
-        Swal.fire({
-            icon: 'success',
-            title: 'تم',
-            text: data.message
-        }).then(() => {
-        location.reload();
-    });
-    });
-  // }).then(() => {
-       // location.reload();
-    //});
-    Livewire.on('swal-error', (data) => {
-        Swal.fire({
-            icon: 'error',
-            title: 'خطأ',
-            text: data.message
+    document.addEventListener('livewire:init', () => {
+        Livewire.on('swal-success', (data) => {
+            Swal.fire({
+                icon: 'success',
+                title: 'تم',
+                text: data.message || data
+            });
+        });
+
+        Livewire.on('swal-error', (data) => {
+            Swal.fire({
+                icon: 'error',
+                title: 'خطأ',
+                text: data.message || data
+            });
         });
     });
-
-});
 </script>
     @stack('scripts')
 </body>

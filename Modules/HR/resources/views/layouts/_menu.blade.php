@@ -25,7 +25,7 @@
 			 @can('hr.posts.index')
                             <div class="menu-item">
                                 <a class="menu-link {{ Route::is('hr.posts*') ? 'active' : '' }}"
-                                    href="{{ route('hr.posts.index') }}">
+                                    href="{{ route('hr.posts.index') }}" wire:navigate>
                                     <span class="menu-bullet">
                                         <i class="nav-icon fas fa-bullhorn"></i>
                                     </span>
@@ -36,7 +36,7 @@
 			@can('hr.employees.index')
                 <div class="menu-item">
                     <a class="menu-link {{ Route::is('hr.employees*') ? 'active' : '' }}"
-                         href="{{ route('hr.employees.index') }}">
+                         href="{{ route('hr.employees.index') }}" wire:navigate>
                         <span class="menu-bullet">
                             <i class="nav-icon fas fa-user-tie"></i>
                         </span>
@@ -47,7 +47,7 @@
 			 @can('hr.contracts.index')
                             <div class="menu-item">
                                 <a class="menu-link {{ Route::is('hr.contracts*') ? 'active' : '' }}"
-                                    href="{{ route('hr.contracts.index') }}">
+                                    href="{{ route('hr.contracts.index') }}" wire:navigate>
                                     <span class="menu-bullet">
                                         <i class="nav-icon fas fa-signature"></i>
                                     </span>
@@ -58,7 +58,7 @@
 			@can('hr.documents.index')
                             <div class="menu-item">
                                 <a class="menu-link {{ Route::is('hr.documents*') ? 'active' : '' }}"
-                                    href="{{ route('hr.documents.index') }}">
+                                    href="{{ route('hr.documents.index') }}" wire:navigate>
                                     <span class="menu-bullet">
                                         <i class="nav-icon fas fa-file-alt"></i>
                                     </span>
@@ -69,7 +69,7 @@
 			@can('hr.custodies.index')
                             <div class="menu-item">
                                 <a class="menu-link {{ Route::is('hr.custodies.*') ? 'active' : '' }}"
-                                    href="{{ route('hr.custodies.index') }}">
+                                    href="{{ route('hr.custodies.index') }}" wire:navigate>
                                     <span class="menu-bullet">
                                         <i class="nav-icon fas fa-box"></i>
                                     </span>
@@ -81,7 +81,7 @@
             @can('hr.EndService.index')
                             <div class="menu-item">
                                 <a class="menu-link {{ Route::is('hr.EndService*') ? 'active' : '' }}"
-                                    href="{{ route('hr.EndService.index') }}">
+                                    href="{{ route('hr.EndService.index') }}" wire:navigate>
                                     <span class="menu-bullet">
                                         <i class="nav-icon fas fa-user-slash"></i>
                                     </span>
@@ -92,7 +92,7 @@
             @can('hr.Archive.index')
                             <div class="menu-item">
                                 <a class="menu-link {{ Route::is('hr.Archive.index') ? 'active' : '' }}"
-                                    href="{{ route('hr.Archive.index') }}">
+                                    href="{{ route('hr.Archive.index') }}" wire:navigate>
                                     <span class="menu-bullet">
                                         <i class="nav-icon fas fa-archive"></i>
                                     </span>
@@ -118,7 +118,7 @@
                         @can('hr.holidays.index')
                             <div class="menu-item">
                                 <a class="menu-link {{ Route::is('hr.holidays.*') ? 'active' : '' }}"
-                                    href="{{ route('hr.holidays.index') }}">
+                                    href="{{ route('hr.holidays.index') }}" wire:navigate>
                                     <span class="menu-bullet">
                                         <i class="nav-icon fas fa-calendar-times"></i>
                                     </span>
@@ -129,7 +129,7 @@
                         @can('hr.justifications.index')
                             <div class="menu-item">
                                 <a class="menu-link {{ Route::is('hr.justifications.*') ? 'active' : '' }}"
-                                    href="{{ route('hr.justifications.index') }}">
+                                    href="{{ route('hr.justifications.index') }}" wire:navigate>
                                     <span class="menu-bullet">
                                         <i class="nav-icon fas fa-comment-dots"></i>
                                     </span>
@@ -141,7 +141,7 @@
                         @can('hr.advances.index')
                             <div class="menu-item">
                                 <a class="menu-link {{ Route::is('hr.advances.*') ? 'active' : '' }}"
-                                    href="{{ route('hr.advances.index') }}">
+                                    href="{{ route('hr.advances.index') }}" wire:navigate>
                                     <span class="menu-bullet">
                                         <i class="nav-icon fas fa-hand-holding-usd"></i>
                                     </span>
@@ -152,7 +152,7 @@
                         @can('hr.absentrequests.index')
                         <div class="menu-item">
                             <a class="menu-link {{ Route::is('hr.absentrequests.*') ? 'active' : '' }}"
-                                href="{{ route('hr.absentrequests.index') }}">
+                                href="{{ route('hr.absentrequests.index') }}" wire:navigate>
                                 <span class="menu-bullet">
                                     <i class="nav-icon fas fa-diamond"></i>
                                 </span>
@@ -183,7 +183,7 @@
                         @can('hr.attendance.movement')
                             <div class="menu-item">
                                 <a class="menu-link {{ Route::is('hr.attendance.movement') ? 'active' : '' }}"
-                                    href="{{ route('hr.attendance.movement') }}">
+                                    href="{{ route('hr.attendance.movement') }}" wire:navigate>
                                     <span class="menu-bullet">
                                         <i class="nav-icon fas fa-walking"></i>
                                     </span>
@@ -195,7 +195,7 @@
                         @can('hr.Place.index')
                             <div class="menu-item">
                                 <a class="menu-link {{ Route::is('hr.Place.*') ? 'active' : '' }}"
-                                    href="{{ route('hr.Place.index') }}">
+                                    href="{{ route('hr.Place.index') }}" wire:navigate>
                                     <span class="menu-bullet">
                                         <i class="nav-icon fas fa-map-marker-alt"></i>
                                     </span>
@@ -207,7 +207,7 @@
                         @can('hr.attendance-policies.index')
                             <div class="menu-item">
                                 <a class="menu-link {{ Route::is('hr.attendance-policies.index') ? 'active' : '' }}"
-                                    href="{{ route('hr.attendance-policies.index') }}">
+                                    href="{{ route('hr.attendance-policies.index') }}" wire:navigate>
                                     <span class="menu-bullet">
                                         <i class="nav-icon fas fa-user-shield"></i>
                                     </span>
@@ -216,21 +216,10 @@
                             </div>
                         @endcan
 
-                        {{-- @can('hr.Place.index')
-                            <div class="menu-item">
-                                <a class="menu-link {{ Route::is('hr.Place.*') ? 'active' : '' }}"
-                                    href="{{ route('hr.Place.index') }}">
-                                    <span class="menu-bullet">
-                                        <i class="nav-icon fas fa-diamond"></i>
-                                    </span>
-                                    <span class="menu-title">@lang('hr::models/hr_places.plural')</span>
-                                </a>
-                            </div>
-                        @endcan --}}
                         @can('hr.attendance.movement')
                             <div class="menu-item">
                                 <a class="menu-link {{ Route::is('hr.attend.hourscalculate') ? 'active' : '' }}"
-                                    href="{{ route('hr.attend.hourscalculate') }}">
+                                    href="{{ route('hr.attend.hourscalculate') }}" wire:navigate>
                                     <span class="menu-bullet">
                                         <i class="nav-icon fas fa-calculator"></i>
                                     </span>
@@ -238,8 +227,6 @@
                                 </a>
                             </div>
                         @endcan
-
-
 
                     </div>
                 </div>
@@ -261,7 +248,7 @@
                         @can('hr.Task.index')
                             <div class="menu-item">
                                 <a class="menu-link {{ Route::is('hr.Task.*') ? 'active' : '' }}"
-                                    href="{{ route('hr.Task.index') }}">
+                                    href="{{ route('hr.Task.index') }}" wire:navigate>
                                     <span class="menu-bullet">
                                         <i class="nav-icon fas fa-tasks"></i>
                                     </span>
@@ -272,7 +259,7 @@
                         @can('hr.GroupTask.index')
                             <div class="menu-item">
                                 <a class="menu-link {{ Route::is('hr.GroupTask.*') ? 'active' : '' }}"
-                                    href="{{ route('hr.GroupTask.index') }}">
+                                    href="{{ route('hr.GroupTask.index') }}" wire:navigate>
                                     <span class="menu-bullet">
                                         <i class="nav-icon fas fa-users-cog"></i>
                                     </span>
@@ -280,9 +267,6 @@
                                 </a>
                             </div>
                         @endcan
-
-
-
 
                     </div>
                 </div>
@@ -306,7 +290,7 @@
                          @can('hr.payrolls.index')
                             <div class="menu-item">
                                 <a class="menu-link {{ Route::is('hr.payrolls.index') ? 'active' : '' }}"
-                                    href="{{ route('hr.payrolls.index') }}">
+                                    href="{{ route('hr.payrolls.index') }}" wire:navigate>
                                     <span class="menu-bullet">
                                         <i class="nav-icon fas fa-file-invoice"></i>
                                     </span>
@@ -317,7 +301,7 @@
                         @can('hr.penalties.index')
                             <div class="menu-item">
                                 <a class="menu-link {{ Route::is('hr.penalties.*') ? 'active' : '' }}"
-                                    href="{{ route('hr.penalties.index') }}">
+                                    href="{{ route('hr.penalties.index') }}" wire:navigate>
                                     <span class="menu-bullet">
                                         <i class="nav-icon fas fa-gavel"></i>
                                     </span>
@@ -328,7 +312,7 @@
                         @can('hr.rewards.index')
                             <div class="menu-item">
                                 <a class="menu-link {{ Route::is('hr.rewards.*') ? 'active' : '' }}"
-                                    href="{{ route('hr.rewards.index') }}">
+                                    href="{{ route('hr.rewards.index') }}" wire:navigate>
                                     <span class="menu-bullet">
                                         <i class="nav-icon fas fa-gift"></i>
                                     </span>
@@ -339,7 +323,7 @@
                         @can('hr.salaries.index')
                             <div class="menu-item">
                                 <a class="menu-link {{ Route::is('hr.salaries*') ? 'active' : '' }}"
-                                    href="{{ route('hr.salaries.index') }}">
+                                    href="{{ route('hr.salaries.index') }}" wire:navigate>
                                     <span class="menu-bullet">
                                         <i class="nav-icon fas fa-money-check-alt"></i>
                                     </span>
@@ -347,8 +331,6 @@
                                 </a>
                             </div>
                         @endcan
-
-                       
 
                     </div>
                 </div>
@@ -358,7 +340,7 @@
             @can('hr.report_types.index')
                 <div class="menu-item">
                     <a class="menu-link {{ Route::is('hr.report_types*') ? 'active' : '' }}"
-                        href="{{ route('hr.report_types.index') }}">
+                        href="{{ route('hr.report_types.index') }}" wire:navigate>
                         <span class="menu-bullet">
                             <i class="nav-icon fas fa-list-check"></i>
                         </span>
@@ -385,7 +367,7 @@
                         @can('hr.settings.edit')
                          <div class="menu-item">
                             <a class="menu-link {{ Route::is('hr.settings.*') ? 'active' : '' }}"
-                             href="{{ route('hr.settings.edit', 1) }}">
+                             href="{{ route('hr.settings.edit', 1) }}" wire:navigate>
                             <span class="menu-bullet">
                               <i class="nav-icon fas fa-gear"></i>
                             </span>
@@ -396,7 +378,7 @@
 						@can('hr.shift_types.index')
                             <div class="menu-item">
                                 <a class="menu-link {{ Route::is('hr.shift_types*') ? 'active' : '' }}"
-                                    href="{{ route('hr.shift_types.index') }}">
+                                    href="{{ route('hr.shift_types.index') }}" wire:navigate>
                                     <span class="menu-bullet">
                                         <i class="nav-icon fas fa-user-clock"></i>
                                     </span>
@@ -407,7 +389,7 @@
                         @can('hr.trackers.index')
                             <div class="menu-item">
                                 <a class="menu-link {{ Route::is('hr.trackers.index') ? 'active' : '' }}"
-                                    href="{{ route('hr.trackers.index') }}">
+                                    href="{{ route('hr.trackers.index') }}" wire:navigate>
                                     <span class="menu-bullet">
                                         <i class="nav-icon fas fa-history"></i>
                                     </span>
@@ -418,7 +400,7 @@
 						@can('hr.jobs.index')
                             <div class="menu-item">
                                 <a class="menu-link {{ Route::is('hr.jobs*') ? 'active' : '' }}"
-                                    href="{{ route('hr.jobs.index') }}">
+                                    href="{{ route('hr.jobs.index') }}" wire:navigate>
                                     <span class="menu-bullet">
                                         <i class="nav-icon fas fa-briefcase"></i>
                                     </span>
@@ -430,7 +412,7 @@
                         @can('hr.departments.index')
                             <div class="menu-item">
                                 <a class="menu-link {{ Route::is('hr.departments*') ? 'active' : '' }}"
-                                    href="{{ route('hr.departments.index') }}">
+                                    href="{{ route('hr.departments.index') }}" wire:navigate>
                                     <span class="menu-bullet">
                                         <i class="nav-icon fas fa-sitemap"></i>
                                     </span>
@@ -439,11 +421,10 @@
                             </div>
                         @endcan
 
-                        
                         @can('hr.document_types.index')
                             <div class="menu-item">
                                 <a class="menu-link {{ Route::is('hr.document_types*') ? 'active' : '' }}"
-                                    href="{{ route('hr.document_types.index') }}">
+                                    href="{{ route('hr.document_types.index') }}" wire:navigate>
                                     <span class="menu-bullet">
                                         <i class="nav-icon fas fa-id-card"></i>
                                     </span>
@@ -454,7 +435,7 @@
                         @can('hr.contract_types.index')
                             <div class="menu-item">
                                 <a class="menu-link {{ Route::is('hr.contract_types*') ? 'active' : '' }}"
-                                    href="{{ route('hr.contract_types.index') }}">
+                                    href="{{ route('hr.contract_types.index') }}" wire:navigate>
                                     <span class="menu-bullet">
                                         <i class="nav-icon fas fa-file-contract"></i>
                                     </span>
@@ -465,7 +446,7 @@
 						 @can('hr.holiday_types.index')
                             <div class="menu-item">
                                 <a class="menu-link {{ Route::is('hr.holiday_types*') ? 'active' : '' }}"
-                                    href="{{ route('hr.holiday_types.index') }}">
+                                    href="{{ route('hr.holiday_types.index') }}" wire:navigate>
                                     <span class="menu-bullet">
                                         <i class="nav-icon fas fa-umbrella-beach"></i>
                                     </span>
@@ -476,7 +457,7 @@
 						 @can('hr.allowances.index')
                             <div class="menu-item">
                                 <a class="menu-link {{ Route::is('hr.allowances*') ? 'active' : '' }}"
-                                    href="{{ route('hr.allowances.index') }}">
+                                    href="{{ route('hr.allowances.index') }}" wire:navigate>
                                     <span class="menu-bullet">
                                         <i class="nav-icon fas fa-plus-circle"></i>
                                     </span>
@@ -488,7 +469,7 @@
                         @can('hr.deducts.index')
                             <div class="menu-item">
                                 <a class="menu-link {{ Route::is('hr.deducts*') ? 'active' : '' }}"
-                                    href="{{ route('hr.deducts.index') }}">
+                                    href="{{ route('hr.deducts.index') }}" wire:navigate>
                                     <span class="menu-bullet">
                                         <i class="nav-icon fas fa-minus-circle"></i>
                                     </span>
@@ -499,7 +480,7 @@
                         @can('hr.CalendarEvents.index')
                             <div class="menu-item">
                                 <a class="menu-link {{ Route::is('hr.CalendarEvents*') ? 'active' : '' }}"
-                                    href="{{ route('hr.CalendarEvents.index') }}">
+                                    href="{{ route('hr.CalendarEvents.index') }}" wire:navigate>
                                     <span class="menu-bullet">
                                         <i class="nav-icon fas fa-calendar-alt"></i>
                                     </span>
@@ -524,7 +505,7 @@
                         @can('hr.asset_types.index')
                             <div class="menu-item">
                                 <a class="menu-link {{ Route::is('hr.asset_types*') ? 'active' : '' }}"
-                                    href="{{ route('hr.asset_types.index') }}">
+                                    href="{{ route('hr.asset_types.index') }}" wire:navigate>
                                     <span class="menu-bullet">
                                         <i class="nav-icon fas fa-cubes"></i>
                                     </span>
@@ -536,7 +517,7 @@
                         @can('hr.assets.index')
                             <div class="menu-item active">
                                 <a class="menu-link {{ Route::is('hr.assets.*') ? 'active' : '' }}"
-                                    href="{{ route('hr.assets.index') }}" previewlistener="true">
+                                    href="{{ route('hr.assets.index') }}" wire:navigate>
                                     <span class="menu-bullet">
                                         <i class="nav-icon fas fa-laptop"></i>
                                     </span>
@@ -545,30 +526,20 @@
                             </div>
                         @endcan
 
-
-
-
                     </div>
                 </div>
             @endcanany
             <!----------------------------------------------End Asset------------------------------------------------------------------------------->
 
-						
-
-
                     </div>
                 </div>
             @endcanany
 			<!------------------------------------------------------end settings------------------------------------------------------------------------------>
-			
-			
-            
-
 
             @can('hr.my-requests.index')
                 <div class="menu-item">
                     <a class="menu-link {{ Route::is('hr.empdashboard.index') ? 'active' : '' }}"
-                        href="{{ route('hr.empdashboard.index') }}">
+                        href="{{ route('hr.empdashboard.index') }}" wire:navigate>
                         <span class="menu-bullet">
                             <i class="nav-icon fas fa-address-card"></i>
                         </span>

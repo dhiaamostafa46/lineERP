@@ -18,7 +18,7 @@
         <!--end::Sidebar mobile toggle-->
         <!--begin::Mobile logo-->
         <div class="d-flex align-items-center flex-grow-1 flex-lg-grow-0">
-            <a href="{{ route('dashboard') }}" class="d-lg-none">
+            <a href="{{ route('dashboard') }}" class="d-lg-none" wire:navigate>
                 <img alt="Logo" src="{{ asset('admin_assets') }}/media/logos/Logoevix.png" class="h-30px" />
             </a>
         </div>
@@ -582,7 +582,7 @@
                         <!--begin::Menu item-->
                         <div class="menu-item px-5 my-1">
                             @can('settings.edit')
-                            <a href="{{ route('settings.edit', 1) }}" class="menu-link px-5">@lang('lang.settings')</a>
+                            <a href="{{ route('settings.edit', 1) }}" class="menu-link px-5" wire:navigate>@lang('lang.settings')</a>
                             @endcan
                         </div>
                         <!--end::Menu item-->

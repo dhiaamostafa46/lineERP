@@ -15,9 +15,6 @@
             <span class="menu-arrow"></span>
         </span>
 
-
-
-
         <div class="menu-sub menu-sub-accordion">
             <!----------------------------------------------Start Basic Data------------------------------------------------------------------------------->
 
@@ -26,7 +23,6 @@
                     <span class="menu-link">
                         <span class="menu-bullet">
                             <i class="nav-icon fas fa-landmark-flag"></i>
-
                         </span>
                         <span class="menu-title">@lang('invoices::lang.sales')</span>
                         <span class="menu-arrow"></span>
@@ -36,7 +32,7 @@
                           @can('invoices.quotations.index')
                             <div class="menu-item">
                                 <a class="menu-link {{ Route::is('invoices.quotations.*') ? 'active' : '' }}"
-                                    href="{{ route('invoices.quotations.index') }}">
+                                    href="{{ route('invoices.quotations.index') }}" wire:navigate>
                                     <span class="menu-bullet">
                                         <i class="nav-icon fas fa-file-contract"></i>
                                     </span>
@@ -47,7 +43,7 @@
                         @can('invoices.sales.index')
                             <div class="menu-item">
                                 <a class="menu-link {{ Route::is('invoices.sales.*') ? 'active' : '' }}"
-                                    href="{{ route('invoices.sales.index') }}">
+                                    href="{{ route('invoices.sales.index') }}" wire:navigate>
                                     <span class="menu-bullet">
                                         <i class="nav-icon fas fa-diamond"></i>
                                     </span>
@@ -58,7 +54,7 @@
                         @can('invoices.sales_return.index')
                             <div class="menu-item">
                                 <a class="menu-link {{ Route::is('invoices.sales_return.*') ? 'active' : '' }}"
-                                    href="{{ route('invoices.sales_return.index') }}">
+                                    href="{{ route('invoices.sales_return.index') }}" wire:navigate>
                                     <span class="menu-bullet">
                                         <i class="nav-icon fas fa-diamond"></i>
                                     </span>
@@ -69,7 +65,7 @@
                         @can('invoices.sales_debit.index')
                             <div class="menu-item">
                                 <a class="menu-link {{ Route::is('invoices.sales_debit.*') ? 'active' : '' }}"
-                                    href="{{ route('invoices.sales_debit.index') }}">
+                                    href="{{ route('invoices.sales_debit.index') }}" wire:navigate>
                                     <span class="menu-bullet">
                                         <i class="nav-icon fas fa-diamond"></i>
                                     </span>
@@ -77,19 +73,16 @@
                                 </a>
                             </div>
                         @endcan
-                      
 
                     </div>
                 </div>
             @endcanany
-
 
             @canany(['invoices.purchase.index', 'invoices.purchase_orders.index'])
                 <div data-kt-menu-trigger="click" class="menu-item menu-accordion {{ Route::is(['invoices.purchase.*', 'invoices.purchase_orders.*', 'invoices.purchase_return.*']) ? 'here show' : '' }}">
                     <span class="menu-link">
                         <span class="menu-bullet">
                             <i class="nav-icon fas fa-landmark-flag"></i>
-
                         </span>
                         <span class="menu-title">@lang('invoices::lang.purchase')</span>
                         <span class="menu-arrow"></span>
@@ -99,7 +92,7 @@
                         @can('invoices.purchase_orders.index')
                             <div class="menu-item">
                                 <a class="menu-link {{ Route::is('invoices.purchase_orders.*') ? 'active' : '' }}"
-                                    href="{{ route('invoices.purchase_orders.index') }}">
+                                    href="{{ route('invoices.purchase_orders.index') }}" wire:navigate>
                                     <span class="menu-bullet">
                                         <i class="nav-icon fas fa-diamond"></i>
                                     </span>
@@ -111,7 +104,7 @@
                         @can('invoices.purchase.index')
                             <div class="menu-item">
                                 <a class="menu-link {{ Route::is('invoices.purchase.*') ? 'active' : '' }}"
-                                    href="{{ route('invoices.purchase.index') }}">
+                                    href="{{ route('invoices.purchase.index') }}" wire:navigate>
                                     <span class="menu-bullet">
                                         <i class="nav-icon fas fa-diamond"></i>
                                     </span>
@@ -123,7 +116,7 @@
                         @can('invoices.purchase_return.index')
                             <div class="menu-item">
                                 <a class="menu-link {{ Route::is('invoices.purchase_return.*') ? 'active' : '' }}"
-                                    href="{{ route('invoices.purchase_return.index') }}">
+                                    href="{{ route('invoices.purchase_return.index') }}" wire:navigate>
                                     <span class="menu-bullet">
                                         <i class="nav-icon fas fa-diamond"></i>
                                     </span>
@@ -132,20 +125,15 @@
                             </div>
                         @endcan
 
-
                     </div>
                 </div>
             @endcanany
-
-
-
 
             @canany(['invoices.customers.index', 'invoices.suppliers.index'])
                 <div data-kt-menu-trigger="click" class="menu-item menu-accordion {{ Route::is(['invoices.customers.*', 'invoices.suppliers.*']) ? 'here show' : '' }}">
                     <span class="menu-link">
                         <span class="menu-bullet">
                             <i class="nav-icon fas fa-landmark-flag"></i>
-
                         </span>
                         <span class="menu-title">@lang('invoices::lang.customersandsuppliers')</span>
                         <span class="menu-arrow"></span>
@@ -155,7 +143,7 @@
                         @can('invoices.customers.index')
                             <div class="menu-item">
                                 <a class="menu-link {{ Route::is('invoices.customers.*') ? 'active' : '' }}"
-                                    href="{{ route('invoices.customers.index') }}">
+                                    href="{{ route('invoices.customers.index') }}" wire:navigate>
                                     <span class="menu-bullet">
                                         <i class="nav-icon fas fa-diamond"></i>
                                     </span>
@@ -167,7 +155,7 @@
                         @can('invoices.suppliers.index')
                             <div class="menu-item">
                                 <a class="menu-link {{ Route::is('invoices.suppliers.*') ? 'active' : '' }}"
-                                    href="{{ route('invoices.suppliers.index') }}">
+                                    href="{{ route('invoices.suppliers.index') }}" wire:navigate>
                                     <span class="menu-bullet">
                                         <i class="nav-icon fas fa-diamond"></i>
                                     </span>
@@ -179,12 +167,10 @@
                 </div>
             @endcanany
 
-
-
             @can('invoices.reports.index')
                 <div class="menu-item">
                     <a class="menu-link {{ Route::is('invoices.reports.*') ? 'active' : '' }}"
-                        href="{{ route('invoices.reports.index') }}">
+                        href="{{ route('invoices.reports.index') }}" wire:navigate>
                         <span class="menu-bullet">
                             <i class="nav-icon fas fa-chart-line"></i>
                         </span>
@@ -196,7 +182,7 @@
             @can('invoices.Setting.index')
                 <div class="menu-item">
                     <a class="menu-link {{ Route::is('invoices.Setting*') ? 'active' : '' }}"
-                        href="{{ route('invoices.Setting.index') }}">
+                        href="{{ route('invoices.Setting.index') }}" wire:navigate>
                         <span class="menu-bullet">
                             <i class="nav-icon fas fa-diamond"></i>
                         </span>
@@ -204,11 +190,6 @@
                     </a>
                 </div>
             @endcan
-
-
-
-
-
 
         </div>
     </div>

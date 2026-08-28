@@ -18,17 +18,12 @@
         <span class="menu-arrow"></span>
     </span>
 
-
-
-
     <div class="menu-sub menu-sub-accordion">
         <!----------------------------------------------Start Basic Data------------------------------------------------------------------------------->
 
-
-
         @can('basicdata.categories.index')
             <div class="menu-item">
-                <a class="menu-link {{ Route::is('basicdata.categories*') ? 'active' : '' }}" href="{{ route('basicdata.categories.index') }}">
+                <a class="menu-link {{ Route::is('basicdata.categories*') ? 'active' : '' }}" href="{{ route('basicdata.categories.index') }}" wire:navigate>
                     <span class="menu-bullet">
                         <i class="nav-icon fas fa-tags"></i>
                     </span>
@@ -38,7 +33,7 @@
         @endcan
          @can('basicdata.units.index')
             <div class="menu-item">
-                <a class="menu-link {{ Route::is('basicdata.units*') ? 'active' : '' }}" href="{{ route('basicdata.units.index') }}">
+                <a class="menu-link {{ Route::is('basicdata.units*') ? 'active' : '' }}" href="{{ route('basicdata.units.index') }}" wire:navigate>
                     <span class="menu-bullet">
                         <i class="nav-icon fas fa-balance-scale-left"></i>
                     </span>
@@ -48,7 +43,7 @@
         @endcan
          @can('basicdata.products.index')
             <div class="menu-item">
-                <a class="menu-link {{ Route::is('basicdata.products*') ? 'active' : '' }}" href="{{ route('basicdata.products.index') }}">
+                <a class="menu-link {{ Route::is('basicdata.products*') ? 'active' : '' }}" href="{{ route('basicdata.products.index') }}" wire:navigate>
                     <span class="menu-bullet">
                         <i class="nav-icon fas fa-box-open"></i>
                     </span>
@@ -56,28 +51,6 @@
                 </a>
             </div>
         @endcan
-{{-- 
-         @can('basicdata.kitchens.index')
-            <div class="menu-item">
-                <a class="menu-link {{ Route::is('basicdata.kitchens*') ? 'active' : '' }}" href="{{ route('basicdata.kitchens.index') }}">
-                    <span class="menu-bullet">
-                        <i class="nav-icon fas fa-utensils"></i>
-                    </span>
-                    <span class="menu-title">@lang('basicdata::models/db_kitchens.plural')</span>
-                </a>
-            </div>
-        @endcan
-
-         @can('basicdata.service_points.index')
-            <div class="menu-item">
-                <a class="menu-link {{ Route::is('basicdata.service_points*') ? 'active' : '' }}" href="{{ route('basicdata.service_points.index') }}">
-                    <span class="menu-bullet">
-                        <i class="nav-icon fas fa-concierge-bell"></i>
-                    </span>
-                    <span class="menu-title">@lang('basicdata::models/db_service_points.plural')</span>
-                </a>
-            </div>
-        @endcan --}}
 
     </div>
 </div>

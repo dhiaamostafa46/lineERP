@@ -18,7 +18,7 @@
         
         @can('pos.index')
             <div class="menu-item">
-                <a class="menu-link {{ Route::is('pos.select_device') || Route::is('pos.terminal') ? 'active' : '' }}" href="{{ route('pos.select_device') }}">
+                <a class="menu-link {{ Route::is('pos.select_device') || Route::is('pos.terminal') ? 'active' : '' }}" href="{{ route('pos.select_device') }}" wire:navigate>
                     <span class="menu-bullet">
                         <i class="nav-icon fas fa-cash-register"></i>
                     </span>
@@ -29,7 +29,7 @@
         
         @can('pos.devices.index')
             <div class="menu-item">
-                <a class="menu-link {{ Route::is('pos.devices.*') ? 'active' : '' }}" href="{{ route('pos.devices.index') }}">
+                <a class="menu-link {{ Route::is('pos.devices.*') ? 'active' : '' }}" href="{{ route('pos.devices.index') }}" wire:navigate>
                     <span class="menu-bullet">
                         <i class="nav-icon fas fa-tablet-alt"></i>
                     </span>
@@ -40,7 +40,7 @@
         
         @can('pos.reports.index')
             <div class="menu-item">
-                <a class="menu-link {{ Route::is('pos.reports.*') ? 'active' : '' }}" href="{{ route('pos.reports.index') }}">
+                <a class="menu-link {{ Route::is('pos.reports.*') ? 'active' : '' }}" href="{{ route('pos.reports.index') }}" wire:navigate>
                     <span class="menu-bullet">
                         <i class="nav-icon fas fa-chart-line"></i>
                     </span>
