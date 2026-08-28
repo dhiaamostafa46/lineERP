@@ -16,18 +16,21 @@
                 <tr class="transition-all hover-bg-light">
                     <!-- Product Info with Thumb -->
                     <td class="ps-5">
-                        <div class="d-flex align-items-center gap-3">
-                            <div class="symbol symbol-40px symbol-2by3 flex-shrink-0 border rounded-2 p-1 bg-white shadow-xs">
-                                <img src="{{ $product->imgThumbPath }}" class="w-100 h-100 object-fit-contain rounded-1" alt="{{ $product->name }}" />
+                        <div class="d-flex align-items-center gap-2">
+                            <div class="flex-shrink-0 border rounded-1 bg-white d-flex align-items-center justify-content-center p-0" 
+                                 style="width: 28px; height: 28px; min-width: 28px; overflow: hidden;">
+                                <img src="{{ $product->imgThumbPath }}" 
+                                     alt="{{ $product->name }}" 
+                                     style="width: 28px !important; height: 28px !important; max-width: 28px !important; max-height: 28px !important; object-fit: cover !important;" />
                             </div>
                             <div class="d-flex flex-column">
                                 <a href="{{ route('basicdata.products.show', [$product->id]) }}" 
-                                   class="text-gray-900 fw-bold text-hover-primary fs-7 mb-1" 
+                                   class="text-gray-900 fw-bold text-hover-primary fs-7 mb-0 line-clamp-1" 
                                    wire:navigate>
                                     {{ $product->name }}
                                 </a>
                                 @if($product->barcode)
-                                    <span class="badge badge-light-dark fs-9 fw-semibold px-2 py-0 align-self-start font-monospace">
+                                    <span class="text-muted fs-8 font-monospace">
                                         {{ $product->barcode }}
                                     </span>
                                 @endif
