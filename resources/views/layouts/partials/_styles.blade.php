@@ -79,16 +79,40 @@
     }
 
     /* ==========================================================================
-       LineERP SPA Support
+       LineERP Standard Wide & Enhanced Typography ERP Design System (#cbdfe6 & #ffffff)
        ========================================================================== */
-    [x-cloak] {
-        display: none !important;
+    :root {
+        --kt-app-sidebar-width: 280px !important;
+        --kt-app-sidebar-gap: 280px !important;
+    }
+
+    #kt_app_sidebar {
+        background: #ffffff !important;
+        border-inline-end: 1px solid #cbdfe6 !important;
+        box-shadow: 0 4px 20px rgba(203, 223, 230, 0.35) !important;
+        width: 280px !important;
+    }
+
+    @media (min-width: 992px) {
+        [dir="rtl"] .app-sidebar-fixed .app-wrapper {
+            margin-right: 280px !important;
+            margin-left: 0 !important;
+        }
+        [dir="ltr"] .app-sidebar-fixed .app-wrapper {
+            margin-left: 280px !important;
+            margin-right: 0 !important;
+        }
+    }
+
+    .line-sidebar-header {
+        background: #ffffff !important;
+        border-bottom: 1px solid #cbdfe6 !important;
     }
 
     /* Header Live Clock Badge & Pulsing Indicator */
     .badge-dot-live {
-        width: 7px;
-        height: 7px;
+        width: 6px;
+        height: 6px;
         border-radius: 50%;
         background: #10B981;
         display: inline-block;
@@ -98,8 +122,222 @@
 
     @keyframes livePulse {
         0% { transform: scale(0.95); opacity: 0.7; }
-        50% { transform: scale(1.25); opacity: 1; box-shadow: 0 0 8px #10B981; }
+        50% { transform: scale(1.2); opacity: 1; box-shadow: 0 0 8px #10B981; }
         100% { transform: scale(0.95); opacity: 0.7; }
+    }
+
+    /* Custom Sleek Ultra-Thin Scrollbar */
+    .line-custom-scroll {
+        scrollbar-width: thin;
+        scrollbar-color: #cbdfe6 transparent;
+    }
+
+    .line-custom-scroll::-webkit-scrollbar {
+        width: 5px;
+        height: 5px;
+    }
+
+    .line-custom-scroll::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .line-custom-scroll::-webkit-scrollbar-thumb {
+        background: #cbdfe6;
+        border-radius: 10px;
+        transition: background 0.2s ease;
+    }
+
+    .line-custom-scroll:hover::-webkit-scrollbar-thumb {
+        background: #9bbbc5;
+    }
+
+    .line-sidebar-menu {
+        padding: 0.35rem 0.5rem;
+    }
+
+    .line-section-header {
+        font-size: 0.74rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.7px;
+        color: #70939f;
+        margin: 1rem 0.5rem 0.35rem 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .line-section-header::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: linear-gradient(90deg, #cbdfe6, transparent);
+    }
+
+    .line-menu-btn, .line-menu-link {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        min-height: 42px;
+        padding: 0.5rem 0.75rem;
+        margin-bottom: 0.2rem;
+        border-radius: 0.55rem;
+        background: transparent;
+        border: 1px solid transparent;
+        color: #2C3E50;
+        text-decoration: none;
+        transition: all 0.15s ease-in-out;
+        cursor: pointer;
+        user-select: none;
+    }
+
+    .line-menu-btn:hover, .line-menu-link:hover {
+        background: rgba(203, 223, 230, 0.4);
+        color: #1B325B;
+    }
+
+    .line-menu-link.active-root, .line-menu-btn.active-parent {
+        background: linear-gradient(135deg, #cbdfe6 0%, #eef5f7 100%) !important;
+        border: 1px solid #b2d3dc !important;
+        color: #1B325B !important;
+        font-weight: 700;
+    }
+
+    .line-icon-badge {
+        width: 32px;
+        height: 32px;
+        min-width: 32px;
+        border-radius: 0.45rem;
+        background: #f0f6f8;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.95rem;
+        transition: all 0.15s ease;
+        border: 1px solid #cbdfe6;
+    }
+
+    /* Standard Distinct Tints */
+    .icon-dashboard { color: #0284C7; }
+    .icon-invoices { color: #059669; }
+    .icon-store { color: #D97706; }
+    .icon-pos { color: #E11D48; }
+    .icon-accounting { color: #4F46E5; }
+    .icon-finance { color: #0891B2; }
+    .icon-hr { color: #7C3AED; }
+    .icon-basicdata { color: #8B5CF6; }
+    .icon-settings { color: #475569; }
+
+    .line-menu-link.active-root .line-icon-badge,
+    .line-menu-btn.active-parent .line-icon-badge,
+    .line-menu-btn:hover .line-icon-badge,
+    .line-menu-link:hover .line-icon-badge {
+        background: #1B325B !important;
+        color: #ffffff !important;
+        border-color: #1B325B !important;
+    }
+
+    .line-menu-title {
+        font-size: 0.92rem;
+        font-weight: 600;
+        color: inherit;
+    }
+
+    .line-menu-arrow {
+        font-size: 0.72rem;
+        transition: transform 0.2s ease;
+        color: #8daab4;
+    }
+
+    .line-menu-arrow.rotate-180 {
+        transform: rotate(180deg);
+        color: #1B325B;
+    }
+
+    .line-submenu {
+        margin-inline-start: 1rem;
+        padding-inline-start: 0.75rem;
+        border-inline-start: 2px solid #cbdfe6;
+        margin-top: 0.2rem;
+        margin-bottom: 0.35rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.15rem;
+    }
+
+    .line-sub-item {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        min-height: 35px;
+        padding: 0.4rem 0.65rem;
+        border-radius: 0.45rem;
+        color: #47636e;
+        font-size: 0.86rem;
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.15s ease;
+    }
+
+    .line-sub-item:hover {
+        background: rgba(203, 223, 230, 0.4);
+        color: #1B325B;
+        padding-inline-start: 0.85rem;
+    }
+
+    .line-sub-dot {
+        width: 6px;
+        height: 6px;
+        min-width: 6px;
+        border-radius: 50%;
+        background: #9bbbc5;
+        transition: all 0.15s ease;
+    }
+
+    .line-sub-item:hover .line-sub-dot {
+        background: #1B325B;
+        transform: scale(1.2);
+    }
+
+    .line-sub-item.active-sub {
+        background: #cbdfe6 !important;
+        color: #1B325B !important;
+        font-weight: 700;
+    }
+
+    .line-sub-item.active-sub .line-sub-dot {
+        background: #1B325B;
+        box-shadow: 0 0 4px #1B325B;
+        transform: scale(1.3);
+    }
+
+    /* Sidebar Footer User Card */
+    .line-sidebar-footer {
+        background: #f7fafb;
+        border-top: 1px solid #cbdfe6;
+    }
+
+    .line-user-avatar {
+        width: 32px;
+        height: 32px;
+        min-width: 32px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #1B325B 0%, #3B82F6 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #FFFFFF;
+        font-weight: 700;
+        font-size: 0.82rem;
+    }
+
+    .status-dot-online {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #10B981;
+        display: inline-block;
     }
 
     body {

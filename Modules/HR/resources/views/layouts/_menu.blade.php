@@ -6,575 +6,236 @@
     'hr.contracts.index', 'hr.custodies.index', 'hr.EndService.index', 'hr.Archive.index', 'hr.asset_types.index',
     'hr.assets.index', 'hr.Task.index', 'hr.GroupTask.index', 'hr.settings.edit', 'hr.report_types.index',
     'hr.my-requests.index'])
-    <div data-kt-menu-trigger="click" class="menu-item menu-accordion {{ Route::is('hr.*') ? 'here show' : '' }}">
-        <span class="menu-link">
-            <span class="menu-bullet">
-                <i class="ki-duotone ki-profile-user fs-2">
-                    <span class="path1"></span>
-                    <span class="path2"></span>
-                    <span class="path3"></span>
-                </i>
-            </span>
-            <span class="menu-title">@lang('hr::lang.human_resource')</span>
-            <span class="menu-arrow"></span>
-        </span>
 
+    @php
+        $isHrActive = Route::is('hr.*');
+    @endphp
 
-        <div class="menu-sub menu-sub-accordion">
-		    
-			 @can('hr.posts.index')
-                            <div class="menu-item">
-                                <a class="menu-link {{ Route::is('hr.posts*') ? 'active' : '' }}"
-                                    href="{{ route('hr.posts.index') }}">
-                                    <span class="menu-bullet">
-                                        <i class="nav-icon fas fa-bullhorn"></i>
-                                    </span>
-                                    <span class="menu-title">@lang('hr::models/hr_posts.plural')</span>
-                                </a>
-                            </div>
-                        @endcan
-			@can('hr.employees.index')
-                <div class="menu-item">
-                    <a class="menu-link {{ Route::is('hr.employees*') ? 'active' : '' }}"
-                         href="{{ route('hr.employees.index') }}">
-                        <span class="menu-bullet">
-                            <i class="nav-icon fas fa-user-tie"></i>
-                        </span>
-                        <span class="menu-title">@lang('hr::models/hr_employees.plural')</span>
-                    </a>
+    <div class="line-section-header">
+        <span>@lang('hr::lang.human_resource')</span>
+    </div>
+
+    <div x-data="{ open: {{ $isHrActive ? 'true' : 'false' }} }" class="line-menu-item mb-1">
+        <button type="button" 
+                @click="open = !open" 
+                :class="{ 'active-parent': open || {{ $isHrActive ? 'true' : 'false' }} }"
+                class="line-menu-btn">
+            <div class="d-flex align-items-center gap-3">
+                <div class="line-icon-badge icon-hr">
+                    <i class="fas fa-user-tie"></i>
                 </div>
+                <span class="line-menu-title">@lang('hr::lang.human_resource')</span>
+            </div>
+            <i class="fas fa-chevron-down line-menu-arrow" :class="{ 'rotate-180': open }"></i>
+        </button>
+
+        <div x-show="open" x-collapse x-cloak class="line-submenu">
+            @can('hr.employees.index')
+                <a class="line-sub-item {{ Route::is('hr.employees*') ? 'active-sub' : '' }}"
+                    href="{{ route('hr.employees.index') }}" wire:navigate>
+                    <span class="line-sub-dot"></span>
+                    <span>@lang('hr::models/hr_employees.plural')</span>
+                </a>
             @endcan
-			 @can('hr.contracts.index')
-                            <div class="menu-item">
-                                <a class="menu-link {{ Route::is('hr.contracts*') ? 'active' : '' }}"
-                                    href="{{ route('hr.contracts.index') }}">
-                                    <span class="menu-bullet">
-                                        <i class="nav-icon fas fa-signature"></i>
-                                    </span>
-                                    <span class="menu-title">@lang('hr::models/hr_contracts.plural')</span>
-                                </a>
-                            </div>
-                        @endcan
-			@can('hr.documents.index')
-                            <div class="menu-item">
-                                <a class="menu-link {{ Route::is('hr.documents*') ? 'active' : '' }}"
-                                    href="{{ route('hr.documents.index') }}">
-                                    <span class="menu-bullet">
-                                        <i class="nav-icon fas fa-file-alt"></i>
-                                    </span>
-                                    <span class="menu-title">@lang('hr::models/hr_documents.plural')</span>
-                                </a>
-                            </div>
+
+            @can('hr.posts.index')
+                <a class="line-sub-item {{ Route::is('hr.posts*') ? 'active-sub' : '' }}"
+                    href="{{ route('hr.posts.index') }}" wire:navigate>
+                    <span class="line-sub-dot"></span>
+                    <span>@lang('hr::models/hr_posts.plural')</span>
+                </a>
             @endcan
-			@can('hr.custodies.index')
-                            <div class="menu-item">
-                                <a class="menu-link {{ Route::is('hr.custodies.*') ? 'active' : '' }}"
-                                    href="{{ route('hr.custodies.index') }}">
-                                    <span class="menu-bullet">
-                                        <i class="nav-icon fas fa-box"></i>
-                                    </span>
-                                    <span class="menu-title">@lang('hr::models/hr_custodies.plural')</span>
-                                </a>
-                            </div>
+
+            @can('hr.contracts.index')
+                <a class="line-sub-item {{ Route::is('hr.contracts*') ? 'active-sub' : '' }}"
+                    href="{{ route('hr.contracts.index') }}" wire:navigate>
+                    <span class="line-sub-dot"></span>
+                    <span>@lang('hr::models/hr_contracts.plural')</span>
+                </a>
+            @endcan
+
+            @can('hr.documents.index')
+                <a class="line-sub-item {{ Route::is('hr.documents*') ? 'active-sub' : '' }}"
+                    href="{{ route('hr.documents.index') }}" wire:navigate>
+                    <span class="line-sub-dot"></span>
+                    <span>@lang('hr::models/hr_documents.plural')</span>
+                </a>
+            @endcan
+
+            @can('hr.custodies.index')
+                <a class="line-sub-item {{ Route::is('hr.custodies.*') ? 'active-sub' : '' }}"
+                    href="{{ route('hr.custodies.index') }}" wire:navigate>
+                    <span class="line-sub-dot"></span>
+                    <span>@lang('hr::models/hr_custodies.plural')</span>
+                </a>
+            @endcan
+
+            @can('hr.holidays.index')
+                <a class="line-sub-item {{ Route::is('hr.holidays.*') ? 'active-sub' : '' }}"
+                    href="{{ route('hr.holidays.index') }}" wire:navigate>
+                    <span class="line-sub-dot"></span>
+                    <span>@lang('hr::models/hr_holidays.plural')</span>
+                </a>
+            @endcan
+
+            @can('hr.justifications.index')
+                <a class="line-sub-item {{ Route::is('hr.justifications.*') ? 'active-sub' : '' }}"
+                    href="{{ route('hr.justifications.index') }}" wire:navigate>
+                    <span class="line-sub-dot"></span>
+                    <span>@lang('hr::models/hr_justifications.plural')</span>
+                </a>
+            @endcan
+
+            @can('hr.advances.index')
+                <a class="line-sub-item {{ Route::is('hr.advances.*') ? 'active-sub' : '' }}"
+                    href="{{ route('hr.advances.index') }}" wire:navigate>
+                    <span class="line-sub-dot"></span>
+                    <span>@lang('hr::models/hr_advances.plural')</span>
+                </a>
+            @endcan
+
+            @can('hr.absentrequests.index')
+                <a class="line-sub-item {{ Route::is('hr.absentrequests.*') ? 'active-sub' : '' }}"
+                    href="{{ route('hr.absentrequests.index') }}" wire:navigate>
+                    <span class="line-sub-dot"></span>
+                    <span>@lang('hr::models/hr_absentrequest.plural')</span>
+                </a>
+            @endcan
+
+            @can('hr.attendance.movement')
+                <a class="line-sub-item {{ Route::is('hr.attendance.movement') ? 'active-sub' : '' }}"
+                    href="{{ route('hr.attendance.movement') }}" wire:navigate>
+                    <span class="line-sub-dot"></span>
+                    <span>@lang('hr::models/hr_attendances.attendance_movement')</span>
+                </a>
+            @endcan
+
+            @can('hr.Place.index')
+                <a class="line-sub-item {{ Route::is('hr.Place.*') ? 'active-sub' : '' }}"
+                    href="{{ route('hr.Place.index') }}" wire:navigate>
+                    <span class="line-sub-dot"></span>
+                    <span>@lang('hr::models/hr_places.plural')</span>
+                </a>
+            @endcan
+
+            @can('hr.attendance-policies.index')
+                <a class="line-sub-item {{ Route::is('hr.attendance-policies.index') ? 'active-sub' : '' }}"
+                    href="{{ route('hr.attendance-policies.index') }}" wire:navigate>
+                    <span class="line-sub-dot"></span>
+                    <span>@lang('hr::models/hr_attendance_policies.plural')</span>
+                </a>
+            @endcan
+
+            @can('hr.payrolls.index')
+                <a class="line-sub-item {{ Route::is('hr.payrolls.index') ? 'active-sub' : '' }}"
+                    href="{{ route('hr.payrolls.index') }}" wire:navigate>
+                    <span class="line-sub-dot"></span>
+                    <span>@lang('hr::models/hr_payrolls.plural')</span>
+                </a>
+            @endcan
+
+            @can('hr.salaries.index')
+                <a class="line-sub-item {{ Route::is('hr.salaries*') ? 'active-sub' : '' }}"
+                    href="{{ route('hr.salaries.index') }}" wire:navigate>
+                    <span class="line-sub-dot"></span>
+                    <span>@lang('hr::models/hr_salaries.plural')</span>
+                </a>
+            @endcan
+
+            @can('hr.penalties.index')
+                <a class="line-sub-item {{ Route::is('hr.penalties.*') ? 'active-sub' : '' }}"
+                    href="{{ route('hr.penalties.index') }}" wire:navigate>
+                    <span class="line-sub-dot"></span>
+                    <span>@lang('hr::models/hr_penalties.plural')</span>
+                </a>
+            @endcan
+
+            @can('hr.rewards.index')
+                <a class="line-sub-item {{ Route::is('hr.rewards.*') ? 'active-sub' : '' }}"
+                    href="{{ route('hr.rewards.index') }}" wire:navigate>
+                    <span class="line-sub-dot"></span>
+                    <span>@lang('hr::models/hr_rewards.plural')</span>
+                </a>
+            @endcan
+
+            @can('hr.Task.index')
+                <a class="line-sub-item {{ Route::is('hr.Task.*') ? 'active-sub' : '' }}"
+                    href="{{ route('hr.Task.index') }}" wire:navigate>
+                    <span class="line-sub-dot"></span>
+                    <span>@lang('hr::models/hr_tasks.plural')</span>
+                </a>
+            @endcan
+
+            @can('hr.GroupTask.index')
+                <a class="line-sub-item {{ Route::is('hr.GroupTask.*') ? 'active-sub' : '' }}"
+                    href="{{ route('hr.GroupTask.index') }}" wire:navigate>
+                    <span class="line-sub-dot"></span>
+                    <span>@lang('hr::models/hr_GroupTask.plural')</span>
+                </a>
+            @endcan
+
+            @can('hr.report_types.index')
+                <a class="line-sub-item {{ Route::is('hr.report_types*') ? 'active-sub' : '' }}"
+                    href="{{ route('hr.report_types.index') }}" wire:navigate>
+                    <span class="line-sub-dot"></span>
+                    <span>@lang('hr::menu.reports')</span>
+                </a>
+            @endcan
+
+            @can('hr.departments.index')
+                <a class="line-sub-item {{ Route::is('hr.departments*') ? 'active-sub' : '' }}"
+                    href="{{ route('hr.departments.index') }}" wire:navigate>
+                    <span class="line-sub-dot"></span>
+                    <span>@lang('hr::models/hr_departments.plural')</span>
+                </a>
+            @endcan
+
+            @can('hr.jobs.index')
+                <a class="line-sub-item {{ Route::is('hr.jobs*') ? 'active-sub' : '' }}"
+                    href="{{ route('hr.jobs.index') }}" wire:navigate>
+                    <span class="line-sub-dot"></span>
+                    <span>@lang('hr::models/hr_jobs.plural')</span>
+                </a>
+            @endcan
+
+            @can('hr.shift_types.index')
+                <a class="line-sub-item {{ Route::is('hr.shift_types*') ? 'active-sub' : '' }}"
+                    href="{{ route('hr.shift_types.index') }}" wire:navigate>
+                    <span class="line-sub-dot"></span>
+                    <span>@lang('hr::models/hr_shift_types.plural')</span>
+                </a>
+            @endcan
+
+            @can('hr.trackers.index')
+                <a class="line-sub-item {{ Route::is('hr.trackers.index') ? 'active-sub' : '' }}"
+                    href="{{ route('hr.trackers.index') }}" wire:navigate>
+                    <span class="line-sub-dot"></span>
+                    <span>@lang('hr::models/hr_trackers.plural')</span>
+                </a>
+            @endcan
+
+            @can('hr.settings.edit')
+                <a class="line-sub-item {{ Route::is('hr.settings.*') ? 'active-sub' : '' }}"
+                    href="{{ route('hr.settings.edit', 1) }}" wire:navigate>
+                    <span class="line-sub-dot"></span>
+                    <span>@lang('hr::menu.general_settings')</span>
+                </a>
             @endcan
 
             @can('hr.EndService.index')
-                            <div class="menu-item">
-                                <a class="menu-link {{ Route::is('hr.EndService*') ? 'active' : '' }}"
-                                    href="{{ route('hr.EndService.index') }}">
-                                    <span class="menu-bullet">
-                                        <i class="nav-icon fas fa-user-slash"></i>
-                                    </span>
-                                    <span class="menu-title">@lang('hr::models/hr_end_service.plural')</span>
-                                </a>
-                            </div>
+                <a class="line-sub-item {{ Route::is('hr.EndService*') ? 'active-sub' : '' }}"
+                    href="{{ route('hr.EndService.index') }}" wire:navigate>
+                    <span class="line-sub-dot"></span>
+                    <span>@lang('hr::models/hr_end_service.plural')</span>
+                </a>
             @endcan
+
             @can('hr.Archive.index')
-                            <div class="menu-item">
-                                <a class="menu-link {{ Route::is('hr.Archive.index') ? 'active' : '' }}"
-                                    href="{{ route('hr.Archive.index') }}">
-                                    <span class="menu-bullet">
-                                        <i class="nav-icon fas fa-archive"></i>
-                                    </span>
-                                    <span class="menu-title"> @lang('hr::models/hr_archive.plural')</span>
-                                </a>
-                            </div>
-            @endcan
-			
-			<!----------------------------------------------Start Requests------------------------------------------------------------------------------->
-            @canany(['hr.holidays.index', 'hr.absentrequests.index', 'hr.advances.index'])
-                <div data-kt-menu-trigger="click"
-                    class="menu-item menu-accordion {{ Route::is(['hr.holidays.*', 'hr.justifications.*', 'hr.absentrequests.*', 'hr.advances.*']) ? 'here show' : '' }}">
-                    <span class="menu-link">
-                        <span class="menu-bullet">
-                            <i class="nav-icon fas fa-code-pull-request"></i>
-
-                        </span>
-                        <span class="menu-title">@lang('hr::menu.requests')</span>
-                        <span class="menu-arrow"></span>
-                    </span>
-                    <div class="menu-sub menu-sub-accordion">
-
-                        @can('hr.holidays.index')
-                            <div class="menu-item">
-                                <a class="menu-link {{ Route::is('hr.holidays.*') ? 'active' : '' }}"
-                                    href="{{ route('hr.holidays.index') }}">
-                                    <span class="menu-bullet">
-                                        <i class="nav-icon fas fa-calendar-times"></i>
-                                    </span>
-                                    <span class="menu-title">@lang('hr::models/hr_holidays.plural')</span>
-                                </a>
-                            </div>
-                        @endcan
-                        @can('hr.justifications.index')
-                            <div class="menu-item">
-                                <a class="menu-link {{ Route::is('hr.justifications.*') ? 'active' : '' }}"
-                                    href="{{ route('hr.justifications.index') }}">
-                                    <span class="menu-bullet">
-                                        <i class="nav-icon fas fa-comment-dots"></i>
-                                    </span>
-                                    <span class="menu-title">@lang('hr::models/hr_justifications.plural')</span>
-                                </a>
-                            </div>
-                        @endcan
-
-                        @can('hr.advances.index')
-                            <div class="menu-item">
-                                <a class="menu-link {{ Route::is('hr.advances.*') ? 'active' : '' }}"
-                                    href="{{ route('hr.advances.index') }}">
-                                    <span class="menu-bullet">
-                                        <i class="nav-icon fas fa-hand-holding-usd"></i>
-                                    </span>
-                                    <span class="menu-title">@lang('hr::models/hr_advances.plural')</span>
-                                </a>
-                            </div>
-                        @endcan
-                        @can('hr.absentrequests.index')
-                        <div class="menu-item">
-                            <a class="menu-link {{ Route::is('hr.absentrequests.*') ? 'active' : '' }}"
-                                href="{{ route('hr.absentrequests.index') }}">
-                                <span class="menu-bullet">
-                                    <i class="nav-icon fas fa-diamond"></i>
-                                </span>
-                                <span class="menu-title">@lang('hr::models/hr_absentrequest.plural')</span>
-                            </a>
-                        </div>
-                        @endcan 
-
-
-                    </div>
-                </div>
-            @endcanany
-            <!----------------------------------------------End Requests------------------------------------------------------------------------------->
-            <!----------------------------------------------Start Attendance------------------------------------------------------------------------------->
-            @canany(['hr.Place.index', 'hr.assets.index'])
-                <div data-kt-menu-trigger="click"
-                    class="menu-item menu-accordion {{ Route::is(['hr.attendance.*', 'hr.Place.*', 'hr.attendance-policies.*', 'hr.attend.*']) ? 'here show' : '' }}">
-                    <span class="menu-link">
-                        <span class="menu-bullet">
-                            <i class="nav-icon fas fa-clipboard-user"></i>
-
-                        </span>
-                        <span class="menu-title">@lang('hr::menu.attendance')</span>
-                        <span class="menu-arrow"></span>
-                    </span>
-                    <div class="menu-sub menu-sub-accordion">
-
-                        @can('hr.attendance.movement')
-                            <div class="menu-item">
-                                <a class="menu-link {{ Route::is('hr.attendance.movement') ? 'active' : '' }}"
-                                    href="{{ route('hr.attendance.movement') }}">
-                                    <span class="menu-bullet">
-                                        <i class="nav-icon fas fa-walking"></i>
-                                    </span>
-                                    <span class="menu-title">@lang('hr::models/hr_attendances.attendance_movement')</span>
-                                </a>
-                            </div>
-                        @endcan
-
-                        @can('hr.Place.index')
-                            <div class="menu-item">
-                                <a class="menu-link {{ Route::is('hr.Place.*') ? 'active' : '' }}"
-                                    href="{{ route('hr.Place.index') }}">
-                                    <span class="menu-bullet">
-                                        <i class="nav-icon fas fa-map-marker-alt"></i>
-                                    </span>
-                                    <span class="menu-title">@lang('hr::models/hr_places.plural')</span>
-                                </a>
-                            </div>
-                        @endcan
-
-                        @can('hr.attendance-policies.index')
-                            <div class="menu-item">
-                                <a class="menu-link {{ Route::is('hr.attendance-policies.index') ? 'active' : '' }}"
-                                    href="{{ route('hr.attendance-policies.index') }}">
-                                    <span class="menu-bullet">
-                                        <i class="nav-icon fas fa-user-shield"></i>
-                                    </span>
-                                    <span class="menu-title">@lang('hr::models/hr_attendance_policies.plural')</span>
-                                </a>
-                            </div>
-                        @endcan
-
-                        {{-- @can('hr.Place.index')
-                            <div class="menu-item">
-                                <a class="menu-link {{ Route::is('hr.Place.*') ? 'active' : '' }}"
-                                    href="{{ route('hr.Place.index') }}">
-                                    <span class="menu-bullet">
-                                        <i class="nav-icon fas fa-diamond"></i>
-                                    </span>
-                                    <span class="menu-title">@lang('hr::models/hr_places.plural')</span>
-                                </a>
-                            </div>
-                        @endcan --}}
-                        @can('hr.attendance.movement')
-                            <div class="menu-item">
-                                <a class="menu-link {{ Route::is('hr.attend.hourscalculate') ? 'active' : '' }}"
-                                    href="{{ route('hr.attend.hourscalculate') }}">
-                                    <span class="menu-bullet">
-                                        <i class="nav-icon fas fa-calculator"></i>
-                                    </span>
-                                    <span class="menu-title">حاسبة خارج الدوام</span>
-                                </a>
-                            </div>
-                        @endcan
-
-
-
-                    </div>
-                </div>
-            @endcanany
-            <!----------------------------------------------End Attendance------------------------------------------------------------------------------->
-            <!----------------------------------------------Start Tasks------------------------------------------------------------------------------->
-            @canany(['hr.Task.index', 'hr.GroupTask.index'])
-                <div data-kt-menu-trigger="click"
-                    class="menu-item menu-accordion {{ Route::is(['hr.Task.*', 'hr.GroupTask.*']) ? 'here show' : '' }}">
-                    <span class="menu-link">
-                        <span class="menu-bullet">
-                            <i class="nav-icon fas fa-bars-progress"></i>
-
-                        </span>
-                        <span class="menu-title">@lang('hr::menu.tasks')</span>
-                        <span class="menu-arrow"></span>
-                    </span>
-                    <div class="menu-sub menu-sub-accordion">
-                        @can('hr.Task.index')
-                            <div class="menu-item">
-                                <a class="menu-link {{ Route::is('hr.Task.*') ? 'active' : '' }}"
-                                    href="{{ route('hr.Task.index') }}">
-                                    <span class="menu-bullet">
-                                        <i class="nav-icon fas fa-tasks"></i>
-                                    </span>
-                                    <span class="menu-title">@lang('hr::models/hr_tasks.plural')</span>
-                                </a>
-                            </div>
-                        @endcan
-                        @can('hr.GroupTask.index')
-                            <div class="menu-item">
-                                <a class="menu-link {{ Route::is('hr.GroupTask.*') ? 'active' : '' }}"
-                                    href="{{ route('hr.GroupTask.index') }}">
-                                    <span class="menu-bullet">
-                                        <i class="nav-icon fas fa-users-cog"></i>
-                                    </span>
-                                    <span class="menu-title">@lang('hr::models/hr_GroupTask.plural')</span>
-                                </a>
-                            </div>
-                        @endcan
-
-
-
-
-                    </div>
-                </div>
-            @endcanany
-            <!----------------------------------------------End Tasks------------------------------------------------------------------------------->
-            <!----------------------------------------------Start Salaries------------------------------------------------------------------------------->
-            @canany(['hr.salaries.index', 'hr.penalties.index', 'hr.rewards.index',
-                'hr.payrolls.index'])
-                <div data-kt-menu-trigger="click"
-                    class="menu-item menu-accordion {{ Route::is([ 'hr.penalties.*', 'hr.rewards.*', 'hr.salaries.*', 'hr.payrolls.*']) ? 'here show' : '' }}">
-                    <span class="menu-link">
-                        <span class="menu-bullet">
-                            <i class="nav-icon fas fa-file-invoice-dollar"></i>
-
-                        </span>
-                        <span class="menu-title">@lang('hr::menu.salaries')</span>
-                        <span class="menu-arrow"></span>
-                    </span>
-                    <div class="menu-sub menu-sub-accordion">
-
-                         @can('hr.payrolls.index')
-                            <div class="menu-item">
-                                <a class="menu-link {{ Route::is('hr.payrolls.index') ? 'active' : '' }}"
-                                    href="{{ route('hr.payrolls.index') }}">
-                                    <span class="menu-bullet">
-                                        <i class="nav-icon fas fa-file-invoice"></i>
-                                    </span>
-                                    <span class="menu-title">@lang('hr::models/hr_payrolls.plural')</span>
-                                </a>
-                            </div>
-                        @endcan
-                        @can('hr.penalties.index')
-                            <div class="menu-item">
-                                <a class="menu-link {{ Route::is('hr.penalties.*') ? 'active' : '' }}"
-                                    href="{{ route('hr.penalties.index') }}">
-                                    <span class="menu-bullet">
-                                        <i class="nav-icon fas fa-gavel"></i>
-                                    </span>
-                                    <span class="menu-title">@lang('hr::models/hr_penalties.plural')</span>
-                                </a>
-                            </div>
-                        @endcan
-                        @can('hr.rewards.index')
-                            <div class="menu-item">
-                                <a class="menu-link {{ Route::is('hr.rewards.*') ? 'active' : '' }}"
-                                    href="{{ route('hr.rewards.index') }}">
-                                    <span class="menu-bullet">
-                                        <i class="nav-icon fas fa-gift"></i>
-                                    </span>
-                                    <span class="menu-title">@lang('hr::models/hr_rewards.plural')</span>
-                                </a>
-                            </div>
-                        @endcan
-                        @can('hr.salaries.index')
-                            <div class="menu-item">
-                                <a class="menu-link {{ Route::is('hr.salaries*') ? 'active' : '' }}"
-                                    href="{{ route('hr.salaries.index') }}">
-                                    <span class="menu-bullet">
-                                        <i class="nav-icon fas fa-money-check-alt"></i>
-                                    </span>
-                                    <span class="menu-title">@lang('hr::models/hr_salaries.plural')</span>
-                                </a>
-                            </div>
-                        @endcan
-
-                       
-
-                    </div>
-                </div>
-            @endcanany
-            <!----------------------------------------------End Salaries------------------------------------------------------------------------------->
-            <!----------------------------------------------Reports------------------------------------------------------------------------------------->
-            @can('hr.report_types.index')
-                <div class="menu-item">
-                    <a class="menu-link {{ Route::is('hr.report_types*') ? 'active' : '' }}"
-                        href="{{ route('hr.report_types.index') }}">
-                        <span class="menu-bullet">
-                            <i class="nav-icon fas fa-list-check"></i>
-                        </span>
-                        <span class="menu-title">@lang('hr::menu.reports')</span>
-                    </a>
-                </div>
-            @endcan
-            <!----------------------------------------------End Reports------------------------------------------------------------------------------------->
-	
-			<!----------------------------------------------settings------------------------------------------------------------------------------------->
-			    @canany(['hr.holidays.index', 'hr.absentrequests.index', 'hr.advances.index', 'hr.trackers.index'])
-                <div data-kt-menu-trigger="click"
-                    class="menu-item menu-accordion {{ Route::is(['hr.holidays.*', 'hr.justifications.*', 'hr.absentrequests.*', 'hr.advances.*', 'hr.trackers.*']) ? 'here show' : '' }}">
-                    <span class="menu-link">
-                        <span class="menu-bullet">
-                            <i class="nav-icon fas fa-gear"></i>
-
-                        </span>
-                        <span class="menu-title">@lang('hr::menu.settings')</span>
-                        <span class="menu-arrow"></span>
-                    </span>
-                    <div class="menu-sub menu-sub-accordion">
-
-                        @can('hr.settings.edit')
-                         <div class="menu-item">
-                            <a class="menu-link {{ Route::is('hr.settings.*') ? 'active' : '' }}"
-                             href="{{ route('hr.settings.edit', 1) }}">
-                            <span class="menu-bullet">
-                              <i class="nav-icon fas fa-gear"></i>
-                            </span>
-                             <span class="menu-title">@lang('hr::menu.general_settings')</span>
-                            </a>
-                         </div>
-                        @endcan
-						@can('hr.shift_types.index')
-                            <div class="menu-item">
-                                <a class="menu-link {{ Route::is('hr.shift_types*') ? 'active' : '' }}"
-                                    href="{{ route('hr.shift_types.index') }}">
-                                    <span class="menu-bullet">
-                                        <i class="nav-icon fas fa-user-clock"></i>
-                                    </span>
-                                    <span class="menu-title">@lang('hr::models/hr_shift_types.plural')</span>
-                                </a>
-                            </div>
-                        @endcan
-                        @can('hr.trackers.index')
-                            <div class="menu-item">
-                                <a class="menu-link {{ Route::is('hr.trackers.index') ? 'active' : '' }}"
-                                    href="{{ route('hr.trackers.index') }}">
-                                    <span class="menu-bullet">
-                                        <i class="nav-icon fas fa-history"></i>
-                                    </span>
-                                    <span class="menu-title">@lang('hr::models/hr_trackers.plural')</span>
-                                </a>
-                            </div>
-                        @endcan
-						@can('hr.jobs.index')
-                            <div class="menu-item">
-                                <a class="menu-link {{ Route::is('hr.jobs*') ? 'active' : '' }}"
-                                    href="{{ route('hr.jobs.index') }}">
-                                    <span class="menu-bullet">
-                                        <i class="nav-icon fas fa-briefcase"></i>
-                                    </span>
-                                    <span class="menu-title">@lang('hr::models/hr_jobs.plural')</span>
-                                </a>
-                            </div>
-                        @endcan
-
-                        @can('hr.departments.index')
-                            <div class="menu-item">
-                                <a class="menu-link {{ Route::is('hr.departments*') ? 'active' : '' }}"
-                                    href="{{ route('hr.departments.index') }}">
-                                    <span class="menu-bullet">
-                                        <i class="nav-icon fas fa-sitemap"></i>
-                                    </span>
-                                    <span class="menu-title">@lang('hr::models/hr_departments.plural')</span>
-                                </a>
-                            </div>
-                        @endcan
-
-                        
-                        @can('hr.document_types.index')
-                            <div class="menu-item">
-                                <a class="menu-link {{ Route::is('hr.document_types*') ? 'active' : '' }}"
-                                    href="{{ route('hr.document_types.index') }}">
-                                    <span class="menu-bullet">
-                                        <i class="nav-icon fas fa-id-card"></i>
-                                    </span>
-                                    <span class="menu-title">@lang('hr::models/hr_document_types.plural')</span>
-                                </a>
-                            </div>
-                        @endcan
-                        @can('hr.contract_types.index')
-                            <div class="menu-item">
-                                <a class="menu-link {{ Route::is('hr.contract_types*') ? 'active' : '' }}"
-                                    href="{{ route('hr.contract_types.index') }}">
-                                    <span class="menu-bullet">
-                                        <i class="nav-icon fas fa-file-contract"></i>
-                                    </span>
-                                    <span class="menu-title">@lang('hr::models/hr_contract_types.plural')</span>
-                                </a>
-                            </div>
-                        @endcan
-						 @can('hr.holiday_types.index')
-                            <div class="menu-item">
-                                <a class="menu-link {{ Route::is('hr.holiday_types*') ? 'active' : '' }}"
-                                    href="{{ route('hr.holiday_types.index') }}">
-                                    <span class="menu-bullet">
-                                        <i class="nav-icon fas fa-umbrella-beach"></i>
-                                    </span>
-                                    <span class="menu-title">@lang('hr::models/hr_holiday_types.plural')</span>
-                                </a>
-                            </div>
-                        @endcan
-						 @can('hr.allowances.index')
-                            <div class="menu-item">
-                                <a class="menu-link {{ Route::is('hr.allowances*') ? 'active' : '' }}"
-                                    href="{{ route('hr.allowances.index') }}">
-                                    <span class="menu-bullet">
-                                        <i class="nav-icon fas fa-plus-circle"></i>
-                                    </span>
-                                    <span class="menu-title">@lang('hr::models/hr_allowances.plural')</span>
-                                </a>
-                            </div>
-                        @endcan
-
-                        @can('hr.deducts.index')
-                            <div class="menu-item">
-                                <a class="menu-link {{ Route::is('hr.deducts*') ? 'active' : '' }}"
-                                    href="{{ route('hr.deducts.index') }}">
-                                    <span class="menu-bullet">
-                                        <i class="nav-icon fas fa-minus-circle"></i>
-                                    </span>
-                                    <span class="menu-title">@lang('hr::models/hr_deducts.plural')</span>
-                                </a>
-                            </div>
-                        @endcan
-                        @can('hr.CalendarEvents.index')
-                            <div class="menu-item">
-                                <a class="menu-link {{ Route::is('hr.CalendarEvents*') ? 'active' : '' }}"
-                                    href="{{ route('hr.CalendarEvents.index') }}">
-                                    <span class="menu-bullet">
-                                        <i class="nav-icon fas fa-calendar-alt"></i>
-                                    </span>
-                                    <span class="menu-title">@lang('hr::models/hr_calendar_events.plural')</span>
-                                </a>
-                            </div>
-                        @endcan
-						<!----------------------------------------------Start Asset------------------------------------------------------------------------------->
-            @canany(['hr.asset_types.index', 'hr.assets.index'])
-                <div data-kt-menu-trigger="click"
-                    class="menu-item menu-accordion {{ Route::is(['hr.asset_types.*', 'hr.assets.*']) ? 'here show' : '' }}">
-                    <span class="menu-link">
-                        <span class="menu-bullet">
-                            <i class="nav-icon fas fa-landmark-flag"></i>
-
-                        </span>
-                        <span class="menu-title">@lang('hr::menu.assets')</span>
-                        <span class="menu-arrow"></span>
-                    </span>
-                    <div class="menu-sub menu-sub-accordion">
-
-                        @can('hr.asset_types.index')
-                            <div class="menu-item">
-                                <a class="menu-link {{ Route::is('hr.asset_types*') ? 'active' : '' }}"
-                                    href="{{ route('hr.asset_types.index') }}">
-                                    <span class="menu-bullet">
-                                        <i class="nav-icon fas fa-cubes"></i>
-                                    </span>
-                                    <span class="menu-title">@lang('hr::models/hr_asset_types.plural')</span>
-                                </a>
-                            </div>
-                        @endcan
-
-                        @can('hr.assets.index')
-                            <div class="menu-item active">
-                                <a class="menu-link {{ Route::is('hr.assets.*') ? 'active' : '' }}"
-                                    href="{{ route('hr.assets.index') }}" previewlistener="true">
-                                    <span class="menu-bullet">
-                                        <i class="nav-icon fas fa-laptop"></i>
-                                    </span>
-                                    <span class="menu-title">@lang('hr::models/hr_assets.plural')</span>
-                                </a>
-                            </div>
-                        @endcan
-
-
-
-
-                    </div>
-                </div>
-            @endcanany
-            <!----------------------------------------------End Asset------------------------------------------------------------------------------->
-
-						
-
-
-                    </div>
-                </div>
-            @endcanany
-			<!------------------------------------------------------end settings------------------------------------------------------------------------------>
-			
-			
-            
-
-
-            @can('hr.my-requests.index')
-                <div class="menu-item">
-                    <a class="menu-link {{ Route::is('hr.empdashboard.index') ? 'active' : '' }}"
-                        href="{{ route('hr.empdashboard.index') }}">
-                        <span class="menu-bullet">
-                            <i class="nav-icon fas fa-address-card"></i>
-                        </span>
-                        <span class="menu-title">الملف الشخصي</span>
-                    </a>
-                </div>
+                <a class="line-sub-item {{ Route::is('hr.Archive.index') ? 'active-sub' : '' }}"
+                    href="{{ route('hr.Archive.index') }}" wire:navigate>
+                    <span class="line-sub-dot"></span>
+                    <span>@lang('hr::models/hr_archive.plural')</span>
+                </a>
             @endcan
         </div>
     </div>
