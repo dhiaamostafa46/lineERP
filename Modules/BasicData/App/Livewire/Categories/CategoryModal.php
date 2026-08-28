@@ -6,12 +6,12 @@ use Livewire\Component;
 use Livewire\WithFileUploads;
 use Livewire\Attributes\On;
 use App\Models\BasicDataApp\Category;
-use Modules\BasicData\App\Repositories\DbCategoryRepository;
 
 class CategoryModal extends Component
 {
     use WithFileUploads;
 
+    public $isOpen = false;
     public $category_id = null;
     public $is_edit = false;
 
@@ -63,7 +63,7 @@ class CategoryModal extends Component
     public function openCreate()
     {
         $this->resetFields();
-        $this->dispatch('open-category-modal');
+        $this->isOpen = true;
     }
 
     #[On('openEditModal')]
@@ -81,8 +81,14 @@ class CategoryModal extends Component
             $this->status = $category->status;
             $this->type = $category->type ?? 1;
             $this->existing_img = $category->imgThumbPath;
-            $this->dispatch('open-category-modal');
+            $this->isOpen = true;
         }
+    }
+
+    public function closeModal()
+    {
+        $this->isOpen = false;
+        $this->resetFields();
     }
 
     public function save()
@@ -108,7 +114,7 @@ class CategoryModal extends Component
                 $category->addMedia($this->img->getRealPath())->toMediaCollection('categories');
             }
 
-            $this->dispatch('category-saved', message: 'تم تعديل التصنيف بنجاح!');
+            session()->flash('message', 'تم تعديل التصنيف بنجاح!');
         } else {
             $category = Category::create($data);
 
@@ -116,11 +122,11 @@ class CategoryModal extends Component
                 $category->addMedia($this->img->getRealPath())->toMediaCollection('categories');
             }
 
-            $this->dispatch('category-saved', message: 'تم إضافة التصنيف بنجاح!');
+            session()->flash('message', 'تم إضافة التصنيف بنجاح!');
         }
 
-        $this->resetFields();
-        $this->dispatch('close-category-modal');
+        $this->closeModal();
+        return redirect()->route('basicdata.categories.index');
     }
 
     public function render()

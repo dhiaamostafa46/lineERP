@@ -29,7 +29,7 @@
             <!-- Header Actions -->
             <div class="d-flex align-items-center gap-2">
                 @can('basicdata.categories.create')
-                    <button type="button" class="btn btn-sm front-btn-primary" onclick="Livewire.dispatch('openCreateModal')">
+                    <button type="button" class="btn btn-sm front-btn-primary" x-on:click="$dispatch('openCreateModal')" onclick="if(window.Livewire) Livewire.dispatch('openCreateModal')">
                         <i class="fa-solid fa-plus fs-8"></i>
                         @lang('crud.add_new')
                     </button>

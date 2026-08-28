@@ -8,6 +8,7 @@ use App\Models\BasicDataApp\Unit;
 
 class UnitModal extends Component
 {
+    public $isOpen = false;
     public $unit_id = null;
     public $is_edit = false;
 
@@ -48,7 +49,7 @@ class UnitModal extends Component
     public function openCreate()
     {
         $this->resetFields();
-        $this->dispatch('open-unit-modal');
+        $this->isOpen = true;
     }
 
     #[On('openEditModal')]
@@ -63,8 +64,14 @@ class UnitModal extends Component
                 $this->name[$locale] = $unit->translate($locale)->name ?? '';
             }
             $this->status = $unit->status;
-            $this->dispatch('open-unit-modal');
+            $this->isOpen = true;
         }
+    }
+
+    public function closeModal()
+    {
+        $this->isOpen = false;
+        $this->resetFields();
     }
 
     public function save()
@@ -82,14 +89,14 @@ class UnitModal extends Component
         if ($this->is_edit && $this->unit_id) {
             $unit = Unit::findOrFail($this->unit_id);
             $unit->update($data);
-            $this->dispatch('unit-saved', message: 'تم تعديل الوحدة بنجاح!');
+            session()->flash('message', 'تم تعديل الوحدة بنجاح!');
         } else {
             Unit::create($data);
-            $this->dispatch('unit-saved', message: 'تم إضافة الوحدة بنجاح!');
+            session()->flash('message', 'تم إضافة الوحدة بنجاح!');
         }
 
-        $this->resetFields();
-        $this->dispatch('close-unit-modal');
+        $this->closeModal();
+        return redirect()->route('basicdata.units.index');
     }
 
     public function render()

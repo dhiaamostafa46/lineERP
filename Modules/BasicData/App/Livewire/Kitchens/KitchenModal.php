@@ -8,6 +8,7 @@ use Modules\BasicData\App\Models\DbKitchen;
 
 class KitchenModal extends Component
 {
+    public $isOpen = false;
     public $kitchen_id = null;
     public $is_edit = false;
 
@@ -51,7 +52,7 @@ class KitchenModal extends Component
     public function openCreate()
     {
         $this->resetFields();
-        $this->dispatch('open-kitchen-modal');
+        $this->isOpen = true;
     }
 
     #[On('openEditModal')]
@@ -67,8 +68,14 @@ class KitchenModal extends Component
             }
             $this->barcode = $kitchen->barcode;
             $this->status = $kitchen->status;
-            $this->dispatch('open-kitchen-modal');
+            $this->isOpen = true;
         }
+    }
+
+    public function closeModal()
+    {
+        $this->isOpen = false;
+        $this->resetFields();
     }
 
     public function save()
@@ -87,14 +94,14 @@ class KitchenModal extends Component
         if ($this->is_edit && $this->kitchen_id) {
             $kitchen = DbKitchen::findOrFail($this->kitchen_id);
             $kitchen->update($data);
-            $this->dispatch('kitchen-saved', message: 'تم تعديل المطبخ بنجاح!');
+            session()->flash('message', 'تم تعديل المطبخ بنجاح!');
         } else {
             DbKitchen::create($data);
-            $this->dispatch('kitchen-saved', message: 'تم إضافة المطبخ بنجاح!');
+            session()->flash('message', 'تم إضافة المطبخ بنجاح!');
         }
 
-        $this->resetFields();
-        $this->dispatch('close-kitchen-modal');
+        $this->closeModal();
+        return redirect()->route('basicdata.kitchens.index');
     }
 
     public function render()

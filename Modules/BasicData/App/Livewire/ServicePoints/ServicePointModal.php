@@ -8,6 +8,7 @@ use Modules\BasicData\App\Models\DbServicePoint;
 
 class ServicePointModal extends Component
 {
+    public $isOpen = false;
     public $service_point_id = null;
     public $is_edit = false;
 
@@ -54,7 +55,7 @@ class ServicePointModal extends Component
     public function openCreate()
     {
         $this->resetFields();
-        $this->dispatch('open-service-point-modal');
+        $this->isOpen = true;
     }
 
     #[On('openEditModal')]
@@ -71,8 +72,14 @@ class ServicePointModal extends Component
             $this->code = $sp->code;
             $this->type = $sp->type;
             $this->status = $sp->status;
-            $this->dispatch('open-service-point-modal');
+            $this->isOpen = true;
         }
+    }
+
+    public function closeModal()
+    {
+        $this->isOpen = false;
+        $this->resetFields();
     }
 
     public function save()
@@ -92,14 +99,14 @@ class ServicePointModal extends Component
         if ($this->is_edit && $this->service_point_id) {
             $sp = DbServicePoint::findOrFail($this->service_point_id);
             $sp->update($data);
-            $this->dispatch('service-point-saved', message: 'تم تعديل نقطة الخدمة بنجاح!');
+            session()->flash('message', 'تم تعديل نقطة الخدمة بنجاح!');
         } else {
             DbServicePoint::create($data);
-            $this->dispatch('service-point-saved', message: 'تم إضافة نقطة الخدمة بنجاح!');
+            session()->flash('message', 'تم إضافة نقطة الخدمة بنجاح!');
         }
 
-        $this->resetFields();
-        $this->dispatch('close-service-point-modal');
+        $this->closeModal();
+        return redirect()->route('basicdata.service_points.index');
     }
 
     public function render()
