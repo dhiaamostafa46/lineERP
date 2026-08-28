@@ -261,5 +261,8 @@
     </div>
     <!--end::Content-->
 
+    <!-- Floating Bulk Actions Bar -->
+    <x-bulk-action-bar route="{{ route('basicdata.products.bulkDelete') }}" />
+
 </div>
 @endsection

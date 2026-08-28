@@ -12,6 +12,8 @@ use Modules\BasicData\App\Repositories\DbServicePointRepository;
 
 class DbServicePointController extends AppBaseController
 {
+    use \App\Traits\HasBulkActions;
+
     /** @var DbServicePointRepository $dbServicePointRepository*/
     private $dbServicePointRepository;
 
@@ -25,9 +27,15 @@ class DbServicePointController extends AppBaseController
      */
     public function index(Request $request)
     {
-        $data['servicePoints'] = $this->dbServicePointRepository->allQuery($request->except('pagination'))->latest()->paginate(10);
+        $pagination = $request->get('pagination', 10);
+        $data['servicePoints'] = $this->dbServicePointRepository->allQuery($request->except('pagination'))->paginate($pagination);
         $data['statuses'] = $this->dbServicePointRepository->statuses();
         $data['types'] = $this->dbServicePointRepository->types();
+
+        $servicePointModel = $this->dbServicePointRepository->model();
+        $data['totalServicePointsCount'] = $servicePointModel::count();
+        $data['activeServicePointsCount'] = $servicePointModel::where('status', 1)->count();
+
         return view('basicdata::service_points.index', $data);
     }
 

@@ -14,6 +14,8 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class DbUnitController extends AppBaseController
 {
+    use \App\Traits\HasBulkActions;
+
     /** @var DbUnitRepository $dbUnitRepository*/
     private $dbUnitRepository;
 
@@ -27,8 +29,14 @@ class DbUnitController extends AppBaseController
      */
     public function index(Request $request)
     {
-        $data['units'] = $this->dbUnitRepository->allQuery($request->except('pagination'))->latest()->paginate(10);
+        $pagination = $request->get('pagination', 10);
+        $data['units'] = $this->dbUnitRepository->allQuery($request->except('pagination'))->paginate($pagination);
         $data['statuses'] = $this->dbUnitRepository->statuses();
+
+        $unitModel = \App\Models\BasicDataApp\Unit::class;
+        $data['totalUnitsCount'] = $unitModel::count();
+        $data['activeUnitsCount'] = $unitModel::where('status', 1)->count();
+
         return view('basicdata::units.index', $data);
     }
 

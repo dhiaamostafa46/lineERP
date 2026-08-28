@@ -12,6 +12,8 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class DbCategoryController extends AppBaseController
 {
+    use \App\Traits\HasBulkActions;
+
     /** @var DbCategoryRepository $dbCategoryRepository*/
     private $dbCategoryRepository;
 
@@ -25,10 +27,18 @@ class DbCategoryController extends AppBaseController
      */
     public function index(Request $request)
     {
-        $data['categories'] = $this->dbCategoryRepository->allQuery($request->except('pagination'))->latest()->paginate(10);
+        $pagination = $request->get('pagination', 10);
+        $data['categories'] = $this->dbCategoryRepository->allQuery($request->except('pagination'))->paginate($pagination);
         $data['statuses'] = $this->dbCategoryRepository->statuses();
         $data['types'] = $this->dbCategoryRepository->types();
         $data['parent_categories'] = $this->dbCategoryRepository->parentCategories();
+
+        $categoryModel = \App\Models\BasicDataApp\Category::class;
+        $data['totalCategoriesCount'] = $categoryModel::count();
+        $data['activeCategoriesCount'] = $categoryModel::where('status', 1)->count();
+        $data['mainCategoriesCount'] = $categoryModel::whereNull('parent_id')->count();
+        $data['subCategoriesCount'] = $categoryModel::whereNotNull('parent_id')->count();
+
         return view('basicdata::categories.index', $data);
     }
 

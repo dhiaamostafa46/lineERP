@@ -1,69 +1,117 @@
-<div class="card-body p-0">
-    <div class="table-responsive">
-
-        <table class="table table-striped text-center gy-7 gs-7" id="db-categories-table">
-            <thead>
-                <tr class="fw-semibold fs-6 text-gray-800 border-bottom border-gray-200 ">
-                    {{-- <th class="w-10px pe-2">
-                        <div class="form-check form-check-sm form-check-custom form-check-solid me-3">
-                            <input class="form-check-input" type="checkbox" data-kt-check="true" data-kt-check-target="#db-categories-table .form-check-input" value="1" />
+<div class="table-responsive">
+    <table class="table front-table text-start align-middle" id="db-service-points-table" data-table="bulk">
+        <thead>
+            <tr>
+                <th class="ps-4" style="width: 40px;">
+                    <div class="front-form-check">
+                        <input class="form-check-input bulk-check-all" type="checkbox" id="checkAllSP" title="تحديد الكل" />
+                    </div>
+                </th>
+                <th class="ps-2"><x-table-sort column="name" title="NAME" /></th>
+                <th><x-table-sort column="code" title="CODE" /></th>
+                <th><x-table-sort column="type" title="TYPE" /></th>
+                <th><x-table-sort column="status" title="STATUS" /></th>
+                <th><x-table-sort column="created_at" title="CREATED AT" /></th>
+                <th class="pe-4 text-end">ACTION</th>
+            </tr>
+        </thead>
+        <tbody>
+            @forelse ($servicePoints as $servicePoint)
+                <tr class="sp-row" data-id="{{ $servicePoint->id }}">
+                    <!-- Row Checkbox -->
+                    <td class="ps-4">
+                        <div class="front-form-check">
+                            <input class="form-check-input bulk-check sp-check" type="checkbox" value="{{ $servicePoint->id }}" />
                         </div>
-                    </th> --}}
-                    <th>@lang('basicdata::models/db_service_points.fields.name')</th>
-                      <th>@lang('basicdata::models/db_service_points.fields.code')</th>
-                          <th>@lang('basicdata::models/db_service_points.fields.type')</th>
-                    <th>@lang('basicdata::models/db_service_points.fields.status')</th>
-                       <th>@lang('basicdata::models/db_service_points.fields.created_at')</th>
-                    <th class="text-center table-action" >@lang('crud.action')</th>
+                    </td>
+
+                    <!-- Name -->
+                    <td class="ps-2">
+                        <a href="{{ route('basicdata.service_points.show', [$servicePoint->id]) }}" 
+                           class="text-gray-900 fw-bold text-hover-primary text-decoration-none fs-7" 
+                           wire:navigate>
+                            {{ $servicePoint->name }}
+                        </a>
+                    </td>
+
+                    <!-- Code -->
+                    <td>
+                        <span class="badge bg-light-dark text-gray-700 font-monospace fs-8 px-2 py-1">{{ $servicePoint->code ?? '—' }}</span>
+                    </td>
+
+                    <!-- Type -->
+                    <td>
+                        <span class="text-gray-700 fs-7">{{ $servicePoint->type_text }}</span>
+                    </td>
+
+                    <!-- Status (Front Legend Indicator) -->
+                    <td>
+                        @if($servicePoint->status == 1 || strtolower($servicePoint->status_text) == 'active' || $servicePoint->status_text == 'نشط')
+                            <span class="d-inline-flex align-items-center fs-7 fw-medium text-gray-800">
+                                <span class="front-legend-indicator bg-success"></span>
+                                {{ $servicePoint->status_text }}
+                            </span>
+                        @else
+                            <span class="d-inline-flex align-items-center fs-7 fw-medium text-gray-800">
+                                <span class="front-legend-indicator bg-danger"></span>
+                                {{ $servicePoint->status_text }}
+                            </span>
+                        @endif
+                    </td>
+
+                    <!-- Created At -->
+                    <td>
+                        <span class="text-muted fs-8 font-monospace">{{ $servicePoint->created_at ? $servicePoint->created_at->format('Y-m-d') : '—' }}</span>
+                    </td>
+
+                    <!-- Actions -->
+                    <td class="pe-4 text-end">
+                        <div class="d-inline-flex align-items-center justify-content-end gap-2">
+                            @can('basicdata.service_points.edit')
+                                <a href="{{ route('basicdata.service_points.edit', [$servicePoint->id]) }}" 
+                                   class="btn btn-sm btn-white text-gray-700 py-1 px-2 border rounded-2 d-inline-flex align-items-center gap-1 text-hover-primary" 
+                                   style="font-size: 12px; height: 28px;"
+                                   wire:navigate>
+                                    <i class="fa-solid fa-pen fs-9 text-muted"></i>
+                                    <span>Edit</span>
+                                </a>
+                            @endcan
+
+                            @can('basicdata.service_points.destroy')
+                                {!! Form::open(['route' => ['basicdata.service_points.destroy', $servicePoint->id], 'method' => 'delete', 'class' => 'd-inline']) !!}
+                                    {!! Form::button('<i class="fa-solid fa-trash text-danger fs-9"></i>', [
+                                        'type' => 'submit',
+                                        'class' => 'btn btn-sm btn-icon btn-white border rounded-2 w-28px h-28px',
+                                        'title' => __('crud.delete'),
+                                        'onclick' => "return confirm('هل أنت متأكد من الحذف؟')",
+                                    ]) !!}
+                                {!! Form::close() !!}
+                            @endcan
+                        </div>
+                    </td>
                 </tr>
-            </thead>
-            <tbody>
-                @foreach ($servicePoints as $servicePoint)
-                    <tr>
-                        {{-- <td>
-                            <div class="form-check form-check-sm form-check-custom form-check-solid">
-                                <input class="form-check-input" type="checkbox" value="{{ $category->id }}" />
-                            </div>
-                        </td> --}}
-                        <td>{{ $servicePoint->name }}</td>
+            @empty
+                <tr>
+                    <td colspan="7" class="text-center py-10">
+                        <div class="d-flex flex-column align-items-center justify-content-center text-muted">
+                            <i class="fa-solid fa-desktop fs-2tx mb-2 text-gray-300"></i>
+                            <span class="fs-7 fw-semibold">No records found</span>
+                        </div>
+                    </td>
+                </tr>
+            @endforelse
+        </tbody>
+    </table>
+</div>
 
-                         <td>{{ $servicePoint->code }}</td>
-                          <td>{{ $servicePoint->type_text }}</td>
-                        <td>
-                            <span class="badge {{ $servicePoint->status_badge }}">{{ $servicePoint->status_text }}</span>
-                        </td>
-                         <td>{{ $servicePoint->created_at }}</td>
-                        <td style="width: 120px" class="table-action">
-                            {!! Form::open(['route' => ['basicdata.service_points.destroy', $servicePoint->id], 'method' => 'delete']) !!}
-                            <div class='btn-group'>
-                                <a href="{{ route('basicdata.service_points.show', [$servicePoint->id]) }}"
-                                    class='btn btn-sm btn-primary float-right'>
-                                    <i class="fa-solid fa-eye"></i>
-                                </a>
-                                <a href="{{ route('basicdata.service_points.edit', [$servicePoint->id]) }}"
-                                    class='btn btn-sm btn-primary float-right mx-1'>
-                                    <i class="fa-solid fa-edit"></i>
-                                </a>
-                                {!! Form::button('<i class="fa-solid fa-trash"></i>', [
-                                    'type' => 'submit',
-                                    'class' => 'btn btn-sm btn-primary float-right',
-                                    'onclick' => "return confirm('Are you sure?')",
-                                ]) !!}
-                            </div>
-                            {!! Form::close() !!}
-                        </td>
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
-    </div>
-
-    <div class="card-footer clearfix py-4">
-        <div class="float-right">
+<!-- Footer -->
+@if(method_exists($servicePoints, 'hasPages') && $servicePoints->hasPages())
+    <div class="front-card-footer">
+        <div class="fs-8 text-muted">
+            Showing <span class="fw-bold text-gray-800">{{ $servicePoints->firstItem() ?? 0 }}</span> to <span class="fw-bold text-gray-800">{{ $servicePoints->lastItem() ?? 0 }}</span> of <span class="fw-bold text-gray-800">{{ $servicePoints->total() }}</span> entries
+        </div>
+        <div>
             @include('adminlte-templates::common.paginate', ['records' => $servicePoints])
         </div>
     </div>
-</div>
-
-
-
+@endif

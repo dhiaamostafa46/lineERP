@@ -19,6 +19,8 @@ use Modules\BasicData\App\Repositories\DbProductUnitRepository;
 
 class DbProductController extends AppBaseController
 {
+    use \App\Traits\HasBulkActions;
+
     /** @var DbProductRepository $dbProductRepository*/
     private $dbProductRepository;
     /** @var DbProductSizeRepository $dbProductSizeRepository */

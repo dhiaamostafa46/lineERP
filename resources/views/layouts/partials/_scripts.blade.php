@@ -829,5 +829,119 @@
                 }
             } catch (e) {}
         }
+
+        // 4. Initialize Universal Table Bulk Checkbox System
+        initUniversalBulkActions();
     });
+
+    function initUniversalBulkActions() {
+        const checkAllBoxes = document.querySelectorAll('.bulk-check-all, #checkAllProducts, #checkAllItems');
+        const bulkBar = document.getElementById('frontBulkActionBar');
+        const countBadge = document.getElementById('bulkSelectedCount');
+
+        checkAllBoxes.forEach(function(checkAll) {
+            const table = checkAll.closest('table');
+            if (!table) return;
+
+            const rowCheckboxes = table.querySelectorAll('.bulk-check, .product-check, .item-check');
+
+            function updateBulkState() {
+                let selected = 0;
+                rowCheckboxes.forEach(cb => {
+                    const tr = cb.closest('tr');
+                    if (cb.checked) {
+                        selected++;
+                        if (tr) tr.classList.add('table-light');
+                    } else {
+                        if (tr) tr.classList.remove('table-light');
+                    }
+                });
+
+                checkAll.checked = (selected > 0 && selected === rowCheckboxes.length);
+                checkAll.indeterminate = (selected > 0 && selected < rowCheckboxes.length);
+
+                if (bulkBar && countBadge) {
+                    if (selected > 0) {
+                        countBadge.textContent = selected;
+                        bulkBar.classList.remove('d-none');
+                        bulkBar.classList.add('d-flex');
+                    } else {
+                        bulkBar.classList.add('d-none');
+                        bulkBar.classList.remove('d-flex');
+                    }
+                }
+            }
+
+            checkAll.onchange = function() {
+                rowCheckboxes.forEach(cb => { cb.checked = checkAll.checked; });
+                updateBulkState();
+            };
+
+            rowCheckboxes.forEach(cb => {
+                cb.onchange = updateBulkState;
+            });
+        });
+    }
+
+    function clearAllSelections() {
+        document.querySelectorAll('.bulk-check-all, .bulk-check, .product-check, .item-check, #checkAllProducts').forEach(cb => {
+            cb.checked = false;
+        });
+        document.querySelectorAll('tr.table-light').forEach(tr => tr.classList.remove('table-light'));
+        const bulkBar = document.getElementById('frontBulkActionBar');
+        if (bulkBar) {
+            bulkBar.classList.add('d-none');
+            bulkBar.classList.remove('d-flex');
+        }
+    }
+
+    function executeBulkDelete(deleteUrl) {
+        const checkedBoxes = document.querySelectorAll('.bulk-check:checked, .product-check:checked, .item-check:checked');
+        const ids = Array.from(checkedBoxes).map(cb => cb.value);
+
+        if (ids.length === 0) {
+            Swal.fire({ icon: 'warning', title: 'تنبيه', text: 'يرجى تحديد عنصر واحد على الأقل للحذف.' });
+            return;
+        }
+
+        Swal.fire({
+            title: 'هل أنت متأكد من الحذف الجماعي؟',
+            text: `سيتم حذف (${ids.length}) عنصر نهائياً ولا يمكن التراجع!`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#ed4c78',
+            cancelButtonColor: '#8c98a4',
+            confirmButtonText: 'نعم، احذف المحدد!',
+            cancelButtonText: 'إلغاء'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: deleteUrl,
+                    type: 'POST',
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        ids: ids
+                    },
+                    success: function(response) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'تم بنجاح!',
+                            text: response.message || 'تم حذف العناصر بنجاح.',
+                            timer: 1500,
+                            showConfirmButton: false
+                        }).then(() => {
+                            location.reload();
+                        });
+                    },
+                    error: function(xhr) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'خطأ',
+                            text: xhr.responseJSON?.message || 'حدث خطأ أثناء محاولة الحذف.'
+                        });
+                    }
+                });
+            }
+        });
+    }
 </script>

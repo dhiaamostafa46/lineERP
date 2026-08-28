@@ -148,7 +148,33 @@ abstract class BaseRepository
             $query->limit($limit);
         }
 
+        // Universal Dynamic Sorting
+        $sortBy = request('sort_by');
+        $sortDir = request('sort_dir', 'desc');
+        if ($sortBy) {
+            $sortDir = strtolower($sortDir) === 'asc' ? 'asc' : 'desc';
+            if (in_array($sortBy, $translatedAttributes)) {
+                if (method_exists($query, 'orderByTranslation')) {
+                    $query->orderByTranslation($sortBy, $sortDir);
+                } else {
+                    $query->orderBy($sortBy, $sortDir);
+                }
+            } else {
+                $query->orderBy($sortBy, $sortDir);
+            }
+        } else {
+            $query->latest();
+        }
+
         return $query;
+    }
+
+    /**
+     * Get the repository model instance.
+     */
+    public function getModel(): Model
+    {
+        return $this->model;
     }
 
     /**

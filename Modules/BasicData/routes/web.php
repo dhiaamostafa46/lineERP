@@ -32,7 +32,7 @@ Route::group(['middleware' => ['auth', 'permissionHandler']], function () {
                 Route::get('import', "{$controller}@import")->name('import');
                 Route::get('importTemplate', "{$controller}@importTemplate")->name('importTemplate');
                 Route::post('importSave', "{$controller}@importsave")->name('importSave');
-                Route::post('{id}/copy', "{$controller}@copy")->name('copy');
+                Route::post('bulk-delete', "{$controller}@bulkDelete")->name('bulkDelete');
                 Route::get('scopedaccess', "{$controller}@scopedaccess")->name('scopedaccess');
                 Route::get('draft', "{$controller}@draft")->name('draft');
                 Route::get('approve', "{$controller}@approve")->name('approve');

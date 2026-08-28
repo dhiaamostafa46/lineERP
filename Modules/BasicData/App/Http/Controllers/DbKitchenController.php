@@ -12,6 +12,8 @@ use Modules\BasicData\App\Repositories\DbKitchenRepository;
 
 class DbKitchenController extends AppBaseController
 {
+    use \App\Traits\HasBulkActions;
+
     /** @var DbKitchenRepository $dbKitchenRepository*/
     private $dbKitchenRepository;
 
@@ -25,8 +27,14 @@ class DbKitchenController extends AppBaseController
      */
     public function index(Request $request)
     {
-        $data['kitchens'] = $this->dbKitchenRepository->allQuery($request->except('pagination'))->latest()->paginate(10);
+        $pagination = $request->get('pagination', 10);
+        $data['kitchens'] = $this->dbKitchenRepository->allQuery($request->except('pagination'))->paginate($pagination);
         $data['statuses'] = $this->dbKitchenRepository->statuses();
+
+        $kitchenModel = $this->dbKitchenRepository->model();
+        $data['totalKitchensCount'] = $kitchenModel::count();
+        $data['activeKitchensCount'] = $kitchenModel::where('status', 1)->count();
+
         return view('basicdata::kitchens.index', $data);
     }
 
