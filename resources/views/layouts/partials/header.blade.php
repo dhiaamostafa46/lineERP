@@ -32,7 +32,7 @@
             <!--begin::Mobile logo-->
             <div class="d-flex align-items-center d-lg-none me-1">
                 <a href="{{ route('dashboard') }}" wire:navigate>
-                    <img alt="LineERP" src="{{ asset('admin_assets') }}/media/logos/Logoevix.png" class="h-28px" />
+                    <img alt="LineERP" src="{{ asset('admin_assets') }}/media/logos/Logoevix.png" style="max-height: 28px; width: auto; object-fit: contain;" />
                 </a>
             </div>
             <!--end::Mobile logo-->

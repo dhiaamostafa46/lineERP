@@ -4,10 +4,14 @@
     style="width: 260px;">
     
     <!--begin::Sidebar Header / Logo-->
-    <div class="line-sidebar-header d-flex align-items-center justify-content-between px-6 position-relative" id="kt_app_sidebar_logo" style="height: 65px;">
-        <a href="{{ route('dashboard') }}" class="d-flex align-items-center" wire:navigate>
-            <img alt="LineERP" src="{{ asset('admin_assets') }}/media/logos/Logoevix.png" class="h-38px app-sidebar-logo-default" />
-            <img alt="LineERP" src="{{ asset('admin_assets') }}/media/logos/Logoevix.png" class="h-28px app-sidebar-logo-minimize" />
+    <div class="line-sidebar-header d-flex align-items-center justify-content-between px-6 position-relative" id="kt_app_sidebar_logo" style="height: 65px; overflow: visible;">
+        <a href="{{ route('dashboard') }}" class="d-flex align-items-center" wire:navigate style="max-height: 42px; overflow: hidden;">
+            <img alt="LineERP" src="{{ asset('admin_assets') }}/media/logos/Logoevix.png" 
+                 class="app-sidebar-logo-default" 
+                 style="max-height: 38px; max-width: 160px; width: auto; height: 38px; object-fit: contain;" />
+            <img alt="LineERP" src="{{ asset('admin_assets') }}/media/logos/Logoevix.png" 
+                 class="app-sidebar-logo-minimize" 
+                 style="max-height: 28px; max-width: 35px; width: auto; height: 28px; object-fit: contain; display: none;" />
         </a>
 
         <!--begin::Sidebar toggle-->
