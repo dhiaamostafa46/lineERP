@@ -9,6 +9,7 @@ use Modules\BasicData\App\Livewire\Categories\CategoryModal;
 use Modules\BasicData\App\Livewire\Units\UnitModal;
 use Modules\BasicData\App\Livewire\Kitchens\KitchenModal;
 use Modules\BasicData\App\Livewire\ServicePoints\ServicePointModal;
+use Modules\BasicData\App\Livewire\Products\ProductModal;
 use Nwidart\Modules\Traits\PathNamespace;
 
 class BasicDataServiceProvider extends ServiceProvider
@@ -37,6 +38,7 @@ class BasicDataServiceProvider extends ServiceProvider
             Livewire::component('basicdata::units.unit-modal', UnitModal::class);
             Livewire::component('basicdata::kitchens.kitchen-modal', KitchenModal::class);
             Livewire::component('basicdata::service-points.service-point-modal', ServicePointModal::class);
+            Livewire::component('basicdata::products.product-modal', ProductModal::class);
         }
     }
 

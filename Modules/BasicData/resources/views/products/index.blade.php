@@ -42,8 +42,24 @@
                             @lang('crud.add_new')
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end shadow-sm border py-2 rounded-2">
-                            <li><a class="dropdown-item fs-7 py-2" href="{{ route('basicdata.products.create', ['type' => 1]) }}" wire:navigate>@lang('basicdata::models/db_products.fields.product')</a></li>
-                            <li><a class="dropdown-item fs-7 py-2" href="{{ route('basicdata.products.create', ['type' => 2]) }}" wire:navigate>@lang('basicdata::models/db_products.fields.service')</a></li>
+                            <li>
+                                <a class="dropdown-item fs-7 py-2 d-flex align-items-center gap-2" 
+                                   href="javascript:void(0)" 
+                                   x-on:click="$dispatch('openCreateModal', { type: 1 })" 
+                                   onclick="if(window.Livewire) Livewire.dispatch('openCreateModal', { type: 1 })">
+                                    <i class="fa-solid fa-box text-primary fs-8"></i>
+                                    <span>@lang('basicdata::models/db_products.fields.product')</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item fs-7 py-2 d-flex align-items-center gap-2" 
+                                   href="javascript:void(0)" 
+                                   x-on:click="$dispatch('openCreateModal', { type: 2 })" 
+                                   onclick="if(window.Livewire) Livewire.dispatch('openCreateModal', { type: 2 })">
+                                    <i class="fa-solid fa-bell-concierge text-success fs-8"></i>
+                                    <span>@lang('basicdata::models/db_products.fields.service')</span>
+                                </a>
+                            </li>
                         </ul>
                     </div>
                 @endcan
@@ -265,6 +281,9 @@
 
     <!-- Floating Bulk Actions Bar -->
     <x-bulk-action-bar route="{{ route('basicdata.products.bulkDelete') }}" />
+
+    <!-- Livewire Product/Service Modal -->
+    @livewire('basicdata::products.product-modal')
 
 </div>
 @endsection

@@ -88,13 +88,14 @@
                     <td class="pe-4 text-end">
                         <div class="d-inline-flex align-items-center justify-content-end gap-2">
                             @can('basicdata.products.edit')
-                                <a href="{{ route('basicdata.products.edit', [$product->id]) }}" 
+                                <button type="button" 
+                                   x-on:click="$dispatch('openEditModal', { id: {{ $product->id }} })"
+                                   onclick="if(window.Livewire) Livewire.dispatch('openEditModal', { id: {{ $product->id }} })"
                                    class="btn btn-sm btn-white text-gray-700 py-1 px-2 border rounded-2 d-inline-flex align-items-center gap-1 text-hover-primary" 
-                                   style="font-size: 12px; height: 28px;"
-                                   wire:navigate>
+                                   style="font-size: 12px; height: 28px;">
                                     <i class="fa-solid fa-pen fs-9 text-muted"></i>
                                     <span>@lang('crud.edit')</span>
-                                </a>
+                                </button>
                             @endcan
 
                             @can('basicdata.products.destroy')
