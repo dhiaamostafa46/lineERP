@@ -108,7 +108,7 @@ class ProductModal extends Component
             [
                 'unit_id' => $firstUnitId,
                 'conversion_factor' => 1,
-                'is_base' => 1,
+                'is_base' => true,
             ]
         ];
     }
@@ -142,7 +142,7 @@ class ProductModal extends Component
         $this->units[] = [
             'unit_id' => !empty($unitsList) ? (string)array_key_first($unitsList) : '',
             'conversion_factor' => 1,
-            'is_base' => 0,
+            'is_base' => false,
         ];
     }
 
@@ -162,7 +162,7 @@ class ProductModal extends Component
         if (!empty($unitsList)) {
             $this->units[0]['unit_id'] = (string)array_key_first($unitsList);
             $this->units[0]['conversion_factor'] = 1;
-            $this->units[0]['is_base'] = 1;
+            $this->units[0]['is_base'] = true;
         }
 
         $vatsList = $this->repository->vats();
@@ -219,7 +219,7 @@ class ProductModal extends Component
                     $this->units[] = [
                         'unit_id' => (string)$unit->unit_id,
                         'conversion_factor' => $unit->conversion_factor,
-                        'is_base' => $unit->is_base ? 1 : 0,
+                        'is_base' => (bool)$unit->is_base,
                     ];
                 }
             } else {
@@ -227,7 +227,7 @@ class ProductModal extends Component
                 $this->units[] = [
                     'unit_id' => (string)($product->base_unit_id ?: (array_key_first($unitsList) ?? '')),
                     'conversion_factor' => 1,
-                    'is_base' => 1,
+                    'is_base' => true,
                 ];
             }
 
@@ -240,6 +240,19 @@ class ProductModal extends Component
         $this->validate();
 
         try {
+            $formattedUnits = [];
+            if (!empty($this->units)) {
+                foreach ($this->units as $u) {
+                    if (!empty($u['unit_id'])) {
+                        $formattedUnits[] = [
+                            'unit_id' => $u['unit_id'],
+                            'conversion_factor' => $u['conversion_factor'] ?? 1,
+                            'is_base' => !empty($u['is_base']) ? 1 : 0,
+                        ];
+                    }
+                }
+            }
+
             $data = [
                 'barcode' => $this->barcode ?: null,
                 'category_id' => $this->category_id,
@@ -249,7 +262,7 @@ class ProductModal extends Component
                 'prod_price' => $this->prod_price ?: 0,
                 'status' => $this->status,
                 'have_sizes' => $this->have_sizes ? 1 : 0,
-                'units' => $this->units,
+                'units' => $formattedUnits,
                 'sizes' => $this->sizes,
             ];
 
@@ -266,10 +279,10 @@ class ProductModal extends Component
 
             if ($this->is_edit && $this->model_id) {
                 $this->repository->updateWithRelations($data, $this->model_id);
-                flash()->success(__('messages.updated', ['model' => __('basicdata::models/db_products.singular')]));
+                flash()->success(__('messages.updated', ['model' => $this->type == 2 ? __('basicdata::models/db_products.fields.service') : __('basicdata::models/db_products.fields.product')]));
             } else {
                 $this->repository->createWithRelations($data);
-                flash()->success(__('messages.saved', ['model' => __('basicdata::models/db_products.singular')]));
+                flash()->success(__('messages.saved', ['model' => $this->type == 2 ? __('basicdata::models/db_products.fields.service') : __('basicdata::models/db_products.fields.product')]));
             }
 
             $this->closeModal();

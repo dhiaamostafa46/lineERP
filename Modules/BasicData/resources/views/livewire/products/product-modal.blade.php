@@ -16,10 +16,10 @@
                             </div>
                             <div>
                                 <h5 class="modal-title fw-bold text-gray-900 mb-0 fs-5">
-                                    {{ $is_edit ? __('crud.edit') : __('crud.add_new') }} {{ $type == 2 ? __('basicdata::models/db_products.services') : __('basicdata::models/db_products.singular') }}
+                                    {{ $is_edit ? __('crud.edit') : __('crud.add_new') }} {{ $type == 2 ? __('basicdata::models/db_products.fields.service') : __('basicdata::models/db_products.fields.product') }}
                                 </h5>
                                 <span class="text-muted fs-8">
-                                    {{ $type == 2 ? 'إدارة تفاصيل وبيانات الخدمة والتسعير' : 'إدارة بيانات الصنف، الوحدات المتعددة، المقاسات والتسعير' }}
+                                    {{ $type == 2 ? __('basicdata::models/db_products.fields.details') : __('basicdata::models/db_products.singular') }}
                                 </span>
                             </div>
                         </div>
@@ -28,7 +28,7 @@
                         </button>
                     </div>
 
-                    <!-- Navigation Tabs Bar (تابات حديثة) -->
+                    <!-- Navigation Tabs Bar (تابات) -->
                     <div class="px-5 pt-3 border-bottom bg-white">
                         <ul class="nav nav-pills nav-pills-custom gap-2 border-0" role="tablist">
                             <!-- Tab 1: Basic Info -->
@@ -78,7 +78,7 @@
                             @if ($errors->any())
                                 <div class="alert alert-danger d-flex align-items-center p-3 mb-4 rounded-3 border-0 shadow-sm" style="background-color: #fef2f2; border-left: 4px solid #ef4444 !important;">
                                     <div class="d-flex flex-column">
-                                        <h6 class="mb-1 text-danger fw-bold fs-7"><i class="fa-solid fa-circle-exclamation me-2"></i>يرجى مراجعة الحقول التالية:</h6>
+                                        <h6 class="mb-1 text-danger fw-bold fs-7"><i class="fa-solid fa-circle-exclamation me-2"></i>@lang('crud.error'):</h6>
                                         <ul class="mb-0 ps-3 fs-8 text-danger">
                                             @foreach ($errors->all() as $error)
                                                 <li>{{ $error }}</li>
@@ -241,8 +241,8 @@
                                 <div class="bg-white p-4 rounded-3 border shadow-xs">
                                     <div class="d-flex justify-content-between align-items-center mb-3">
                                         <div>
-                                            <h6 class="fw-bold text-gray-900 mb-1 fs-7">الوحدات ومعاملات التحويل</h6>
-                                            <span class="text-muted fs-8">تم تفعيل الوحدة الأساسية تلقائياً بمعامل 1، ويمكنك إضافة وحدات أخرى</span>
+                                            <h6 class="fw-bold text-gray-900 mb-1 fs-7">{{ __('basicdata::models/db_products.sections.units') }}</h6>
+                                            <span class="text-muted fs-8">{{ __('basicdata::models/db_products.unit.conversion_factor') }}</span>
                                         </div>
                                         <button type="button" class="btn btn-sm btn-light-primary font-weight-bold" wire:click="addUnitRow">
                                             <i class="fas fa-plus fs-8 me-1"></i> {{ __('basicdata::models/db_products.sections.add_unit') }}
@@ -276,15 +276,17 @@
                                                     <div class="col-md-3">
                                                         <label class="form-label fw-bold fs-8 text-gray-700 mb-1">{{ __('basicdata::models/db_products.unit.is_base') }}:</label>
                                                         <div class="form-check form-switch mt-1">
-                                                            <input class="form-check-input" type="checkbox" wire:model="units.{{ $index }}.is_base" value="1" id="is_base_{{ $index }}">
-                                                            <label class="form-check-label fs-8 text-gray-700 fw-semibold" for="is_base_{{ $index }}">وحدة أساسية</label>
+                                                            <input class="form-check-input cursor-pointer" type="checkbox" wire:model="units.{{ $index }}.is_base" id="is_base_{{ $index }}">
+                                                            <label class="form-check-label fs-8 text-gray-700 fw-semibold cursor-pointer" for="is_base_{{ $index }}">
+                                                                {{ __('basicdata::models/db_products.unit.is_base') }}
+                                                            </label>
                                                         </div>
                                                     </div>
                                                 </div>
 
                                                 <div>
                                                     @if(count($units) > 1)
-                                                        <button type="button" class="btn btn-icon btn-sm btn-light-danger rounded-circle" wire:click="removeUnitRow({{ $index }})" title="حذف الوحدة">
+                                                        <button type="button" class="btn btn-icon btn-sm btn-light-danger rounded-circle" wire:click="removeUnitRow({{ $index }})" title="@lang('crud.delete')">
                                                             <i class="fas fa-trash-can fs-8"></i>
                                                         </button>
                                                     @endif
@@ -300,8 +302,10 @@
                                 <div class="bg-white p-4 rounded-3 border shadow-xs">
                                     <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
                                         <div class="form-check form-switch">
-                                            <input class="form-check-input" type="checkbox" wire:model.live="have_sizes" id="have_sizes_switch">
-                                            <label class="form-check-label fw-bold fs-7 text-gray-900" for="have_sizes_switch">تفعيل المقاسات والتنويعات (Sizes & Variations)</label>
+                                            <input class="form-check-input cursor-pointer" type="checkbox" wire:model.live="have_sizes" id="have_sizes_switch">
+                                            <label class="form-check-label fw-bold fs-7 text-gray-900 cursor-pointer" for="have_sizes_switch">
+                                                {{ __('basicdata::models/db_products.fields.have_sizes') }}
+                                            </label>
                                         </div>
                                         @if($have_sizes)
                                             <button type="button" class="btn btn-sm btn-light-primary font-weight-bold" wire:click="addSizeRow">
@@ -364,7 +368,7 @@
                                                                        placeholder="{{ __('basicdata::models/db_products.placeholders.barcode') }}" />
                                                             </td>
                                                             <td class="text-center">
-                                                                <button type="button" class="btn btn-icon btn-sm btn-light-danger rounded-circle" wire:click="removeSizeRow({{ $index }})" title="حذف المقاس">
+                                                                <button type="button" class="btn btn-icon btn-sm btn-light-danger rounded-circle" wire:click="removeSizeRow({{ $index }})" title="@lang('crud.delete')">
                                                                     <i class="fas fa-trash-can fs-8"></i>
                                                                 </button>
                                                             </td>
@@ -376,7 +380,7 @@
                                     @else
                                         <div class="text-center py-5 text-muted">
                                             <i class="fa-solid fa-ruler-combined fs-1 mb-2 text-gray-400 d-block"></i>
-                                            <p class="fs-7 mb-0">قم بتفعيل خيار المقاسات لإضافة أحجام متعددة للصنف بأسعار وباركودات مختلفة.</p>
+                                            <p class="fs-7 mb-0">{{ __('basicdata::models/db_products.fields.have_sizes') }}</p>
                                         </div>
                                     @endif
                                 </div>
@@ -397,7 +401,7 @@
                                 </span>
                                 <span wire:loading>
                                     <i class="fa-solid fa-spinner fa-spin fs-8 me-1"></i>
-                                    جاري الحفظ...
+                                    @lang('basicdata::lang.saving')
                                 </span>
                             </button>
                         </div>
