@@ -25,12 +25,23 @@ class DbProductRepository extends BaseRepository
     public function allQuery(array $search = [], ?int $skip = null, ?int $limit = null): \Illuminate\Database\Eloquent\Builder
     {
         $query = parent::allQuery($search, $skip, $limit);
-        $table = $this->model()::newModelInstance()->getTable();
-        $modelName = class_basename($this->model());
-        $permissionPrefix = 'basicdata.' . str_replace('db_', '', \Illuminate\Support\Str::snake(\Illuminate\Support\Str::plural($modelName)));
 
-        if (auth()->check()) {
+        if (request()->filled('type')) {
+            $query->where('type', request('type'));
+        }
 
+        if (request()->filled('status')) {
+            $query->where('status', request('status'));
+        }
+
+        $sortBy = request('sort_by', 'created_at');
+        $sortDir = request('sort_dir', 'desc');
+        $allowedSorts = ['name', 'category_id', 'type', 'cost_price', 'prod_price', 'status', 'created_at'];
+
+        if (in_array($sortBy, $allowedSorts)) {
+            $query->orderBy($sortBy, strtolower($sortDir) === 'asc' ? 'asc' : 'desc');
+        } else {
+            $query->latest();
         }
 
         return $query;

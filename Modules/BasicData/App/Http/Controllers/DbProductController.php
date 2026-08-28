@@ -39,7 +39,7 @@ class DbProductController extends AppBaseController
     public function index(Request $request)
     {
         $pagination = $request->get('pagination', 10);
-        $data['products'] = $this->dbProductRepository->allQuery($request->except('pagination'))->latest()->paginate($pagination);
+        $data['products'] = $this->dbProductRepository->allQuery($request->except('pagination'))->paginate($pagination);
         
         $data['categories'] = $this->dbProductRepository->Categories();
         $data['vats'] = $this->dbProductRepository->vats();
