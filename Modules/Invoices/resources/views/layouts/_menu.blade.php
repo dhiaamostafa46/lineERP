@@ -7,13 +7,17 @@
         $isInvoicesActive = Route::is('invoices.*');
     @endphp
 
+    <div class="line-section-header">
+        <span>@lang('invoices::lang.invoices')</span>
+    </div>
+
     <div x-data="{ open: {{ $isInvoicesActive ? 'true' : 'false' }} }" class="line-menu-item mb-1">
         <button type="button" 
                 @click="open = !open" 
                 :class="{ 'active-parent': open || {{ $isInvoicesActive ? 'true' : 'false' }} }"
                 class="line-menu-btn">
             <div class="d-flex align-items-center gap-3">
-                <div class="line-icon-badge">
+                <div class="line-icon-badge icon-invoices">
                     <i class="fas fa-file-invoice-dollar"></i>
                 </div>
                 <span class="line-menu-title">@lang('invoices::lang.invoices')</span>

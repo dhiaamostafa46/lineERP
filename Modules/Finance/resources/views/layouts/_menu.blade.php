@@ -14,7 +14,7 @@
                 :class="{ 'active-parent': open || {{ $isFinanceActive ? 'true' : 'false' }} }"
                 class="line-menu-btn">
             <div class="d-flex align-items-center gap-3">
-                <div class="line-icon-badge">
+                <div class="line-icon-badge icon-finance">
                     <i class="fas fa-university"></i>
                 </div>
                 <span class="line-menu-title">@lang('finance::lang.finance')</span>

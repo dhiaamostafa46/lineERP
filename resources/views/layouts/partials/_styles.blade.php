@@ -79,19 +79,55 @@
     }
 
     /* ==========================================================================
-       LineERP Ultra-Modern Sidebar & Reactive Navigation Design System
+       LineERP Dark Luxury Pro Sidebar & Reactive Navigation Design System
        ========================================================================== */
+    #kt_app_sidebar {
+        background: #111827 !important;
+        border-inline-end: 1px solid rgba(255, 255, 255, 0.07) !important;
+        box-shadow: 4px 0 24px rgba(0, 0, 0, 0.35) !important;
+    }
+
+    .line-sidebar-header {
+        background: #0B0F19 !important;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important;
+        padding: 0.85rem 1.25rem;
+    }
+
+    .line-search-wrapper {
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 0.65rem;
+        transition: all 0.2s ease;
+    }
+
+    .line-search-wrapper:focus-within {
+        background: rgba(255, 255, 255, 0.07);
+        border-color: #6366F1;
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+    }
+
+    .line-search-input {
+        background: transparent !important;
+        color: #F1F5F9 !important;
+        border: none !important;
+        font-size: 0.82rem !important;
+    }
+
+    .line-search-input::placeholder {
+        color: #64748B !important;
+    }
+
     .line-sidebar-menu {
-        padding: 0.5rem 0.75rem;
+        padding: 0.5rem 0.65rem;
     }
 
     .line-section-header {
-        font-size: 0.72rem;
-        font-weight: 800;
+        font-size: 0.68rem;
+        font-weight: 700;
         text-transform: uppercase;
-        letter-spacing: 0.8px;
-        color: #8E84BF;
-        margin: 1.25rem 0.5rem 0.5rem 0.5rem;
+        letter-spacing: 0.9px;
+        color: #64748B;
+        margin: 1.1rem 0.5rem 0.4rem 0.5rem;
         display: flex;
         align-items: center;
         gap: 0.5rem;
@@ -101,7 +137,7 @@
         content: "";
         flex: 1;
         height: 1px;
-        background: linear-gradient(90deg, rgba(142, 132, 191, 0.25), transparent);
+        background: linear-gradient(90deg, rgba(255, 255, 255, 0.08), transparent);
     }
 
     .line-menu-btn, .line-menu-link {
@@ -109,21 +145,21 @@
         align-items: center;
         justify-content: space-between;
         width: 100%;
-        padding: 0.65rem 0.85rem;
-        margin-bottom: 0.3rem;
-        border-radius: 0.65rem;
+        padding: 0.55rem 0.75rem;
+        margin-bottom: 0.25rem;
+        border-radius: 0.6rem;
         background: transparent;
         border: 1px solid transparent;
-        color: #3F4254;
+        color: #94A3B8;
         text-decoration: none;
-        transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+        transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
         cursor: pointer;
         user-select: none;
     }
 
     .line-menu-btn:hover, .line-menu-link:hover {
-        background: rgba(106, 102, 157, 0.08);
-        color: #1B325B;
+        background: rgba(255, 255, 255, 0.05);
+        color: #FFFFFF;
         transform: translateX(-2px);
     }
 
@@ -132,59 +168,70 @@
     }
 
     .line-menu-link.active-root, .line-menu-btn.active-parent {
-        background: linear-gradient(135deg, rgba(106, 102, 157, 0.14) 0%, rgba(27, 50, 91, 0.08) 100%);
-        border: 1px solid rgba(106, 102, 157, 0.22);
-        color: #1B325B !important;
+        background: rgba(99, 102, 241, 0.14) !important;
+        border: 1px solid rgba(99, 102, 241, 0.28) !important;
+        color: #FFFFFF !important;
         font-weight: 700;
     }
 
     .line-icon-badge {
-        width: 34px;
-        height: 34px;
-        min-width: 34px;
-        border-radius: 0.5rem;
-        background: #F3F5F8;
+        width: 32px;
+        height: 32px;
+        min-width: 32px;
+        border-radius: 0.45rem;
+        background: rgba(255, 255, 255, 0.05);
         display: flex;
         align-items: center;
         justify-content: center;
-        color: #6A669D;
-        font-size: 1rem;
-        transition: all 0.22s ease;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+        font-size: 0.92rem;
+        transition: all 0.2s ease;
+        border: 1px solid rgba(255, 255, 255, 0.06);
     }
+
+    /* Vibrant Color Accents for Badges */
+    .icon-dashboard { color: #38BDF8; }
+    .icon-invoices { color: #34D399; }
+    .icon-store { color: #FBBF24; }
+    .icon-pos { color: #FB7185; }
+    .icon-accounting { color: #818CF8; }
+    .icon-finance { color: #22D3EE; }
+    .icon-hr { color: #C084FC; }
+    .icon-basicdata { color: #A78BFA; }
+    .icon-settings { color: #94A3B8; }
 
     .line-menu-link.active-root .line-icon-badge,
     .line-menu-btn.active-parent .line-icon-badge,
     .line-menu-btn:hover .line-icon-badge,
     .line-menu-link:hover .line-icon-badge {
-        background: linear-gradient(135deg, #6A669D 0%, #1B325B 100%);
-        color: #ffffff !important;
-        box-shadow: 0 3px 8px rgba(106, 102, 157, 0.35);
+        background: linear-gradient(135deg, #6366F1 0%, #4F46E5 100%) !important;
+        color: #FFFFFF !important;
+        border-color: rgba(99, 102, 241, 0.5) !important;
+        box-shadow: 0 2px 10px rgba(99, 102, 241, 0.4);
     }
 
     .line-menu-title {
-        font-size: 0.88rem;
+        font-size: 0.84rem;
         font-weight: 600;
         color: inherit;
     }
 
     .line-menu-arrow {
-        font-size: 0.72rem;
-        transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-        color: #A1A5B7;
+        font-size: 0.68rem;
+        transition: transform 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+        color: #64748B;
     }
 
     .line-menu-arrow.rotate-180 {
         transform: rotate(180deg);
-        color: #6A669D;
+        color: #818CF8;
     }
 
     .line-submenu {
-        margin-inline-start: 1.15rem;
-        padding-inline-start: 0.85rem;
-        border-inline-start: 2px dashed rgba(106, 102, 157, 0.25);
+        margin-inline-start: 1.1rem;
+        padding-inline-start: 0.75rem;
+        border-inline-start: 1.5px solid rgba(255, 255, 255, 0.1);
         margin-top: 0.2rem;
-        margin-bottom: 0.4rem;
+        margin-bottom: 0.35rem;
         display: flex;
         flex-direction: column;
         gap: 0.15rem;
@@ -193,71 +240,77 @@
     .line-sub-item {
         display: flex;
         align-items: center;
-        gap: 0.65rem;
-        padding: 0.5rem 0.75rem;
-        border-radius: 0.5rem;
-        color: #5E6278;
-        font-size: 0.83rem;
+        gap: 0.55rem;
+        padding: 0.45rem 0.7rem;
+        border-radius: 0.45rem;
+        color: #94A3B8;
+        font-size: 0.8rem;
         font-weight: 500;
         text-decoration: none;
-        transition: all 0.2s ease;
+        transition: all 0.18s ease;
     }
 
     .line-sub-item:hover {
-        background: rgba(106, 102, 157, 0.08);
-        color: #1B325B;
-        padding-inline-start: 0.95rem;
+        background: rgba(255, 255, 255, 0.05);
+        color: #F8FAFC;
+        padding-inline-start: 0.85rem;
     }
 
     .line-sub-dot {
-        width: 6px;
-        height: 6px;
-        min-width: 6px;
+        width: 5px;
+        height: 5px;
+        min-width: 5px;
         border-radius: 50%;
-        background: #B5B5C3;
-        transition: all 0.2s ease;
+        background: #475569;
+        transition: all 0.18s ease;
     }
 
     .line-sub-item:hover .line-sub-dot {
-        background: #6A669D;
-        transform: scale(1.3);
+        background: #818CF8;
+        box-shadow: 0 0 6px #818CF8;
     }
 
     .line-sub-item.active-sub {
-        background: #ffffff;
-        color: #6A669D !important;
+        background: linear-gradient(90deg, rgba(99, 102, 241, 0.2) 0%, rgba(99, 102, 241, 0.04) 100%);
+        color: #818CF8 !important;
         font-weight: 700;
-        box-shadow: 0 2px 6px rgba(106, 102, 157, 0.12);
-        border: 1px solid rgba(106, 102, 157, 0.18);
+        border-inline-start: 2px solid #6366F1;
     }
 
     .line-sub-item.active-sub .line-sub-dot {
-        background: #6A669D;
-        box-shadow: 0 0 6px #6A669D;
-        transform: scale(1.4);
+        background: #818CF8;
+        box-shadow: 0 0 8px #818CF8;
+        transform: scale(1.3);
     }
 
-    /* Dark Mode Support for Line Sidebar */
-    [data-bs-theme="dark"] .line-menu-btn,
-    [data-bs-theme="dark"] .line-menu-link {
-        color: #CDD5DF;
+    /* Sidebar Footer User Card */
+    .line-sidebar-footer {
+        background: #0B0F19;
+        border-top: 1px solid rgba(255, 255, 255, 0.06);
+        padding: 0.75rem 1rem;
     }
-    [data-bs-theme="dark"] .line-icon-badge {
-        background: #1e1e2d;
-        color: #8E84BF;
+
+    .line-user-avatar {
+        width: 34px;
+        height: 34px;
+        min-width: 34px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #6366F1 0%, #3B82F6 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #FFFFFF;
+        font-weight: 700;
+        font-size: 0.85rem;
     }
-    [data-bs-theme="dark"] .line-sub-item {
-        color: #92929F;
-    }
-    [data-bs-theme="dark"] .line-sub-item.active-sub {
-        background: #1B2C4E;
-        color: #9ABF80 !important;
-        border-color: rgba(154, 191, 128, 0.3);
-    }
-    [data-bs-theme="dark"] .line-menu-link.active-root,
-    [data-bs-theme="dark"] .line-menu-btn.active-parent {
-        background: rgba(106, 102, 157, 0.22);
-        color: #ffffff !important;
+
+    .status-dot-online {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #10B981;
+        box-shadow: 0 0 6px #10B981;
+        display: inline-block;
     }
 
     body {

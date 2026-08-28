@@ -3,7 +3,7 @@
     <div class="line-menu-item mb-1">
         <a class="line-menu-link {{ Route::is('dashboard') ? 'active-root' : '' }}" href="{{ route('dashboard') }}" wire:navigate>
             <div class="d-flex align-items-center gap-3">
-                <div class="line-icon-badge">
+                <div class="line-icon-badge icon-dashboard">
                     <i class="fas fa-chart-pie"></i>
                 </div>
                 <span class="line-menu-title">@lang('lang.dashboard')</span>
@@ -69,8 +69,8 @@
                 :class="{ 'active-parent': open || {{ $isSettingsActive ? 'true' : 'false' }} }"
                 class="line-menu-btn">
             <div class="d-flex align-items-center gap-3">
-                <div class="line-icon-badge">
-                    <i class="fas fa-sliders-h"></i>
+                <div class="line-icon-badge icon-settings">
+                    <i class="fas fa-cog"></i>
                 </div>
                 <span class="line-menu-title">@lang('lang.Settings')</span>
             </div>

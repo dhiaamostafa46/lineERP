@@ -13,7 +13,7 @@
                 :class="{ 'active-parent': open || {{ $isStoreActive ? 'true' : 'false' }} }"
                 class="line-menu-btn">
             <div class="d-flex align-items-center gap-3">
-                <div class="line-icon-badge">
+                <div class="line-icon-badge icon-store">
                     <i class="fas fa-boxes"></i>
                 </div>
                 <span class="line-menu-title">@lang('store::lang.store')</span>

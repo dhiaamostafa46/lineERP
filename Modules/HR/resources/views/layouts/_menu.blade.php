@@ -11,13 +11,17 @@
         $isHrActive = Route::is('hr.*');
     @endphp
 
+    <div class="line-section-header">
+        <span>@lang('hr::lang.human_resource')</span>
+    </div>
+
     <div x-data="{ open: {{ $isHrActive ? 'true' : 'false' }} }" class="line-menu-item mb-1">
         <button type="button" 
                 @click="open = !open" 
                 :class="{ 'active-parent': open || {{ $isHrActive ? 'true' : 'false' }} }"
                 class="line-menu-btn">
             <div class="d-flex align-items-center gap-3">
-                <div class="line-icon-badge">
+                <div class="line-icon-badge icon-hr">
                     <i class="fas fa-user-tie"></i>
                 </div>
                 <span class="line-menu-title">@lang('hr::lang.human_resource')</span>

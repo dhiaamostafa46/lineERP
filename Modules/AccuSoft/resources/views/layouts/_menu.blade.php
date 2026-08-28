@@ -17,20 +17,24 @@
         });
     @endphp
 
+    <div class="line-section-header">
+        <span>@lang('accusoft::lang.accusoft')</span>
+    </div>
+
     <div x-data="{ open: {{ $isAccuSoftActive ? 'true' : 'false' }} }" class="line-menu-item mb-1">
         <button type="button" 
                 @click="open = !open" 
                 :class="{ 'active-parent': open || {{ $isAccuSoftActive ? 'true' : 'false' }} }"
                 class="line-menu-btn">
             <div class="d-flex align-items-center gap-3">
-                <div class="line-icon-badge">
+                <div class="line-icon-badge icon-accounting">
                     <i class="fas fa-calculator"></i>
                 </div>
                 <span class="line-menu-title">@lang('accusoft::lang.accusoft')</span>
             </div>
             <div class="d-flex align-items-center gap-2">
                 @if($pendingCount > 0)
-                    <span class="badge rounded-pill bg-danger" style="font-size: 0.68rem;">
+                    <span class="badge rounded-pill bg-danger" style="font-size: 0.65rem;">
                         {{ $pendingCount > 99 ? '99+' : $pendingCount }}
                     </span>
                 @endif

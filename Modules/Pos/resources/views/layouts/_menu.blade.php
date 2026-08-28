@@ -10,7 +10,7 @@
                 :class="{ 'active-parent': open || {{ $isPosActive ? 'true' : 'false' }} }"
                 class="line-menu-btn">
             <div class="d-flex align-items-center gap-3">
-                <div class="line-icon-badge">
+                <div class="line-icon-badge icon-pos">
                     <i class="fas fa-cash-register"></i>
                 </div>
                 <span class="line-menu-title">@lang('pos::lang.pos')</span>
