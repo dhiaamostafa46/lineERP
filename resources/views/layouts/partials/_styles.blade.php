@@ -79,27 +79,27 @@
     }
 
     /* ==========================================================================
-       LineERP Standard Wide & Enhanced Typography ERP Design System (#cbdfe6 & #ffffff)
+       LineERP Compact & Ultra-Delicate Professional Design System (#cbdfe6 & #ffffff)
        ========================================================================== */
     :root {
-        --kt-app-sidebar-width: 280px !important;
-        --kt-app-sidebar-gap: 280px !important;
+        --kt-app-sidebar-width: 240px !important;
+        --kt-app-sidebar-gap: 240px !important;
     }
 
     #kt_app_sidebar {
         background: #ffffff !important;
         border-inline-end: 1px solid #cbdfe6 !important;
-        box-shadow: 0 4px 20px rgba(203, 223, 230, 0.35) !important;
-        width: 280px !important;
+        box-shadow: 0 2px 10px rgba(203, 223, 230, 0.25) !important;
+        width: 240px !important;
     }
 
     @media (min-width: 992px) {
         [dir="rtl"] .app-sidebar-fixed .app-wrapper {
-            margin-right: 280px !important;
+            margin-right: 240px !important;
             margin-left: 0 !important;
         }
         [dir="ltr"] .app-sidebar-fixed .app-wrapper {
-            margin-left: 280px !important;
+            margin-left: 240px !important;
             margin-right: 0 !important;
         }
     }
@@ -111,8 +111,8 @@
 
     /* Header Live Clock Badge & Pulsing Indicator */
     .badge-dot-live {
-        width: 6px;
-        height: 6px;
+        width: 5px;
+        height: 5px;
         border-radius: 50%;
         background: #10B981;
         display: inline-block;
@@ -122,7 +122,7 @@
 
     @keyframes livePulse {
         0% { transform: scale(0.95); opacity: 0.7; }
-        50% { transform: scale(1.2); opacity: 1; box-shadow: 0 0 8px #10B981; }
+        50% { transform: scale(1.2); opacity: 1; box-shadow: 0 0 6px #10B981; }
         100% { transform: scale(0.95); opacity: 0.7; }
     }
 
@@ -133,8 +133,8 @@
     }
 
     .line-custom-scroll::-webkit-scrollbar {
-        width: 5px;
-        height: 5px;
+        width: 4px;
+        height: 4px;
     }
 
     .line-custom-scroll::-webkit-scrollbar-track {
@@ -152,19 +152,19 @@
     }
 
     .line-sidebar-menu {
-        padding: 0.35rem 0.5rem;
+        padding: 0.25rem 0.35rem;
     }
 
     .line-section-header {
-        font-size: 0.74rem;
+        font-size: 0.65rem;
         font-weight: 700;
         text-transform: uppercase;
-        letter-spacing: 0.7px;
+        letter-spacing: 0.6px;
         color: #70939f;
-        margin: 1rem 0.5rem 0.35rem 0.5rem;
+        margin: 0.75rem 0.35rem 0.2rem 0.35rem;
         display: flex;
         align-items: center;
-        gap: 0.5rem;
+        gap: 0.4rem;
     }
 
     .line-section-header::after {
@@ -179,10 +179,10 @@
         align-items: center;
         justify-content: space-between;
         width: 100%;
-        min-height: 42px;
-        padding: 0.5rem 0.75rem;
-        margin-bottom: 0.2rem;
-        border-radius: 0.55rem;
+        min-height: 35px;
+        padding: 0.35rem 0.55rem;
+        margin-bottom: 0.15rem;
+        border-radius: 0.45rem;
         background: transparent;
         border: 1px solid transparent;
         color: #2C3E50;
@@ -205,15 +205,15 @@
     }
 
     .line-icon-badge {
-        width: 32px;
-        height: 32px;
-        min-width: 32px;
-        border-radius: 0.45rem;
+        width: 24px;
+        height: 24px;
+        min-width: 24px;
+        border-radius: 0.35rem;
         background: #f0f6f8;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 0.95rem;
+        font-size: 0.8rem;
         transition: all 0.15s ease;
         border: 1px solid #cbdfe6;
     }
@@ -239,13 +239,13 @@
     }
 
     .line-menu-title {
-        font-size: 0.92rem;
+        font-size: 0.79rem;
         font-weight: 600;
         color: inherit;
     }
 
     .line-menu-arrow {
-        font-size: 0.72rem;
+        font-size: 0.62rem;
         transition: transform 0.2s ease;
         color: #8daab4;
     }
@@ -256,25 +256,25 @@
     }
 
     .line-submenu {
-        margin-inline-start: 1rem;
-        padding-inline-start: 0.75rem;
-        border-inline-start: 2px solid #cbdfe6;
-        margin-top: 0.2rem;
-        margin-bottom: 0.35rem;
+        margin-inline-start: 0.75rem;
+        padding-inline-start: 0.6rem;
+        border-inline-start: 1.5px solid #cbdfe6;
+        margin-top: 0.15rem;
+        margin-bottom: 0.25rem;
         display: flex;
         flex-direction: column;
-        gap: 0.15rem;
+        gap: 0.1rem;
     }
 
     .line-sub-item {
         display: flex;
         align-items: center;
-        gap: 0.6rem;
-        min-height: 35px;
-        padding: 0.4rem 0.65rem;
-        border-radius: 0.45rem;
+        gap: 0.45rem;
+        min-height: 28px;
+        padding: 0.25rem 0.45rem;
+        border-radius: 0.35rem;
         color: #47636e;
-        font-size: 0.86rem;
+        font-size: 0.75rem;
         font-weight: 500;
         text-decoration: none;
         transition: all 0.15s ease;
@@ -283,13 +283,13 @@
     .line-sub-item:hover {
         background: rgba(203, 223, 230, 0.4);
         color: #1B325B;
-        padding-inline-start: 0.85rem;
+        padding-inline-start: 0.65rem;
     }
 
     .line-sub-dot {
-        width: 6px;
-        height: 6px;
-        min-width: 6px;
+        width: 4px;
+        height: 4px;
+        min-width: 4px;
         border-radius: 50%;
         background: #9bbbc5;
         transition: all 0.15s ease;
@@ -297,7 +297,6 @@
 
     .line-sub-item:hover .line-sub-dot {
         background: #1B325B;
-        transform: scale(1.2);
     }
 
     .line-sub-item.active-sub {
@@ -308,8 +307,7 @@
 
     .line-sub-item.active-sub .line-sub-dot {
         background: #1B325B;
-        box-shadow: 0 0 4px #1B325B;
-        transform: scale(1.3);
+        box-shadow: 0 0 3px #1B325B;
     }
 
     /* Sidebar Footer User Card */
@@ -319,9 +317,9 @@
     }
 
     .line-user-avatar {
-        width: 32px;
-        height: 32px;
-        min-width: 32px;
+        width: 26px;
+        height: 26px;
+        min-width: 26px;
         border-radius: 50%;
         background: linear-gradient(135deg, #1B325B 0%, #3B82F6 100%);
         display: flex;
@@ -329,12 +327,12 @@
         justify-content: center;
         color: #FFFFFF;
         font-weight: 700;
-        font-size: 0.82rem;
+        font-size: 0.72rem;
     }
 
     .status-dot-online {
-        width: 8px;
-        height: 8px;
+        width: 6px;
+        height: 6px;
         border-radius: 50%;
         background: #10B981;
         display: inline-block;
