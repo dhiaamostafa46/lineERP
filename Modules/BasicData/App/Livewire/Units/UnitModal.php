@@ -4,7 +4,7 @@ namespace Modules\BasicData\App\Livewire\Units;
 
 use Livewire\Component;
 use Livewire\Attributes\On;
-use App\Models\BasicDataApp\Unit;
+use Modules\BasicData\App\Repositories\DbUnitRepository;
 
 class UnitModal extends Component
 {
@@ -14,6 +14,13 @@ class UnitModal extends Component
 
     public $name = [];
     public $status = 1;
+
+    protected $repository;
+
+    public function boot(DbUnitRepository $repository)
+    {
+        $this->repository = $repository;
+    }
 
     protected function rules(): array
     {
@@ -56,7 +63,7 @@ class UnitModal extends Component
     public function openEdit($id)
     {
         $this->resetFields();
-        $unit = Unit::find($id);
+        $unit = $this->repository->find($id);
         if ($unit) {
             $this->unit_id = $id;
             $this->is_edit = true;
@@ -87,16 +94,14 @@ class UnitModal extends Component
         }
 
         if ($this->is_edit && $this->unit_id) {
-            $unit = Unit::findOrFail($this->unit_id);
-            $unit->update($data);
-            session()->flash('message', 'تم تعديل الوحدة بنجاح!');
+            $this->repository->update($data, $this->unit_id);
+            flash()->success(__('messages.updated', ['model' => __('basicdata::models/db_units.singular')]));
         } else {
-            Unit::create($data);
-            session()->flash('message', 'تم إضافة الوحدة بنجاح!');
+            $this->repository->create($data);
+            flash()->success(__('messages.saved', ['model' => __('basicdata::models/db_units.singular')]));
         }
 
         $this->closeModal();
-        flash()->success($this->is_edit ? 'تم تعديل الوحدة بنجاح!' : 'تم إضافة الوحدة بنجاح!');
         return $this->redirect(route('basicdata.units.index'), navigate: true);
     }
 

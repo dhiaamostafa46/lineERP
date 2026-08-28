@@ -4,7 +4,7 @@ namespace Modules\BasicData\App\Livewire\ServicePoints;
 
 use Livewire\Component;
 use Livewire\Attributes\On;
-use Modules\BasicData\App\Models\DbServicePoint;
+use Modules\BasicData\App\Repositories\DbServicePointRepository;
 
 class ServicePointModal extends Component
 {
@@ -16,6 +16,13 @@ class ServicePointModal extends Component
     public $code = '';
     public $type = 1;
     public $status = 1;
+
+    protected $repository;
+
+    public function boot(DbServicePointRepository $repository)
+    {
+        $this->repository = $repository;
+    }
 
     protected function rules(): array
     {
@@ -62,7 +69,7 @@ class ServicePointModal extends Component
     public function openEdit($id)
     {
         $this->resetFields();
-        $sp = DbServicePoint::find($id);
+        $sp = $this->repository->find($id);
         if ($sp) {
             $this->service_point_id = $id;
             $this->is_edit = true;
@@ -97,16 +104,14 @@ class ServicePointModal extends Component
         }
 
         if ($this->is_edit && $this->service_point_id) {
-            $sp = DbServicePoint::findOrFail($this->service_point_id);
-            $sp->update($data);
-            session()->flash('message', 'تم تعديل نقطة الخدمة بنجاح!');
+            $this->repository->update($data, $this->service_point_id);
+            flash()->success(__('messages.updated', ['model' => __('basicdata::models/db_service_points.singular')]));
         } else {
-            DbServicePoint::create($data);
-            session()->flash('message', 'تم إضافة نقطة الخدمة بنجاح!');
+            $this->repository->create($data);
+            flash()->success(__('messages.saved', ['model' => __('basicdata::models/db_service_points.singular')]));
         }
 
         $this->closeModal();
-        flash()->success($this->is_edit ? 'تم تعديل نقطة الخدمة بنجاح!' : 'تم إضافة نقطة الخدمة بنجاح!');
         return $this->redirect(route('basicdata.service_points.index'), navigate: true);
     }
 

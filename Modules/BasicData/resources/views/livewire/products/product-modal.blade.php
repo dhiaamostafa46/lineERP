@@ -114,8 +114,8 @@
                                         </label>
                                         <select wire:model="kitchen_id" class="form-select form-select-solid fs-7">
                                             <option value="">-- بدون مطبخ --</option>
-                                            @foreach($kitchens as $kitchen)
-                                                <option value="{{ $kitchen->id }}">{{ $kitchen->name }}</option>
+                                            @foreach($kitchens as $kId => $kName)
+                                                <option value="{{ $kId }}">{{ $kName }}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -158,8 +158,8 @@
                                         </label>
                                         <select wire:model="category_id" class="form-select form-select-solid fs-7 @error('category_id') is-invalid @enderror">
                                             <option value="">-- @lang('basicdata::lang.select') --</option>
-                                            @foreach($categories as $category)
-                                                <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                            @foreach($categories as $cId => $cName)
+                                                <option value="{{ $cId }}">{{ $cName }}</option>
                                             @endforeach
                                         </select>
                                         @error('category_id') <div class="invalid-feedback fs-8">{{ $message }}</div> @enderror
@@ -171,8 +171,8 @@
                                         </label>
                                         <select wire:model="base_unit_id" class="form-select form-select-solid fs-7">
                                             <option value="">-- @lang('basicdata::lang.select') --</option>
-                                            @foreach($availableUnits as $unit)
-                                                <option value="{{ $unit->id }}">{{ $unit->name }}</option>
+                                            @foreach($availableUnits as $uId => $uName)
+                                                <option value="{{ $uId }}">{{ $uName }}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -217,8 +217,8 @@
                                         </label>
                                         <select wire:model="tax_id" class="form-select form-select-solid fs-7">
                                             <option value="">-- الافتراضي (15%) --</option>
-                                            @foreach($taxes as $tax)
-                                                <option value="{{ $tax->id }}">{{ $tax->name }} ({{ $tax->rate }}%)</option>
+                                            @foreach($taxes as $tId => $tName)
+                                                <option value="{{ $tId }}">{{ $tName }}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -379,8 +379,8 @@
                                                         <td>
                                                             <select wire:model="units.{{ $idx }}.unit_id" class="form-select form-select-sm form-select-solid">
                                                                 <option value="">-- اختر الوحدة --</option>
-                                                                @foreach($availableUnits as $unitItem)
-                                                                    <option value="{{ $unitItem->id }}">{{ $unitItem->name }}</option>
+                                                                @foreach($availableUnits as $uId => $uName)
+                                                                    <option value="{{ $uId }}">{{ $uName }}</option>
                                                                 @endforeach
                                                             </select>
                                                         </td>

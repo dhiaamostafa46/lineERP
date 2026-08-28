@@ -5,7 +5,7 @@ namespace Modules\BasicData\App\Livewire\Categories;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Livewire\Attributes\On;
-use App\Models\BasicDataApp\Category;
+use Modules\BasicData\App\Repositories\DbCategoryRepository;
 
 class CategoryModal extends Component
 {
@@ -22,12 +22,19 @@ class CategoryModal extends Component
     public $img;
     public $existing_img = null;
 
+    protected $repository;
+
+    public function boot(DbCategoryRepository $repository)
+    {
+        $this->repository = $repository;
+    }
+
     protected function rules(): array
     {
         $rules = [
             'status' => 'required',
             'type' => 'nullable',
-            'parent_id' => 'nullable|exists:categories,id',
+            'parent_id' => 'nullable',
             'img' => 'nullable|image|max:2048',
         ];
 
@@ -70,7 +77,7 @@ class CategoryModal extends Component
     public function openEdit($id)
     {
         $this->resetFields();
-        $category = Category::find($id);
+        $category = $this->repository->find($id);
         if ($category) {
             $this->category_id = $id;
             $this->is_edit = true;
@@ -101,38 +108,29 @@ class CategoryModal extends Component
             'parent_id' => $this->parent_id ?: null,
         ];
 
+        if ($this->img) {
+            $data['img'] = $this->img;
+        }
+
         foreach ($this->name as $locale => $val) {
             $data[$locale] = ['name' => $val];
         }
 
         if ($this->is_edit && $this->category_id) {
-            $category = Category::findOrFail($this->category_id);
-            $category->update($data);
-
-            if ($this->img) {
-                $category->clearMediaCollection('categories');
-                $category->addMedia($this->img->getRealPath())->toMediaCollection('categories');
-            }
-
-            session()->flash('message', 'تم تعديل التصنيف بنجاح!');
+            $this->repository->update($data, $this->category_id);
+            flash()->success(__('messages.updated', ['model' => __('basicdata::models/db_categories.singular')]));
         } else {
-            $category = Category::create($data);
-
-            if ($this->img) {
-                $category->addMedia($this->img->getRealPath())->toMediaCollection('categories');
-            }
-
-            session()->flash('message', 'تم إضافة التصنيف بنجاح!');
+            $this->repository->create($data);
+            flash()->success(__('messages.saved', ['model' => __('basicdata::models/db_categories.singular')]));
         }
 
         $this->closeModal();
-        flash()->success($this->is_edit ? 'تم تعديل التصنيف بنجاح!' : 'تم إضافة التصنيف بنجاح!');
         return $this->redirect(route('basicdata.categories.index'), navigate: true);
     }
 
     public function render()
     {
-        $parentCategories = Category::whereNull('parent_id')
+        $parentCategories = $this->repository->getModel()::whereNull('parent_id')
             ->when($this->category_id, fn($q) => $q->where('id', '!=', $this->category_id))
             ->get();
 

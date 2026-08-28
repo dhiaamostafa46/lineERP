@@ -5,14 +5,7 @@ namespace Modules\BasicData\App\Livewire\Products;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Livewire\Attributes\On;
-use Illuminate\Support\Facades\DB;
-use App\Models\BasicDataApp\Product;
-use App\Models\BasicDataApp\Category;
-use App\Models\BasicDataApp\Unit;
-use App\Models\BasicDataApp\ProductSize;
-use App\Models\BasicDataApp\ProductUnit;
-use Modules\BasicData\App\Models\DbKitchen;
-use App\Models\AccuSoft\TaxAccount;
+use Modules\BasicData\App\Repositories\DbProductRepository;
 
 class ProductModal extends Component
 {
@@ -52,13 +45,20 @@ class ProductModal extends Component
     public $s_to = null;
     public $work_days = [];
 
+    protected $repository;
+
+    public function boot(DbProductRepository $repository)
+    {
+        $this->repository = $repository;
+    }
+
     protected function rules(): array
     {
         $rules = [
             'barcode' => 'nullable|string|max:100',
-            'category_id' => 'required|exists:categories,id',
+            'category_id' => 'required',
             'kitchen_id' => 'nullable',
-            'base_unit_id' => 'nullable|exists:units,id',
+            'base_unit_id' => 'nullable',
             'tax_id' => 'nullable',
             'type' => 'required|in:1,2',
             'cost_price' => 'nullable|numeric|min:0',
@@ -107,9 +107,9 @@ class ProductModal extends Component
         }
         
         $this->barcode = '';
-        $this->category_id = Category::first()?->id ?? '';
+        $this->category_id = '';
         $this->kitchen_id = '';
-        $this->base_unit_id = Unit::first()?->id ?? '';
+        $this->base_unit_id = '';
         $this->tax_id = '';
         $this->type = 1;
         $this->cost_price = 0.00;
@@ -123,7 +123,7 @@ class ProductModal extends Component
 
         $this->units = [
             [
-                'unit_id' => Unit::first()?->id ?? '',
+                'unit_id' => '',
                 'conversion_factor' => 1,
                 'is_base' => 1,
             ]
@@ -163,7 +163,7 @@ class ProductModal extends Component
     public function addUnitRow()
     {
         $this->units[] = [
-            'unit_id' => Unit::first()?->id ?? '',
+            'unit_id' => '',
             'conversion_factor' => 1,
             'is_base' => 0,
         ];
@@ -187,7 +187,7 @@ class ProductModal extends Component
     public function openEdit($id)
     {
         $this->resetFields();
-        $product = Product::with(['sizes', 'units'])->find($id);
+        $product = $this->repository->find($id);
         if ($product) {
             $this->product_id = $id;
             $this->is_edit = true;
@@ -234,7 +234,7 @@ class ProductModal extends Component
                 }
             } else {
                 $this->units[] = [
-                    'unit_id' => $product->base_unit_id ?? Unit::first()?->id ?? '',
+                    'unit_id' => $product->base_unit_id ?? '',
                     'conversion_factor' => 1,
                     'is_base' => 1,
                 ];
@@ -260,21 +260,13 @@ class ProductModal extends Component
     {
         $this->validate();
 
-        DB::beginTransaction();
         try {
-            $vatRate = 15;
-            if (!empty($this->tax_id)) {
-                $taxAccount = TaxAccount::find($this->tax_id);
-                $vatRate = $taxAccount ? $taxAccount->rate : 15;
-            }
-
             $data = [
                 'barcode' => $this->barcode ?: null,
                 'category_id' => $this->category_id,
                 'kitchen_id' => $this->kitchen_id ?: null,
                 'base_unit_id' => $this->base_unit_id ?: null,
                 'tax_id' => $this->tax_id ?: null,
-                'vat' => $vatRate,
                 'type' => $this->type,
                 'cost_price' => $this->cost_price ?: 0,
                 'prod_price' => $this->prod_price ?: 0,
@@ -285,7 +277,13 @@ class ProductModal extends Component
                 's_from' => $this->s_from ?: null,
                 's_to' => $this->s_to ?: null,
                 'work_days' => $this->work_days,
+                'units' => $this->units,
+                'sizes' => $this->sizes,
             ];
+
+            if ($this->img) {
+                $data['img'] = $this->img;
+            }
 
             foreach ($this->name as $locale => $val) {
                 $data[$locale] = [
@@ -295,85 +293,28 @@ class ProductModal extends Component
             }
 
             if ($this->is_edit && $this->product_id) {
-                $product = Product::findOrFail($this->product_id);
-                $product->update($data);
-
-                if ($this->img) {
-                    $product->clearMediaCollection('products');
-                    $product->addMedia($this->img->getRealPath())->toMediaCollection('products');
-                }
-
-                // Delete old units & sizes
-                $product->units()->delete();
-                $product->sizes()->delete();
-
+                $this->repository->updateWithRelations($data, $this->product_id);
                 flash()->success($this->type == 2 ? 'تم تعديل الخدمة بنجاح!' : 'تم تعديل المنتج بنجاح!');
             } else {
-                $product = Product::create($data);
-
-                if ($this->img) {
-                    $product->addMedia($this->img->getRealPath())->toMediaCollection('products');
-                }
-
+                $this->repository->createWithRelations($data);
                 flash()->success($this->type == 2 ? 'تم إضافة الخدمة بنجاح!' : 'تم إضافة المنتج بنجاح!');
             }
-
-            // Save Product Units
-            if (!empty($this->units)) {
-                foreach ($this->units as $u) {
-                    if (!empty($u['unit_id'])) {
-                        ProductUnit::create([
-                            'product_id' => $product->id,
-                            'unit_id' => $u['unit_id'],
-                            'conversion_factor' => $u['conversion_factor'] ?: 1,
-                            'is_base' => !empty($u['is_base']) ? 1 : 0,
-                        ]);
-                    }
-                }
-            }
-
-            // Save Product Sizes
-            if ($this->have_sizes && !empty($this->sizes)) {
-                foreach ($this->sizes as $s) {
-                    if (!empty($s['ar']['name']) || !empty($s['en']['name'])) {
-                        $sizeData = [
-                            'product_id' => $product->id,
-                            'cost_price' => $s['cost_price'] ?: 0,
-                            'sale_price' => $s['sale_price'] ?: 0,
-                            'barcode' => $s['barcode'] ?: null,
-                            'status' => 1,
-                        ];
-                        foreach (config('langs', ['ar' => 'Arabic', 'en' => 'English']) as $locale => $langName) {
-                            $sizeData[$locale] = ['name' => $s[$locale]['name'] ?? ($s['ar']['name'] ?? '')];
-                        }
-                        ProductSize::create($sizeData);
-                    }
-                }
-            }
-
-            DB::commit();
 
             $this->closeModal();
             return $this->redirect(route('basicdata.products.index'), navigate: true);
 
         } catch (\Exception $e) {
-            DB::rollBack();
             $this->addError('save_error', 'حدث خطأ أثناء الحفظ: ' . $e->getMessage());
         }
     }
 
     public function render()
     {
-        $categories = Category::all();
-        $availableUnits = Unit::all();
-        $kitchens = class_exists(DbKitchen::class) ? DbKitchen::where('status', 1)->get() : collect([]);
-        $taxes = class_exists(TaxAccount::class) ? TaxAccount::where('status', 2)->get() : collect([]);
-
         return view('basicdata::livewire.products.product-modal', [
-            'categories' => $categories,
-            'availableUnits' => $availableUnits,
-            'kitchens' => $kitchens,
-            'taxes' => $taxes,
+            'categories' => $this->repository->categories(),
+            'availableUnits' => $this->repository->units(),
+            'kitchens' => $this->repository->kitchens(),
+            'taxes' => $this->repository->vats(),
         ]);
     }
 }

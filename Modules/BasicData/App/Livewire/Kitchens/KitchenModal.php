@@ -4,7 +4,7 @@ namespace Modules\BasicData\App\Livewire\Kitchens;
 
 use Livewire\Component;
 use Livewire\Attributes\On;
-use Modules\BasicData\App\Models\DbKitchen;
+use Modules\BasicData\App\Repositories\DbKitchenRepository;
 
 class KitchenModal extends Component
 {
@@ -15,6 +15,13 @@ class KitchenModal extends Component
     public $name = [];
     public $barcode = '';
     public $status = 1;
+
+    protected $repository;
+
+    public function boot(DbKitchenRepository $repository)
+    {
+        $this->repository = $repository;
+    }
 
     protected function rules(): array
     {
@@ -59,7 +66,7 @@ class KitchenModal extends Component
     public function openEdit($id)
     {
         $this->resetFields();
-        $kitchen = DbKitchen::find($id);
+        $kitchen = $this->repository->find($id);
         if ($kitchen) {
             $this->kitchen_id = $id;
             $this->is_edit = true;
@@ -92,16 +99,14 @@ class KitchenModal extends Component
         }
 
         if ($this->is_edit && $this->kitchen_id) {
-            $kitchen = DbKitchen::findOrFail($this->kitchen_id);
-            $kitchen->update($data);
-            session()->flash('message', 'تم تعديل المطبخ بنجاح!');
+            $this->repository->update($data, $this->kitchen_id);
+            flash()->success(__('messages.updated', ['model' => __('basicdata::models/db_kitchens.singular')]));
         } else {
-            DbKitchen::create($data);
-            session()->flash('message', 'تم إضافة المطبخ بنجاح!');
+            $this->repository->create($data);
+            flash()->success(__('messages.saved', ['model' => __('basicdata::models/db_kitchens.singular')]));
         }
 
         $this->closeModal();
-        flash()->success($this->is_edit ? 'تم تعديل المطبخ بنجاح!' : 'تم إضافة المطبخ بنجاح!');
         return $this->redirect(route('basicdata.kitchens.index'), navigate: true);
     }
 
