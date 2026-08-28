@@ -139,278 +139,246 @@
         color: var(--bs-primary);
     }
 
-    /* ── Action Toolbar Buttons (.icon-btn & .btn-btc) ──────────────── */
-    .icon-btn,
-    .btn-btc {
+    /* ==========================================================================
+       Front Dashboard Luxury Enterprise Design System (Exact Theme Tokens)
+       ========================================================================== */
+    :root {
+        --front-primary: #377dff;
+        --front-primary-hover: #2b6ce6;
+        --front-primary-soft: rgba(55, 125, 255, 0.1);
+        --front-dark: #1e2022;
+        --front-body: #677788;
+        --front-muted: #8c98a4;
+        --front-border: #e7eaf3;
+        --front-bg: #f8fafc;
+        --front-success: #00c9a7;
+        --front-warning: #ec9a3c;
+        --front-danger: #ed4c78;
+    }
+
+    /* ── Front Dashboard Smart Datatable Card ────────────────────────── */
+    .front-card {
+        background: #ffffff !important;
+        border: 1px solid #e7eaf3 !important;
+        border-radius: 0.75rem !important;
+        box-shadow: 0 0.375rem 0.75rem rgba(140, 152, 164, 0.075) !important;
+        position: relative;
+    }
+
+    .front-card-header {
+        background: #ffffff !important;
+        border-bottom: 1px solid #e7eaf3 !important;
+        padding: 1rem 1.25rem !important;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+
+    /* Search input */
+    .front-search-input {
         background-color: #ffffff !important;
-        border: 1px solid #e2e8f0 !important;
-        color: #475569 !important;
-        border-radius: 8px !important;
-        padding: 6px 10px !important;
-        cursor: pointer !important;
-        transition: all 0.2s ease !important;
-        display: inline-flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        text-decoration: none !important;
-        line-height: 1 !important;
+        border: 1px solid #e7eaf3 !important;
+        border-radius: 0.5rem !important;
+        padding: 0.55rem 0.85rem 0.55rem 2.25rem !important;
+        font-size: 0.8125rem !important;
+        color: #1e2022 !important;
+        transition: all 0.2s ease;
+        height: 38px;
+    }
+
+    [dir="rtl"] .front-search-input {
+        padding: 0.55rem 2.25rem 0.55rem 0.85rem !important;
+    }
+
+    .front-search-input:focus {
+        border-color: #377dff !important;
+        box-shadow: 0 0 0 0.1875rem rgba(55, 125, 255, 0.15) !important;
+    }
+
+    /* Front Buttons */
+    .front-btn-filter {
+        background-color: #ffffff !important;
+        border: 1px solid #e7eaf3 !important;
+        color: #677788 !important;
+        font-size: 0.8125rem !important;
+        font-weight: 600 !important;
+        padding: 0.5rem 0.85rem !important;
+        border-radius: 0.5rem !important;
+        height: 38px;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        transition: all 0.2s ease;
+    }
+
+    .front-btn-filter:hover, .front-btn-filter.show, .front-btn-filter[aria-expanded="true"] {
+        background-color: #f8fafc !important;
+        border-color: #377dff !important;
+        color: #377dff !important;
+    }
+
+    .front-btn-export {
+        background-color: #ffffff !important;
+        border: 1px solid #e7eaf3 !important;
+        color: #677788 !important;
+        font-size: 0.8125rem !important;
+        font-weight: 600 !important;
+        padding: 0.5rem 0.85rem !important;
+        border-radius: 0.5rem !important;
+        height: 38px;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+    }
+
+    .front-btn-export:hover {
+        background-color: #f8fafc !important;
+        border-color: #cbd5e1 !important;
+        color: #1e2022 !important;
+    }
+
+    .front-btn-primary {
+        background-color: #377dff !important;
+        border-color: #377dff !important;
+        color: #ffffff !important;
+        font-size: 0.8125rem !important;
+        font-weight: 600 !important;
+        padding: 0.5rem 1rem !important;
+        border-radius: 0.5rem !important;
+        height: 38px;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        transition: all 0.2s ease;
+    }
+
+    .front-btn-primary:hover {
+        background-color: #2b6ce6 !important;
+        border-color: #2b6ce6 !important;
+        color: #ffffff !important;
+        box-shadow: 0 4px 11px rgba(55, 125, 255, 0.35) !important;
+    }
+
+    /* Front Filter Floating Dropdown Menu */
+    .front-filter-dropdown {
+        width: 320px !important;
+        border: 1px solid #e7eaf3 !important;
+        border-radius: 0.75rem !important;
+        box-shadow: 0 10px 40px 10px rgba(140, 152, 164, 0.175) !important;
+        padding: 1.25rem !important;
+        background: #ffffff !important;
+        z-index: 1050 !important;
+    }
+
+    .front-filter-title {
+        font-size: 0.9375rem;
+        font-weight: 700;
+        color: #1e2022;
+        margin: 0;
+    }
+
+    .front-filter-section-title {
+        font-size: 0.6875rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05rem;
+        color: #8c98a4;
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+
+    /* Front Table Styling */
+    .front-table {
+        margin-bottom: 0 !important;
+        width: 100%;
+        vertical-align: middle;
+    }
+
+    .front-table thead th {
+        background-color: #ffffff !important;
+        border-bottom: 1px solid #e7eaf3 !important;
+        color: #8c98a4 !important;
+        font-size: 0.75rem !important;
+        font-weight: 700 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.05rem !important;
+        padding: 0.75rem 1rem !important;
+        white-space: nowrap;
+    }
+
+    .front-table tbody tr {
+        border-bottom: 1px solid #e7eaf3 !important;
+        transition: background-color 0.15s ease-in-out;
+    }
+
+    .front-table tbody tr:hover {
+        background-color: #f9fafc !important;
+    }
+
+    .front-table tbody td {
+        padding: 0.85rem 1rem !important;
+        font-size: 0.8125rem !important;
+        color: #1e2022 !important;
         vertical-align: middle !important;
     }
 
-    .icon-btn i,
-    .icon-btn svg,
-    .btn-btc i,
-    .btn-btc svg {
-        color: #64748b !important;
-        font-size: 13px !important;
-        transition: color 0.2s ease !important;
+    /* Status Dots (Front Dashboard Signature Indicator) */
+    .front-legend-indicator {
+        display: inline-block;
+        width: 0.5rem;
+        height: 0.5rem;
+        border-radius: 50%;
+        margin-inline-end: 0.35rem;
     }
 
-    .icon-btn:hover,
-    .btn-btc:hover {
-        background-color: #f8fafc !important;
-        border-color: #cbd5e1 !important;
-        color: #2563eb !important;
-        transform: translateY(-1px);
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    .front-legend-indicator.bg-success {
+        background-color: #00c9a7 !important;
     }
 
-    .icon-btn:hover i,
-    .icon-btn:hover svg,
-    .btn-btc:hover i,
-    .btn-btc:hover svg {
-        color: #2563eb !important;
+    .front-legend-indicator.bg-warning {
+        background-color: #ec9a3c !important;
     }
 
-    /* ── Buttons: Text & Icons ───────────────────────────────────────── */
-    .btn-primary,
-    a.btn-primary {
-        background-color: #2563eb !important;
-        border-color: #2563eb !important;
-        color: #ffffff !important;
-        font-weight: 600 !important;
-        border-radius: 8px !important;
-        display: inline-flex !important;
-        align-items: center !important;
-        gap: 0.4rem !important;
-        transition: all 0.15s ease !important;
+    .front-legend-indicator.bg-danger {
+        background-color: #ed4c78 !important;
     }
 
-    .btn-primary *,
-    .btn-primary i,
-    .btn-primary svg,
-    .btn-primary span,
-    a.btn-primary i,
-    a.btn-primary svg,
-    a.btn-primary span {
-        color: #ffffff !important;
+    .front-legend-indicator.bg-secondary {
+        background-color: #8c98a4 !important;
     }
 
-    .btn-primary:hover,
-    a.btn-primary:hover {
-        background-color: #1d4ed8 !important;
-        border-color: #1d4ed8 !important;
-        color: #ffffff !important;
-        box-shadow: 0 2px 8px rgba(37, 99, 235, 0.25) !important;
+    /* Front Custom Checkbox */
+    .front-form-check {
+        display: flex;
+        align-items: center;
+        margin: 0;
     }
 
-    .btn-primary:hover i,
-    .btn-primary:hover svg,
-    a.btn-primary:hover i,
-    a.btn-primary:hover svg {
-        color: #ffffff !important;
-    }
-
-    /* Search & Reset Buttons in Filter Cards */
-    .btn-search,
-    .btn-search * {
-        background-color: #2563eb !important;
-        border-color: #2563eb !important;
-        color: #ffffff !important;
-        font-weight: 600 !important;
-        border-radius: 8px !important;
-    }
-
-    .btn-search:hover {
-        background-color: #1d4ed8 !important;
-        border-color: #1d4ed8 !important;
-    }
-
-    .btn-secondary,
-    .btn-secondary * {
-        background-color: #f1f5f9 !important;
-        border-color: #cbd5e1 !important;
-        color: #475569 !important;
-        font-weight: 600 !important;
-        border-radius: 8px !important;
-    }
-
-    .btn-secondary:hover {
-        background-color: #e2e8f0 !important;
-        color: #1e293b !important;
-    }
-
-    /* ── High-End Cards & Search Filter Boxes ───────────────────────── */
-    .card {
-        border: 1px solid #e2e8f0 !important;
-        border-radius: 12px !important;
-        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03) !important;
-        background-color: #ffffff !important;
-    }
-
-    #card-filter {
-        border: 1px solid #e2e8f0 !important;
-        border-radius: 12px !important;
-        overflow: hidden !important;
-    }
-
-    #card-filter .card-header {
-        background-color: #f8fafc !important;
-        border-bottom: 1px solid #e2e8f0 !important;
-        padding: 12px 20px !important;
+    .front-form-check .form-check-input {
+        width: 1.125rem;
+        height: 1.125rem;
+        border: 1px solid #cbd5e1;
+        border-radius: 0.25rem;
         cursor: pointer;
     }
 
-    #card-filter .card-title,
-    #card-filter .card-title * {
-        font-size: 13.5px !important;
-        font-weight: 700 !important;
-        color: #1e293b !important;
+    .front-form-check .form-check-input:checked {
+        background-color: #377dff;
+        border-color: #377dff;
     }
 
-    #card-filter .card-title i {
-        color: #2563eb !important;
-    }
-
-    #card-filter .card-body {
+    /* Front Pagination */
+    .front-card-footer {
         background-color: #ffffff !important;
-        padding: 20px !important;
-    }
-
-    #card-filter .card-footer {
-        background-color: #f8fafc !important;
-        border-top: 1px solid #e2e8f0 !important;
-        padding: 12px 20px !important;
-    }
-
-    /* ── High-End Tables ────────────────────────────────────────────── */
-    .table-responsive {
-        border: 1px solid #e2e8f0 !important;
-        border-radius: 10px !important;
-        overflow: hidden !important;
-        background: #ffffff !important;
-    }
-
-    table thead tr,
-    table thead th,
-    :root:not([data-bs-theme="dark"]) table thead th {
-        background-color: #f8fafc !important;
-        border-bottom: 2px solid #e2e8f0 !important;
-        color: #475569 !important;
-        font-size: 12px !important;
-        font-weight: 700 !important;
-        text-transform: uppercase !important;
-        letter-spacing: 0.5px !important;
-        padding: 12px 16px !important;
-        vertical-align: middle !important;
-    }
-
-    table tbody tr {
-        border-bottom: 1px solid #f1f5f9 !important;
-        transition: background-color 0.15s ease !important;
-    }
-
-    table tbody tr:hover {
-        background-color: #f8fafc !important;
-    }
-
-    table tbody td {
-        padding: 14px 16px !important;
-        font-size: 13px !important;
-        color: #1e293b !important;
-        vertical-align: middle !important;
-        border-bottom: 1px solid #f1f5f9 !important;
-    }
-
-    /* Table Action Buttons */
-    .table-action .btn-group {
-        display: inline-flex;
-        gap: 4px;
-    }
-
-    .table-action .btn {
-        border-radius: 6px !important;
-        padding: 6px 10px !important;
-        font-size: 12px !important;
-    }
-
-    /* Status Badges */
-    .badge {
-        font-weight: 600 !important;
-        padding: 4px 10px !important;
-        border-radius: 20px !important;
-        font-size: 11px !important;
-    }
-
-    .badge.badge-success,
-    .badge.badge-light-success,
-    .badge-success {
-        background-color: #dcfce7 !important;
-        color: #15803d !important;
-        border: 1px solid #bbf7d0 !important;
-    }
-
-    .badge.badge-danger,
-    .badge.badge-light-danger,
-    .badge-danger {
-        background-color: #fee2e2 !important;
-        color: #b91c1c !important;
-        border: 1px solid #fecaca !important;
-    }
-
-    .badge.badge-warning,
-    .badge.badge-light-warning,
-    .badge-warning {
-        background-color: #fef3c7 !important;
-        color: #b45309 !important;
-        border: 1px solid #fde68a !important;
-    }
-
-    .badge.badge-primary,
-    .badge.badge-light-primary,
-    .badge-primary {
-        background-color: #eff6ff !important;
-        color: #1d4ed8 !important;
-        border: 1px solid #bfdbfe !important;
-    }
-
-    /* ── Form Controls & Inputs ─────────────────────────────────────── */
-    .form-control,
-    .form-select {
-        border: 1px solid #cbd5e1 !important;
-        border-radius: 8px !important;
-        padding: 8px 12px !important;
-        font-size: 13px !important;
-        color: #1e293b !important;
-        background-color: #ffffff !important;
-        transition: all 0.2s ease !important;
-    }
-
-    .form-control:focus,
-    .form-select:focus,
-    input:focus,
-    select:focus,
-    textarea:focus {
-        border-color: #2563eb !important;
-        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12) !important;
-        background-color: #ffffff !important;
-    }
-
-    .form-group label {
-        font-size: 12.5px !important;
-        font-weight: 600 !important;
-        color: #334155 !important;
-        margin-bottom: 6px !important;
+        border-top: 1px solid #e7eaf3 !important;
+        padding: 0.85rem 1.25rem !important;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 0.5rem;
     }
 
     :root:not([data-bs-theme="dark"]) .border-primary {
