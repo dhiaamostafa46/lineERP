@@ -3,23 +3,24 @@
 namespace Modules\BasicData\App\Http\Controllers;
 
 use App\Http\Controllers\AppBaseController;
+use App\Models\BasicDataApp\ServicePoint;
+use App\Traits\HasBulkActions;
 use Illuminate\Http\Request;
-use Maatwebsite\Excel\Excel;
-use Modules\BasicData\App\Exports\BasicDataExport;
+use Modules\BasicData\App\Http\Controllers\Concerns\HasExportActions;
 use Modules\BasicData\App\Http\Requests\CreateDbServicePointRequest;
 use Modules\BasicData\App\Http\Requests\UpdateDbServicePointRequest;
 use Modules\BasicData\App\Repositories\DbServicePointRepository;
 
 class DbServicePointController extends AppBaseController
 {
-    use \App\Traits\HasBulkActions;
+    use HasBulkActions, HasExportActions;
 
-    /** @var DbServicePointRepository $dbServicePointRepository*/
-    private $dbServicePointRepository;
+    protected DbServicePointRepository $repository;
+    protected string $exportFileName = 'service_points';
 
-    public function __construct(DbServicePointRepository $dbServicePointRepo)
+    public function __construct(DbServicePointRepository $repository)
     {
-        $this->dbServicePointRepository = $dbServicePointRepo;
+        $this->repository = $repository;
     }
 
     /**
@@ -27,16 +28,16 @@ class DbServicePointController extends AppBaseController
      */
     public function index(Request $request)
     {
-        $pagination = $request->get('pagination', 10);
-        $data['servicePoints'] = $this->dbServicePointRepository->allQuery($request->except('pagination'))->paginate($pagination);
-        $data['statuses'] = $this->dbServicePointRepository->statuses();
-        $data['types'] = $this->dbServicePointRepository->types();
+        $pagination = (int)$request->get('pagination', 10);
+        $servicePoints = $this->repository->allQuery($request->except('pagination'))->paginate($pagination);
 
-        $servicePointModel = $this->dbServicePointRepository->model();
-        $data['totalServicePointsCount'] = $servicePointModel::count();
-        $data['activeServicePointsCount'] = $servicePointModel::where('status', 1)->count();
-
-        return view('basicdata::service_points.index', $data);
+        return view('basicdata::service_points.index', [
+            'servicePoints' => $servicePoints,
+            'statuses' => $this->repository->statuses(),
+            'types' => $this->repository->types(),
+            'totalPointsCount' => ServicePoint::count(),
+            'activePointsCount' => ServicePoint::where('status', 1)->count(),
+        ]);
     }
 
     /**
@@ -44,9 +45,10 @@ class DbServicePointController extends AppBaseController
      */
     public function create()
     {
-           $data['statuses'] = $this->dbServicePointRepository->statuses();
-           $data['types'] = $this->dbServicePointRepository->types();
-        return view('basicdata::service_points.create' , $data);
+        return view('basicdata::service_points.create', [
+            'statuses' => $this->repository->statuses(),
+            'types' => $this->repository->types(),
+        ]);
     }
 
     /**
@@ -55,12 +57,8 @@ class DbServicePointController extends AppBaseController
     public function store(CreateDbServicePointRequest $request)
     {
         try {
-            $input = $request->all();
-
-            $servicePoint = $this->dbServicePointRepository->create($input);
-
+            $this->repository->create($request->all());
             flash()->success(__('messages.saved', ['model' => __('basicdata::models/db_service_points.singular')]));
-
             return redirect()->route('basicdata.service_points.index');
         } catch (\Exception $e) {
             flash()->error(__('messages.error_creating', ['model' => __('basicdata::models/db_service_points.singular')]) . ': ' . $e->getMessage());
@@ -73,14 +71,14 @@ class DbServicePointController extends AppBaseController
      */
     public function show($id)
     {
-        $servicePoint = $this->dbServicePointRepository->find($id);
+        $servicePoint = $this->repository->find($id);
 
         if (empty($servicePoint)) {
             flash()->error(__('basicdata::models/db_service_points.singular') . ' ' . __('messages.not_found'));
             return redirect(route('basicdata.service_points.index'));
         }
 
-        return view('basicdata::service_points.show')->with('servicePoint', $servicePoint);
+        return view('basicdata::service_points.show', compact('servicePoint'));
     }
 
     /**
@@ -88,41 +86,35 @@ class DbServicePointController extends AppBaseController
      */
     public function edit($id)
     {
-        $servicePoint = $this->dbServicePointRepository->find($id);
-          $data['statuses'] = $this->dbServicePointRepository->statuses();
-          $data['types'] = $this->dbServicePointRepository->types();
-            $data['servicePoint'] = $servicePoint;
+        $servicePoint = $this->repository->find($id);
 
         if (empty($servicePoint)) {
             flash()->error(__('basicdata::models/db_service_points.singular') . ' ' . __('messages.not_found'));
             return redirect(route('basicdata.service_points.index'));
         }
 
-        return view('basicdata::service_points.edit',$data);
+        return view('basicdata::service_points.edit', [
+            'servicePoint' => $servicePoint,
+            'statuses' => $this->repository->statuses(),
+            'types' => $this->repository->types(),
+        ]);
     }
 
     /**
-     * Update the specified Unit in storage.
-     *
-     * @param int $id
-     * @param UpdateDbUnitRequest $request
-     * @return \Illuminate\Http\RedirectResponse
+     * Update the specified ServicePoint in storage.
      */
     public function update(UpdateDbServicePointRequest $request, $id)
     {
         try {
-            $servicePoint = $this->dbServicePointRepository->find($id);
+            $servicePoint = $this->repository->find($id);
 
             if (empty($servicePoint)) {
                 flash()->error(__('basicdata::models/db_service_points.singular') . ' ' . __('messages.not_found'));
                 return redirect(route('basicdata.service_points.index'));
             }
 
-            $input = $request->all();
-            $servicePoint = $this->dbServicePointRepository->update($input, $id);
-
+            $this->repository->update($request->all(), $id);
             flash()->success(__('messages.updated', ['model' => __('basicdata::models/db_service_points.singular')]));
-
             return redirect()->route('basicdata.service_points.index');
         } catch (\Exception $e) {
             flash()->error(__('messages.error_updating', ['model' => __('basicdata::models/db_service_points.singular')]) . ': ' . $e->getMessage());
@@ -136,66 +128,19 @@ class DbServicePointController extends AppBaseController
     public function destroy($id)
     {
         try {
-            $servicePoint = $this->dbServicePointRepository->find($id);
+            $servicePoint = $this->repository->find($id);
 
             if (empty($servicePoint)) {
                 flash()->error(__('basicdata::models/db_service_points.singular') . ' ' . __('messages.not_found'));
                 return redirect(route('basicdata.service_points.index'));
             }
 
-            $this->dbServicePointRepository->delete($id);
-
+            $this->repository->delete($id);
             flash()->success(__('messages.deleted', ['model' => __('basicdata::models/db_service_points.singular')]));
-
             return redirect()->route('basicdata.service_points.index');
         } catch (\Exception $e) {
             flash()->error(__('messages.error_deleting', ['model' => __('basicdata::models/db_service_points.singular')]) . ': ' . $e->getMessage());
             return redirect()->back();
         }
-    }
-
-
-            public function excel()
-    {
-        $headers = $this->dbServicePointRepository->header();
-        $dataExcel = $this->dbServicePointRepository->dataExel(); // استخدم Unit بدلاً من dataExel
-
-        return Excel::download(new BasicDataExport($dataExcel, $headers), 'service_points.xlsx');
-    }
-
-    public function csv()
-    {
-        $headers = $this->dbServicePointRepository->header();
-        $dataExcel = $this->dbServicePointRepository->dataExel();
-
-        return Excel::download(new BasicDataExport($dataExcel, $headers), 'service_points.csv');
-    }
-
-    public function pdf()
-    {
-         $headers = $this->dbServicePointRepository->header();
-        $dataExcel = $this->dbServicePointRepository->dataExel();
-          $name = $this->dbServicePointRepository->name();
-
-
-            $mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8']);
-            $mpdf->autoScriptToLang = true;
-            $mpdf->autoLangToFont = true;
-            $mpdf->autoArabic = true;
-
-            $mpdf->baseScript = 1;
-            $mpdf->autoVietnamese = true;
-
-            $mpdf->shrink_tables_to_fit = 1;
-            $mpdf->keep_table_proportions = true;
-
-            $mpdf->SetDisplayMode('fullpage');
-
-            $mpdf->list_indent_first_level = 0;
-            $mpdf->SetDirectionality(  app()->getLocale() == 'ar' ? 'rtl' : 'ltr');
-            $mpdf->WriteHTML(view('basicdata::exports.pdf', ['headers' => $headers ,'data'=>  $dataExcel ,'name'=> $name]));
-            $mpdf->Output();
-
-
     }
 }

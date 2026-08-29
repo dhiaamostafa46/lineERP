@@ -3,36 +3,24 @@
 namespace Modules\BasicData\App\Http\Controllers;
 
 use App\Http\Controllers\AppBaseController;
-use Illuminate\Support\Facades\DB;
+use App\Models\BasicDataApp\Product;
+use App\Traits\HasBulkActions;
 use Illuminate\Http\Request;
-use App\Models\AccuSoft\TaxAccount;
-use Modules\BasicData\App\Exports\ProductImportErrorsExport;
-use Maatwebsite\Excel\Facades\Excel;
-use Modules\BasicData\App\Exports\BasicDataExport;
+use Modules\BasicData\App\Http\Controllers\Concerns\HasExportActions;
 use Modules\BasicData\App\Http\Requests\CreateDbProductRequest;
 use Modules\BasicData\App\Http\Requests\UpdateDbProductRequest;
-use Modules\BasicData\App\Imports\ProductsImport;
-use Modules\BasicData\App\Exports\ProductTemplateExport;
 use Modules\BasicData\App\Repositories\DbProductRepository;
-use Modules\BasicData\App\Repositories\DbProductSizeRepository;
-use Modules\BasicData\App\Repositories\DbProductUnitRepository;
 
 class DbProductController extends AppBaseController
 {
-    use \App\Traits\HasBulkActions;
+    use HasBulkActions, HasExportActions;
 
-    /** @var DbProductRepository $dbProductRepository*/
-    private $dbProductRepository;
-    /** @var DbProductSizeRepository $dbProductSizeRepository */
-    private $dbProductSizeRepository;
-    /** @var DbProductUnitRepository $dbProductUnitRepository */
-    private $dbProductUnitRepository;
+    protected DbProductRepository $repository;
+    protected string $exportFileName = 'products';
 
-    public function __construct(DbProductRepository $dbProductRepo, DbProductSizeRepository $dbProductSizeRepo, DbProductUnitRepository $dbProductUnitRepo)
+    public function __construct(DbProductRepository $repository)
     {
-        $this->dbProductRepository = $dbProductRepo;
-        $this->dbProductSizeRepository = $dbProductSizeRepo;
-        $this->dbProductUnitRepository = $dbProductUnitRepo;
+        $this->repository = $repository;
     }
 
     /**
@@ -40,23 +28,24 @@ class DbProductController extends AppBaseController
      */
     public function index(Request $request)
     {
-        $pagination = $request->get('pagination', 10);
-        $data['products'] = $this->dbProductRepository->allQuery($request->except('pagination'))->paginate($pagination);
-        
-        $data['categories'] = $this->dbProductRepository->Categories();
-        $data['vats'] = $this->dbProductRepository->vats();
-        $data['statuses'] = $this->dbProductRepository->statuses();
-        $data['units'] = $this->dbProductRepository->units();
-        $data['types'] = $this->dbProductRepository->types();
+        $pagination = (int)$request->get('pagination', 10);
+        $type = (int)$request->get('type', 1);
 
-        // Front Dashboard Top KPI Stats
-        $productModel = \App\Models\BasicDataApp\Product::class;
-        $data['totalProductsCount'] = $productModel::count();
-        $data['activeProductsCount'] = $productModel::where('status', 1)->count();
-        $data['servicesCount'] = $productModel::where('type', 2)->count();
-        $data['categoriesCount'] = count($data['categories']);
+        $products = $this->repository->allQuery($request->except('pagination'))->paginate($pagination);
 
-        return view('basicdata::products.index', $data);
+        return view('basicdata::products.index', [
+            'products' => $products,
+            'type' => $type,
+            'categories' => $this->repository->categories(),
+            'kitchens' => $this->repository->kitchens(),
+            'statuses' => $this->repository->statuses(),
+            'units' => $this->repository->units(),
+            'vats' => $this->repository->vats(),
+            'types' => $this->repository->types(),
+            'totalProductsCount' => Product::where('type', 1)->count(),
+            'totalServicesCount' => Product::where('type', 2)->count(),
+            'activeCount' => Product::where('status', 1)->count(),
+        ]);
     }
 
     /**
@@ -64,16 +53,17 @@ class DbProductController extends AppBaseController
      */
     public function create(Request $request)
     {
-        // يمكنك تمرير بيانات ضرورية لنموذج الإنشاء مثل الفئات
-        $data['type'] = $request->type ?? 1;
-        $data['categories'] = $this->dbProductRepository->Categories();
-      
-        $data['statuses'] = $this->dbProductRepository->statuses();
-        $data['units'] = $this->dbProductRepository->units();
-         $data['vats'] = $this->dbProductRepository->vats();
-        $data['types'] = $this->dbProductRepository->types();
+        $type = (int)$request->get('type', 1);
 
-        return view('basicdata::products.create', $data);
+        return view('basicdata::products.create', [
+            'type' => $type,
+            'categories' => $this->repository->categories(),
+            'kitchens' => $this->repository->kitchens(),
+            'statuses' => $this->repository->statuses(),
+            'units' => $this->repository->units(),
+            'vats' => $this->repository->vats(),
+            'types' => $this->repository->types(),
+        ]);
     }
 
     /**
@@ -82,7 +72,7 @@ class DbProductController extends AppBaseController
     public function store(CreateDbProductRequest $request)
     {
         try {
-            $this->dbProductRepository->createWithRelations($request->all());
+            $this->repository->createWithRelations($request->all());
             flash()->success(__('messages.saved', ['model' => __('basicdata::models/db_products.singular')]));
             return redirect()->route('basicdata.products.index');
         } catch (\Exception $e) {
@@ -96,19 +86,14 @@ class DbProductController extends AppBaseController
      */
     public function show($id)
     {
-        try {
-            $product = $this->dbProductRepository->find($id);
+        $product = $this->repository->find($id);
 
-            if (empty($product)) {
-                flash()->error(__('basicdata::models/db_products.singular') . ' ' . __('messages.not_found'));
-                return redirect(route('basicdata.products.index'));
-            }
-
-            return view('basicdata::products.show')->with('product', $product);
-        } catch (\Exception $e) {
-            flash()->error($e->getMessage());
+        if (empty($product)) {
+            flash()->error(__('basicdata::models/db_products.singular') . ' ' . __('messages.not_found'));
             return redirect(route('basicdata.products.index'));
         }
+
+        return view('basicdata::products.show', compact('product'));
     }
 
     /**
@@ -116,42 +101,42 @@ class DbProductController extends AppBaseController
      */
     public function edit($id)
     {
-        $data['product'] = $this->dbProductRepository->find($id);
+        $product = $this->repository->find($id);
 
-        if (empty($data['product'])) {
+        if (empty($product)) {
             flash()->error(__('basicdata::models/db_products.singular') . ' ' . __('messages.not_found'));
             return redirect(route('basicdata.products.index'));
         }
 
-        // يمكنك تمرير بيانات ضرورية لنموذج التعديل مثل الفئات
-        // $data['categories'] = $this->dbProductRepository->getCategories();
-        $data['type'] = $data['product']->type ?? 1;
-        $data['categories'] = $this->dbProductRepository->categories();
-        $data['kitchens'] = $this->dbProductRepository->kitchens();
-        $data['statuses'] = $this->dbProductRepository->statuses();
-        $data['units'] = $this->dbProductRepository->units();
-        $data['vats'] = $this->dbProductRepository->vats();
-        $data['types'] = $this->dbProductRepository->types();
-
-        return view('basicdata::products.edit', $data);
+        return view('basicdata::products.edit', [
+            'product' => $product,
+            'type' => $product->type ?? 1,
+            'categories' => $this->repository->categories(),
+            'kitchens' => $this->repository->kitchens(),
+            'statuses' => $this->repository->statuses(),
+            'units' => $this->repository->units(),
+            'vats' => $this->repository->vats(),
+            'types' => $this->repository->types(),
+        ]);
     }
 
     /**
      * Update the specified Product in storage.
-     *
-     * @param int $id
-     * @param UpdateDbProductRequest $request
-     * @return \Illuminate\Http\RedirectResponse
      */
     public function update(UpdateDbProductRequest $request, $id)
     {
         try {
-            $this->dbProductRepository->updateWithRelations($request->all(), $id);
-            flash()->success(__('messages.updated', ['model' => __('basicdata::models/db_products.singular')]));
+            $product = $this->repository->find($id);
 
+            if (empty($product)) {
+                flash()->error(__('basicdata::models/db_products.singular') . ' ' . __('messages.not_found'));
+                return redirect(route('basicdata.products.index'));
+            }
+
+            $this->repository->updateWithRelations($request->all(), $id);
+            flash()->success(__('messages.updated', ['model' => __('basicdata::models/db_products.singular')]));
             return redirect()->route('basicdata.products.index');
         } catch (\Exception $e) {
-            DB::rollBack();
             flash()->error(__('messages.error_updating', ['model' => __('basicdata::models/db_products.singular')]) . ': ' . $e->getMessage());
             return redirect()->back()->withInput();
         }
@@ -163,120 +148,19 @@ class DbProductController extends AppBaseController
     public function destroy($id)
     {
         try {
-            $product = $this->dbProductRepository->find($id);
+            $product = $this->repository->find($id);
 
             if (empty($product)) {
                 flash()->error(__('basicdata::models/db_products.singular') . ' ' . __('messages.not_found'));
                 return redirect(route('basicdata.products.index'));
             }
 
-            $this->dbProductRepository->delete($id);
-
+            $this->repository->delete($id);
             flash()->success(__('messages.deleted', ['model' => __('basicdata::models/db_products.singular')]));
-
             return redirect()->route('basicdata.products.index');
         } catch (\Exception $e) {
             flash()->error(__('messages.error_deleting', ['model' => __('basicdata::models/db_products.singular')]) . ': ' . $e->getMessage());
             return redirect()->back();
         }
-    }
-
-    public function import(Request $request)
-    {
-        return view('basicdata::products.import');
-    }
-
-    public function importsave(Request $request)
-    {
-        set_time_limit(600);
-        ini_set('memory_limit', '1G');
-
-        $request->validate([
-            'file' => 'required|mimes:xlsx,xls,csv',
-        ]);
-
-        try {
-            $import = new ProductsImport();
-            Excel::import($import, $request->file('file'));
-            
-            $summary = $import->getImportSummary();
-            
-            if ($summary['error_count'] > 0) {
-                // بدلاً من عرض الأخطاء في الصفحة، نقوم بتحميل ملف الإكسيل بالأخطاء
-                return Excel::download(
-                    new ProductImportErrorsExport($summary['errors']), 
-                    'Product_Import_Errors_' . now()->format('Y-m-d_H-i') . '.xlsx'
-                );
-            }
-
-            flash()->success(__('messages.imported', ['model' => __('basicdata::models/db_products.plural')]));
-            return redirect()->route('basicdata.products.index');
-
-        } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
-            $failures = $e->failures();
-            flash()->error(__('crud.import_errors_message'));
-            return redirect()->back()->with('failures', $failures);
-        } catch (\Exception $e) {
-            flash()->error(__('messages.error_importing', ['model' => __('basicdata::models/db_products.plural')]) . ': ' . $e->getMessage());
-            return redirect()->back();
-        }
-    }
-
-    public function importTemplate()
-    {
-        return Excel::download(new ProductTemplateExport(), 'Product_Import_Template.xlsx');
-    }
-
-    public function excel()
-    {
-        $headers = $this->dbProductRepository->header();
-        $dataExcel = $this->dbProductRepository->dataExel(); // استخدم Unit بدلاً من dataExel
-
-        return Excel::download(new BasicDataExport($dataExcel, $headers), 'products.xlsx');
-    }
-
-    public function csv()
-    {
-        $headers = $this->dbProductRepository->header();
-        $dataExcel = $this->dbProductRepository->dataExel();
-
-        return Excel::download(new BasicDataExport($dataExcel, $headers), 'products.csv');
-    }
-
-    public function pdf()
-    {
-        $headers = $this->dbProductRepository->header();
-        $dataExcel = $this->dbProductRepository->dataExel();
-        $name = $this->dbProductRepository->name();
-
-        $mpdf = new \Mpdf\Mpdf([
-            'mode' => 'utf-8',
-            'format' => 'A4',
-            'margin_left' => 10,
-            'margin_right' => 10,
-            'margin_top' => 10,
-            'margin_bottom' => 10,
-        ]);
-        $mpdf->autoScriptToLang = true;
-        $mpdf->autoLangToFont = true;
-        $mpdf->autoArabic = true;
-        $mpdf->baseScript = 1;
-        $mpdf->shrink_tables_to_fit = 1;
-        $mpdf->keep_table_proportions = true;
-        $mpdf->SetDisplayMode('fullpage');
-        $mpdf->SetDirectionality(app()->getLocale() == 'ar' ? 'rtl' : 'ltr');
-
-        $html = view('basicdata::exports.pdf', [
-            'headers' => $headers, 
-            'data' => $dataExcel, 
-            'name' => $name,
-            'date' => now()->format('Y-m-d H:i')
-        ])->render();
-
-        $mpdf->WriteHTML($html);
-        return response($mpdf->Output($name . '.pdf', 'I'), 200, [
-            'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'inline; filename="' . $name . '.pdf"'
-        ]);
     }
 }

@@ -235,6 +235,12 @@ class DbProductRepository extends BaseRepository
                     'vat' => $product->vat,
                     'have_sizes' => $product->have_sizes_text,
                 ];
-            })->toArray();
+            })
+            ->toArray();
+    }
+
+    public function name(): string
+    {
+        return __('basicdata::models/db_products.singular');
     }
 }
