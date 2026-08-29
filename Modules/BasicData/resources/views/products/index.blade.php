@@ -173,6 +173,8 @@
 <!-- Livewire Product Modal -->
 <livewire:basicdata::products.product-modal />
 
-<!-- Livewire Product Import Modal -->
-<livewire:basicdata::products.product-import-modal />
+@if(!$isService)
+    <!-- Livewire Product Import Modal -->
+    <livewire:basicdata::products.product-import-modal />
+@endif
 @endsection
