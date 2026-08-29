@@ -178,4 +178,26 @@ abstract class BasicDataResourceController extends AppBaseController
             return redirect()->back();
         }
     }
+
+    public function import(Request $request)
+    {
+        $view = "basicdata::{$this->viewPath}.import";
+        if (view()->exists($view)) {
+            return view($view, $this->formViewData());
+        }
+        flash()->warning('خاصية الاستيراد غير متوفرة لهذا القسم حالياً.');
+        return redirect()->route("basicdata.{$this->viewPath}.index");
+    }
+
+    public function importTemplate()
+    {
+        flash()->warning('نموذج الاستيراد غير متوفر لهذا القسم حالياً.');
+        return redirect()->back();
+    }
+
+    public function importsave(Request $request)
+    {
+        flash()->warning('خاصية حفظ الاستيراد غير متوفرة لهذا القسم حالياً.');
+        return redirect()->back();
+    }
 }

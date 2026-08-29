@@ -8,6 +8,10 @@ use Modules\BasicData\App\Http\Requests\CreateDbProductRequest;
 use Modules\BasicData\App\Http\Requests\UpdateDbProductRequest;
 use Modules\BasicData\App\Repositories\DbProductRepository;
 
+use Maatwebsite\Excel\Facades\Excel;
+use Modules\BasicData\App\Exports\ProductTemplateExport;
+use Modules\BasicData\App\Imports\ProductsImport;
+
 class DbProductController extends BasicDataResourceController
 {
     protected string $viewPath = 'products';
@@ -55,5 +59,41 @@ class DbProductController extends BasicDataResourceController
             'vats' => $this->repository->vats(),
             'types' => $this->repository->types(),
         ];
+    }
+
+    public function import(Request $request)
+    {
+        return view('basicdata::products.import', $this->formViewData());
+    }
+
+    public function importsave(Request $request)
+    {
+        set_time_limit(600);
+        ini_set('memory_limit', '1G');
+
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls,csv',
+        ]);
+
+        try {
+            $import = new ProductsImport();
+            Excel::import($import, $request->file('file'));
+
+            flash()->success(__('messages.imported', ['model' => __('basicdata::models/db_products.plural')]));
+            return redirect()->route('basicdata.products.index');
+
+        } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
+            $failures = $e->failures();
+            flash()->error(__('crud.import_errors_message'));
+            return redirect()->back()->with('failures', $failures);
+        } catch (\Exception $e) {
+            flash()->error(__('messages.error_importing', ['model' => __('basicdata::models/db_products.plural')]) . ': ' . $e->getMessage());
+            return redirect()->back();
+        }
+    }
+
+    public function importTemplate()
+    {
+        return Excel::download(new ProductTemplateExport(), 'Product_Import_Template.xlsx');
     }
 }
