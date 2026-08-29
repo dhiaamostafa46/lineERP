@@ -12,17 +12,13 @@ use App\Repositories\BaseRepository;
 use Illuminate\Support\Facades\DB;
 use Modules\BasicData\App\Models\DbKitchen;
 
-class DbProductRepository extends BaseRepository
+class DbProductRepository extends BasicDataBaseRepository
 {
-    protected $fieldSearchable = [
+    protected array $fieldSearchable = [
         'name',
         'status'
     ];
-
-    public function getFieldsSearchable(): array
-    {
-        return $this->fieldSearchable;
-    }
+    protected ?string $modelTranslation = 'basicdata::models/db_products.singular';
 
     public function allQuery(array $search = [], ?int $skip = null, ?int $limit = null): \Illuminate\Database\Eloquent\Builder
     {

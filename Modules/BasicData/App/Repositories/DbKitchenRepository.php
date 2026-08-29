@@ -2,11 +2,9 @@
 
 namespace Modules\BasicData\App\Repositories;
 
-use App\Repositories\BaseRepository;
-use Illuminate\Database\Eloquent\Builder;
 use Modules\BasicData\App\Models\DbKitchen;
 
-class DbKitchenRepository extends BaseRepository
+class DbKitchenRepository extends BasicDataBaseRepository
 {
     protected array $fieldSearchable = [
         'orgID',
@@ -15,30 +13,11 @@ class DbKitchenRepository extends BaseRepository
         'barcode',
         'status',
     ];
-
-    public function getFieldsSearchable(): array
-    {
-        return $this->fieldSearchable;
-    }
-
-    public function allQuery(array $search = [], ?int $skip = null, ?int $limit = null): Builder
-    {
-        return parent::allQuery($search, $skip, $limit);
-    }
+    protected ?string $modelTranslation = 'basicdata::models/db_kitchens.singular';
 
     public function model(): string
     {
         return DbKitchen::class;
-    }
-
-    public function statuses(): array
-    {
-        return DbKitchen::statuses();
-    }
-
-    public function listItems(int $id)
-    {
-        return DbKitchen::findOrFail($id);
     }
 
     public function header(): array
@@ -66,10 +45,5 @@ class DbKitchenRepository extends BaseRepository
                 ];
             })
             ->toArray();
-    }
-
-    public function name(): string
-    {
-        return __('basicdata::models/db_kitchens.singular');
     }
 }

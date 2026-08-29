@@ -3,36 +3,15 @@
 namespace Modules\BasicData\App\Repositories;
 
 use App\Models\BasicDataApp\Unit;
-use App\Repositories\BaseRepository;
-use Illuminate\Database\Eloquent\Builder;
 
-class DbUnitRepository extends BaseRepository
+class DbUnitRepository extends BasicDataBaseRepository
 {
     protected array $fieldSearchable = ['name', 'status'];
-
-    public function getFieldsSearchable(): array
-    {
-        return $this->fieldSearchable;
-    }
-
-    public function allQuery(array $search = [], ?int $skip = null, ?int $limit = null): Builder
-    {
-        return parent::allQuery($search, $skip, $limit);
-    }
+    protected ?string $modelTranslation = 'basicdata::models/db_units.singular';
 
     public function model(): string
     {
         return Unit::class;
-    }
-
-    public function statuses(): array
-    {
-        return Unit::statuses();
-    }
-
-    public function listItems(int $id)
-    {
-        return Unit::findOrFail($id);
     }
 
     public function header(): array
@@ -60,10 +39,5 @@ class DbUnitRepository extends BaseRepository
                 ];
             })
             ->toArray();
-    }
-
-    public function name(): string
-    {
-        return __('basicdata::models/db_units.singular');
     }
 }

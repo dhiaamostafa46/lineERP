@@ -2,11 +2,9 @@
 
 namespace Modules\BasicData\App\Repositories;
 
-use App\Repositories\BaseRepository;
-use Illuminate\Database\Eloquent\Builder;
 use Modules\BasicData\App\Models\DbServicePoint;
 
-class DbServicePointRepository extends BaseRepository
+class DbServicePointRepository extends BasicDataBaseRepository
 {
     protected array $fieldSearchable = [
         'orgID',
@@ -16,35 +14,11 @@ class DbServicePointRepository extends BaseRepository
         'type',
         'status',
     ];
-
-    public function getFieldsSearchable(): array
-    {
-        return $this->fieldSearchable;
-    }
-
-    public function allQuery(array $search = [], ?int $skip = null, ?int $limit = null): Builder
-    {
-        return parent::allQuery($search, $skip, $limit);
-    }
+    protected ?string $modelTranslation = 'basicdata::models/db_service_points.singular';
 
     public function model(): string
     {
         return DbServicePoint::class;
-    }
-
-    public function statuses(): array
-    {
-        return DbServicePoint::statuses();
-    }
-
-    public function types(): array
-    {
-        return DbServicePoint::types();
-    }
-
-    public function listItems(int $id)
-    {
-        return DbServicePoint::findOrFail($id);
     }
 
     public function header(): array
@@ -74,10 +48,5 @@ class DbServicePointRepository extends BaseRepository
                 ];
             })
             ->toArray();
-    }
-
-    public function name(): string
-    {
-        return __('basicdata::models/db_service_points.singular');
     }
 }
