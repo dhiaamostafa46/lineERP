@@ -1,96 +1,13 @@
 @extends('layouts.app')
 
-@section('title', __('basicdata::models/db_kitchens.singular'))
+@section('title', __('crud.create') . ' ' . __('basicdata::models/db_kitchens.singular'))
 
 @section('content')
-<div class="d-flex flex-column flex-column-fluid">
-    <!--begin::Toolbar-->
-    <div id="kt_app_toolbar" class="app-toolbar py-3 py-lg-6">
-        <!--begin::Toolbar container-->
-        <div id="kt_app_toolbar_container" class="app-container container-xxl d-flex flex-stack">
-            <!--begin::Page title-->
-            <div class="page-title d-flex flex-column justify-content-center flex-wrap me-3">
-                <!--begin::Title-->
-                <h1 class="page-heading d-flex text-gray-900 fw-bold fs-3 flex-column justify-content-center my-0">
-                    @lang('crud.create') @lang('basicdata::models/db_kitchens.singular')
-                </h1>
-                <!--end::Title-->
-                <!--begin::Breadcrumb-->
-                <ul class="breadcrumb breadcrumb-separatorless fw-semibold fs-7 my-0 pt-1">
-                    <!--begin::Item-->
-                    <li class="breadcrumb-item text-muted">
-                        <a href="{{ route('dashboard') }}"
-                            class="text-muted text-hover-primary">@lang('lang.dashboard')</a>
-                    </li>
-                    <!--end::Item-->
-                    <!--begin::Item-->
-                    <li class="breadcrumb-item">
-                        <span class="bullet bg-gray-500 w-5px h-2px"></span>
-                    </li>
-                    <!--end::Item-->
-                    <!--begin::Item-->
-                    <li class="breadcrumb-item text-muted">
-                        <a href="{{ route('basicdata.kitchens.index') }}" class="text-muted text-hover-primary">
-                            @lang('basicdata::models/db_kitchens.plural')
-                        </a>
-                    </li>
-                    <!--end::Item-->
-                    <!--begin::Item-->
-                    <li class="breadcrumb-item">
-                        <span class="bullet bg-gray-500 w-5px h-2px"></span>
-                    </li>
-                    <!--end::Item-->
-                    <!--begin::Item-->
-                    <li class="breadcrumb-item text-muted">
-                        @lang('crud.create')
-                    </li>
-                    <!--end::Item-->
-                </ul>
-                <!--end::Breadcrumb-->
-            </div>
-            <!--end::Page title-->
-            <!--begin::Actions-->
-            <div class="d-flex align-items-center gap-2 gap-lg-3">
-                <a href="{{ route('basicdata.kitchens.index') }}" class="btn btn-sm btn-secondary">
-                    @lang('crud.cancel')
-                </a>
-            </div>
-            <!--end::Actions-->
-        </div>
-        <!--end::Toolbar container-->
-    </div>
-    <!--end::Toolbar-->
-    <!--begin::Content-->
-    <div id="kt_app_content" class="app-content flex-column-fluid">
-        <!--begin::Content container-->
-        <div id="kt_app_content_container" class="app-container container-xxl">
-            @include('adminlte-templates::common.errors')
-            <div class="clearfix"></div>
-            <div class="card">
-
-                {!! Form::open(['route' => 'basicdata.kitchens.store','files' => true]) !!}
-
-                <div class="card-body">
-
-                    <div class="row">
-                        @include('basicdata::kitchens.fields')
-                    </div>
-
-                </div>
-
-                <div class="card-footer py-4 text-end">
-                    <a href="{{ route('basicdata.kitchens.index') }}" class="btn btn-sm btn-secondary">
-                        @lang('crud.cancel')
-                    </a>
-                    {!! Form::submit(__('crud.save'), ['class' => 'btn btn-sm btn-primary']) !!}
-                </div>
-
-                {!! Form::close() !!}
-
-            </div>
-        </div>
-        <!--end::Content container-->
-    </div>
-    <!--end::Content-->
-</div>
+    @include('basicdata::layouts.partials._form_page', [
+        'title' => __('basicdata::models/db_kitchens.singular'),
+        'pluralTitle' => __('basicdata::models/db_kitchens.plural'),
+        'indexRoute' => 'basicdata.kitchens.index',
+        'actionRoute' => 'basicdata.kitchens.store',
+        'fieldsView' => 'basicdata::kitchens.fields'
+    ])
 @endsection

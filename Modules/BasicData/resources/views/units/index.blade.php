@@ -5,46 +5,15 @@
 @section('content')
 <div class="d-flex flex-column flex-column-fluid">
     
-    <!--begin::Toolbar-->
-    <div id="kt_app_toolbar" class="app-toolbar py-3 py-lg-4">
-        <div id="kt_app_toolbar_container" class="app-container container-xxl d-flex align-items-center justify-content-between">
-            
-            <div class="page-title d-flex flex-column justify-content-center">
-                <h1 class="page-heading text-gray-900 fw-bold fs-4 my-0">
-                    @lang('basicdata::models/db_units.plural')
-                </h1>
-                <ul class="breadcrumb breadcrumb-separatorless fw-semibold fs-8 my-0 pt-1">
-                    <li class="breadcrumb-item text-muted">
-                        <a href="{{ route('dashboard') }}" class="text-muted text-hover-primary" wire:navigate>
-                            @lang('lang.dashboard')
-                        </a>
-                    </li>
-                    <li class="breadcrumb-item"><span class="bullet bg-gray-400 w-4px h-1px mx-2"></span></li>
-                    <li class="breadcrumb-item text-muted">@lang('basicdata::lang.basicdata')</li>
-                    <li class="breadcrumb-item"><span class="bullet bg-gray-400 w-4px h-1px mx-2"></span></li>
-                    <li class="breadcrumb-item text-muted">@lang('basicdata::models/db_units.plural')</li>
-                </ul>
-            </div>
+    @include('basicdata::layouts.partials._page_toolbar', [
+        'title' => __('basicdata::models/db_units.plural'),
+        'permission' => 'basicdata.units.create'
+    ])
 
-            <!-- Header Actions -->
-            <div class="d-flex align-items-center gap-2">
-                @can('basicdata.units.create')
-                    <button type="button" class="btn btn-sm front-btn-primary" x-on:click="$dispatch('openCreateModal')" onclick="if(window.Livewire) Livewire.dispatch('openCreateModal')">
-                        <i class="fa-solid fa-plus fs-8"></i>
-                        @lang('crud.add_new')
-                    </button>
-                @endcan
-            </div>
-
-        </div>
-    </div>
-    <!--end::Toolbar-->
-
-    <!--begin::Content-->
     <div id="kt_app_content" class="app-content flex-column-fluid">
         <div id="kt_app_content_container" class="app-container container-xxl">
 
-            <!-- 1. KPI Stat Cards -->
+            <!-- KPI Stat Cards -->
             <div class="row g-3 g-lg-4 mb-4">
                 <div class="col-sm-6">
                     <div class="front-stat-card">
@@ -69,109 +38,26 @@
                 </div>
             </div>
 
-            <!-- 2. Front Card -->
+            <!-- Front Card -->
             <div class="front-card">
-                <div class="front-card-header">
-                    
-                    <!-- Search Input -->
-                    <div class="position-relative flex-grow-1" style="max-width: 340px;">
-                        {!! Form::open(['route' => 'basicdata.units.index', 'method' => 'GET', 'id' => 'frontSearchUnitForm']) !!}
-                            <i class="fas fa-search position-absolute top-50 translate-middle-y ms-3 text-muted fs-7"></i>
-                            <input type="text" 
-                                   name="name" 
-                                   value="{{ request('name') }}" 
-                                   class="form-control front-search-input" 
-                                   placeholder="@lang('basicdata::models/db_units.fields.name')..." 
-                                   onchange="document.getElementById('frontSearchUnitForm').submit()" />
-                        {!! Form::close() !!}
-                    </div>
+                @include('basicdata::layouts.partials._table_header', [
+                    'route' => 'basicdata.units.index',
+                    'title' => __('basicdata::models/db_units.plural'),
+                    'placeholder' => __('basicdata::models/db_units.fields.name'),
+                    'excelRoute' => 'basicdata.units.excel',
+                    'pdfRoute' => 'basicdata.units.pdf',
+                    'statuses' => $statuses ?? []
+                ])
 
-                    <!-- Right Controls: Export & Filter -->
-                    <div class="d-flex align-items-center gap-2">
-                        
-                        <!-- Export Dropdown -->
-                        <div class="dropdown">
-                            <button type="button" class="front-btn-export dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fa-solid fa-arrow-down-to-bracket fs-8"></i>
-                                <span>Export</span>
-                            </button>
-                            <ul class="dropdown-menu dropdown-menu-end shadow-sm border py-2 rounded-2" style="font-size: 13px;">
-                                @can('basicdata.units.print')
-                                    <li><a class="dropdown-item py-2 d-flex align-items-center gap-2" href="#" onclick="window.print(); return false;"><i class="fa-solid fa-print text-muted fs-7"></i><span>@lang('crud.print')</span></a></li>
-                                @endcan
-                                @can('basicdata.units.copy')
-                                    <li><a class="dropdown-item py-2 d-flex align-items-center gap-2 copy-table" href="#" data-target="#db-units-table"><i class="fa-solid fa-copy text-muted fs-7"></i><span>Copy Table</span></a></li>
-                                @endcan
-                                @can('basicdata.units.excel')
-                                    <li><a class="dropdown-item py-2 d-flex align-items-center gap-2" href="{{ route('basicdata.units.excel') }}"><i class="fa-solid fa-file-excel text-success fs-7"></i><span>Excel</span></a></li>
-                                @endcan
-                                @can('basicdata.units.pdf')
-                                    <li><a class="dropdown-item py-2 d-flex align-items-center gap-2" href="{{ route('basicdata.units.pdf') }}"><i class="fa-solid fa-file-pdf text-danger fs-7"></i><span>PDF</span></a></li>
-                                @endcan
-                            </ul>
-                        </div>
-
-                        <!-- Filter Dropdown -->
-                        <div class="dropdown">
-                            @php
-                                $activeUnitFilters = (request('name') ? 1 : 0) + (request('status') ? 1 : 0);
-                            @endphp
-                            <button type="button" 
-                                    class="front-btn-filter dropdown-toggle {{ $activeUnitFilters > 0 ? 'show text-primary border-primary' : '' }}" 
-                                    data-bs-toggle="dropdown" 
-                                    data-bs-auto-close="outside"
-                                    aria-expanded="false">
-                                <i class="fa-solid fa-sliders fs-8"></i>
-                                <span>Filter</span>
-                                @if($activeUnitFilters > 0)
-                                    <span class="badge rounded-pill bg-primary text-white fs-9 px-2 py-0 ms-1">{{ $activeUnitFilters }}</span>
-                                @endif
-                            </button>
-
-                            <div class="dropdown-menu dropdown-menu-end front-filter-dropdown shadow-lg">
-                                {!! Form::open(['route' => 'basicdata.units.index', 'method' => 'GET']) !!}
-                                    <div class="d-flex align-items-center justify-content-between pb-3 mb-3 border-bottom">
-                                        <h5 class="front-filter-title">Filter @lang('basicdata::models/db_units.plural')</h5>
-                                        <button type="button" class="btn btn-sm btn-icon btn-ghost-secondary p-0" onclick="this.closest('.dropdown-menu').classList.remove('show')">
-                                            <i class="fa-solid fa-xmark text-muted fs-6"></i>
-                                        </button>
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <span class="front-filter-section-title">@lang('basicdata::models/db_units.fields.status')</span>
-                                        <x-select2-input name="status" :placeholder="__('hr::lang.select_status')" :list="$statuses" :selected_id="request('status')"></x-select2-input>
-                                    </div>
-
-                                    <div class="mb-4">
-                                        <span class="front-filter-section-title">PAGINATION</span>
-                                        {!! Form::select('pagination', config('statusSystem.pagination'), request('pagination') ?? null, ['class' => 'form-select form-select-sm fs-7']) !!}
-                                    </div>
-
-                                    <div class="d-flex gap-2">
-                                        <button type="submit" class="btn btn-primary front-btn-primary w-100 justify-content-center">Apply</button>
-                                        @if($activeUnitFilters > 0)
-                                            <a href="{{ route('basicdata.units.index') }}" class="btn btn-light front-btn-filter" title="Reset"><i class="fa-solid fa-rotate-left fs-8"></i></a>
-                                        @endif
-                                    </div>
-                                {!! Form::close() !!}
-                            </div>
-                        </div>
-
-                    </div>
+                <div class="front-card-body">
+                    @include('basicdata::units.table')
                 </div>
-
-                <!-- Table Component -->
-                @include('basicdata::units.table')
             </div>
 
         </div>
     </div>
-
-    <!-- Floating Bulk Actions Bar -->
-    <x-bulk-action-bar route="{{ route('basicdata.units.bulkDelete') }}" />
-
-    <!-- Livewire Unit Modal -->
-    @livewire('basicdata::units.unit-modal')
-
 </div>
+
+<!-- Livewire Unit Modal -->
+<livewire:basicdata::units.unit-modal />
 @endsection
