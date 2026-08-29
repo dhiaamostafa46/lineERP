@@ -23,23 +23,31 @@ class DbProductController extends BasicDataResourceController
 
     protected function indexViewData(Request $request): array
     {
+        $type = (int)$request->get('type', 1);
+
         return [
-            'type' => (int)$request->get('type', 1),
+            'type' => $type,
+            'isService' => $type === 2,
             'categories' => $this->repository->categories(),
             'kitchens' => $this->repository->kitchens(),
             'units' => $this->repository->units(),
             'vats' => $this->repository->vats(),
             'types' => $this->repository->types(),
-            'totalProductsCount' => Product::where('type', 1)->count(),
-            'totalServicesCount' => Product::where('type', 2)->count(),
-            'activeCount' => Product::where('status', 1)->count(),
+            'statuses' => $this->repository->statuses(),
+            'totalCount' => Product::where('type', $type)->count(),
+            'activeCount' => Product::where('type', $type)->where('status', 1)->count(),
+            'inactiveCount' => Product::where('type', $type)->where('status', 0)->count(),
+            'totalCategoriesCount' => count($this->repository->categories()),
         ];
     }
 
     protected function formViewData(?int $id = null): array
     {
+        $type = (int)request()->get('type', 1);
+
         return [
-            'type' => request()->get('type', 1),
+            'type' => $type,
+            'isService' => $type === 2,
             'categories' => $this->repository->categories(),
             'kitchens' => $this->repository->kitchens(),
             'statuses' => $this->repository->statuses(),

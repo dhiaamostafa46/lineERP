@@ -26,6 +26,8 @@ class DbProductRepository extends BasicDataBaseRepository
 
         if (request()->filled('type')) {
             $query->where('type', request('type'));
+        } else {
+            $query->where('type', 1);
         }
 
         if (request()->filled('status')) {

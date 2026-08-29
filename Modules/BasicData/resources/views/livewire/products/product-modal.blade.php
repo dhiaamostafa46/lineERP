@@ -5,15 +5,16 @@
         <!-- Modal Backdrop -->
         <div class="modal-backdrop fade show premium-modal-backdrop" wire:click="closeModal"></div>
 
-        <!-- Product Modal Dialog -->
+        <!-- Product / Service Modal Dialog -->
         <div class="modal fade show d-block premium-modal-dialog" tabindex="-1" aria-modal="true" role="dialog" x-data="{ activeTab: 'basic' }">
-            <div class="modal-dialog modal-dialog-centered modal-xl" style="max-width: 920px;">
+            <div class="modal-dialog modal-dialog-centered modal-xl" style="max-width: 900px;">
                 <div class="modal-content premium-modal-content overflow-hidden">
                     
                     <!-- Modal Header -->
                     <div class="modal-header py-4 px-6 border-bottom d-flex align-items-center justify-content-between" style="background: #ffffff;">
                         <div class="d-flex align-items-center gap-3">
-                            <div class="d-flex align-items-center justify-content-center rounded-3 shadow-xs" style="width: 44px; height: 44px; background: {{ $type == 2 ? 'linear-gradient(135deg, #10b981 0%, #059669 100%)' : 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)' }}; color: #ffffff;">
+                            <div class="d-flex align-items-center justify-content-center rounded-3 shadow-xs" 
+                                 style="width: 44px; height: 44px; background: {{ $type == 2 ? 'linear-gradient(135deg, #10b981 0%, #059669 100%)' : 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)' }}; color: #ffffff;">
                                 <i class="{{ $type == 2 ? 'fa-solid fa-bell-concierge' : 'fa-solid fa-box-open' }} fs-4"></i>
                             </div>
                             <div>
@@ -21,7 +22,7 @@
                                     {{ $is_edit ? __('crud.edit') : __('crud.add_new') }} {{ $type == 2 ? __('basicdata::models/db_products.service') : __('basicdata::models/db_products.product') }}
                                 </h4>
                                 <span class="text-muted fs-8">
-                                    {{ $type == 2 ? __('basicdata::models/db_products.fields.details') : __('basicdata::models/db_products.singular') }}
+                                    {{ $type == 2 ? 'تعريف وتخصيص بيانات الخدمة وأسعارها' : 'إدارة بيانات المنتجات والوحدات والمقاسات' }}
                                 </span>
                             </div>
                         </div>
@@ -30,43 +31,68 @@
                         </button>
                     </div>
 
-                    <!-- Navigation Segmented Tabs (تصميم كبسولات حديث) -->
+                    <!-- Navigation Segmented Tabs (تخصيص التابات بحسب النوع) -->
                     <div class="px-6 py-3 border-bottom" style="background: #f8fafc;">
                         <div class="segmented-tabs-wrapper w-100 justify-content-start">
-                            <!-- Tab 1: Basic Info -->
-                            <button type="button" 
-                                    class="segmented-tab-btn flex-fill justify-content-center" 
-                                    :class="activeTab === 'basic' ? 'active text-primary' : ''" 
-                                    @click="activeTab = 'basic'">
-                                <i class="fa-solid fa-circle-info fs-7"></i>
-                                <span>{{ __('basicdata::models/db_products.sections.basic_info') }}</span>
-                            </button>
+                            @if($type == 2)
+                                <!-- SERVICE TABS (Only 2 Tabs) -->
+                                <button type="button" 
+                                        class="segmented-tab-btn flex-fill justify-content-center" 
+                                        :class="activeTab === 'basic' ? 'active text-success' : ''" 
+                                        @click="activeTab = 'basic'">
+                                    <i class="fa-solid fa-bell-concierge fs-7"></i>
+                                    <span>بيانات وأسعار الخدمة</span>
+                                </button>
 
-                            <!-- Tab 2: Multiple Units -->
-                            <button type="button" 
-                                    class="segmented-tab-btn flex-fill justify-content-center" 
-                                    :class="activeTab === 'units' ? 'active text-success' : ''" 
-                                    @click="activeTab = 'units'">
-                                <i class="fa-solid fa-layer-group fs-7"></i>
-                                <span>{{ __('basicdata::models/db_products.sections.units') }}</span>
-                                <span class="badge rounded-pill bg-light-success text-success fs-9 ms-1" style="padding: 0.2rem 0.5rem;">
-                                    {{ count($units) }}
-                                </span>
-                            </button>
+                                <button type="button" 
+                                        class="segmented-tab-btn flex-fill justify-content-center" 
+                                        :class="activeTab === 'details' ? 'active text-success' : ''" 
+                                        @click="activeTab = 'details'">
+                                    <i class="fa-solid fa-align-left fs-7"></i>
+                                    <span>تفاصيل ووصف الخدمة</span>
+                                </button>
+                            @else
+                                <!-- PRODUCT TABS (3 Tabs) -->
+                                <button type="button" 
+                                        class="segmented-tab-btn flex-fill justify-content-center" 
+                                        :class="activeTab === 'basic' ? 'active text-primary' : ''" 
+                                        @click="activeTab = 'basic'">
+                                    <i class="fa-solid fa-circle-info fs-7"></i>
+                                    <span>{{ __('basicdata::models/db_products.sections.basic_info') }}</span>
+                                </button>
 
-                            <!-- Tab 3: Sizes & Variations -->
-                            <button type="button" 
-                                    class="segmented-tab-btn flex-fill justify-content-center" 
-                                    :class="activeTab === 'sizes' ? 'active text-danger' : ''" 
-                                    @click="activeTab = 'sizes'">
-                                <i class="fa-solid fa-ruler-combined fs-7"></i>
-                                <span>{{ __('basicdata::models/db_products.sections.sizes') }}</span>
-                                @if($have_sizes)
-                                    <span class="badge rounded-pill bg-danger text-white fs-9 ms-1" style="padding: 0.2rem 0.5rem;">
-                                        {{ count($sizes) }}
+                                <button type="button" 
+                                        class="segmented-tab-btn flex-fill justify-content-center" 
+                                        :class="activeTab === 'units' ? 'active text-success' : ''" 
+                                        @click="activeTab = 'units'">
+                                    <i class="fa-solid fa-layer-group fs-7"></i>
+                                    <span>{{ __('basicdata::models/db_products.sections.units') }}</span>
+                                    <span class="badge rounded-pill bg-light-success text-success fs-9 ms-1" style="padding: 0.2rem 0.5rem;">
+                                        {{ count($units) }}
                                     </span>
-                                @endif
-                            </button>
+                                </button>
+
+                                <button type="button" 
+                                        class="segmented-tab-btn flex-fill justify-content-center" 
+                                        :class="activeTab === 'sizes' ? 'active text-danger' : ''" 
+                                        @click="activeTab = 'sizes'">
+                                    <i class="fa-solid fa-ruler-combined fs-7"></i>
+                                    <span>{{ __('basicdata::models/db_products.sections.sizes') }}</span>
+                                    @if($have_sizes)
+                                        <span class="badge rounded-pill bg-danger text-white fs-9 ms-1" style="padding: 0.2rem 0.5rem;">
+                                            {{ count($sizes) }}
+                                        </span>
+                                    @endif
+                                </button>
+
+                                <button type="button" 
+                                        class="segmented-tab-btn flex-fill justify-content-center" 
+                                        :class="activeTab === 'details' ? 'active text-primary' : ''" 
+                                        @click="activeTab = 'details'">
+                                    <i class="fa-solid fa-align-left fs-7"></i>
+                                    <span>الوصف</span>
+                                </button>
+                            @endif
                         </div>
                     </div>
 
@@ -94,33 +120,35 @@
                                     @foreach (config('langs', ['ar' => 'العربية', 'en' => 'English']) as $locale => $language)
                                         <div class="col-md-6">
                                             <label class="modern-form-label">
-                                                {{ $language }} - {{ __('basicdata::models/db_products.fields.name') }} <span class="text-danger">*</span>
+                                                {{ $language }} - {{ $type == 2 ? 'اسم الخدمة' : __('basicdata::models/db_products.fields.name') }} <span class="text-danger">*</span>
                                             </label>
                                             <input type="text" 
                                                    wire:model="name.{{ $locale }}" 
                                                    class="form-control modern-input @error('name.'.$locale) is-invalid @enderror" 
-                                                   placeholder="{{ __('basicdata::models/db_products.placeholders.name') }} ({{ $language }})" />
+                                                   placeholder="{{ $type == 2 ? 'اسم الخدمة' : __('basicdata::models/db_products.placeholders.name') }} ({{ $language }})" />
                                             @error('name.'.$locale)
                                                 <div class="invalid-feedback fs-8">{{ $message }}</div>
                                             @enderror
                                         </div>
                                     @endforeach
 
-                                    <!-- Barcode -->
-                                    <div class="col-md-6">
-                                        <label class="modern-form-label">
-                                            {{ __('basicdata::models/db_products.fields.barcode') }}
-                                        </label>
-                                        <div class="input-group">
-                                            <span class="input-group-text bg-light text-muted border" style="border-radius: 0 0.625rem 0.625rem 0;"><i class="fa-solid fa-barcode"></i></span>
-                                            <input type="text" 
-                                                   wire:model="barcode" 
-                                                   class="form-control modern-input @error('barcode') is-invalid @enderror" 
-                                                   style="border-radius: 0.625rem 0 0 0.625rem;"
-                                                   placeholder="{{ __('basicdata::models/db_products.placeholders.barcode') }}" />
+                                    @if($type != 2)
+                                        <!-- Barcode (Products Only) -->
+                                        <div class="col-md-6">
+                                            <label class="modern-form-label">
+                                                {{ __('basicdata::models/db_products.fields.barcode') }}
+                                            </label>
+                                            <div class="input-group">
+                                                <span class="input-group-text bg-light text-muted border" style="border-radius: 0 0.625rem 0.625rem 0;"><i class="fa-solid fa-barcode"></i></span>
+                                                <input type="text" 
+                                                       wire:model="barcode" 
+                                                       class="form-control modern-input @error('barcode') is-invalid @enderror" 
+                                                       style="border-radius: 0.625rem 0 0 0.625rem;"
+                                                       placeholder="{{ __('basicdata::models/db_products.placeholders.barcode') }}" />
+                                            </div>
+                                            @error('barcode') <div class="invalid-feedback fs-8">{{ $message }}</div> @enderror
                                         </div>
-                                        @error('barcode') <div class="invalid-feedback fs-8">{{ $message }}</div> @enderror
-                                    </div>
+                                    @endif
 
                                     <!-- Category -->
                                     <div class="col-md-6">
@@ -139,10 +167,10 @@
                                     <!-- Sale Price -->
                                     <div class="col-md-6">
                                         <label class="modern-form-label">
-                                            {{ __('basicdata::models/db_products.fields.prod_price') }} <span class="text-danger">*</span>
+                                            {{ $type == 2 ? 'سعر الخدمة' : __('basicdata::models/db_products.fields.prod_price') }} <span class="text-danger">*</span>
                                         </label>
                                         <div class="input-group">
-                                            <span class="input-group-text bg-light text-primary fw-bold border" style="border-radius: 0 0.625rem 0.625rem 0;">{{ config('app.currency', 'SAR') }}</span>
+                                            <span class="input-group-text bg-light {{ $type == 2 ? 'text-success' : 'text-primary' }} fw-bold border" style="border-radius: 0 0.625rem 0.625rem 0;">{{ config('app.currency', 'SAR') }}</span>
                                             <input type="number" 
                                                    step="0.01" 
                                                    min="0" 
@@ -157,7 +185,7 @@
                                     <!-- Cost Price -->
                                     <div class="col-md-6">
                                         <label class="modern-form-label">
-                                            {{ __('basicdata::models/db_products.fields.cost_price') }}
+                                            {{ $type == 2 ? 'تكلفة الخدمة' : __('basicdata::models/db_products.fields.cost_price') }}
                                         </label>
                                         <div class="input-group">
                                             <span class="input-group-text bg-light text-muted border" style="border-radius: 0 0.625rem 0.625rem 0;">{{ config('app.currency', 'SAR') }}</span>
@@ -203,7 +231,7 @@
                                     <!-- Image Upload -->
                                     <div class="col-md-12">
                                         <label class="modern-form-label">
-                                            {{ __('basicdata::models/db_products.fields.img') }}
+                                            {{ $type == 2 ? 'أيقونة / صورة الخدمة' : __('basicdata::models/db_products.fields.img') }}
                                         </label>
                                         <div class="d-flex align-items-center gap-3">
                                             <input type="file" wire:model="img" class="form-control modern-input" accept="image/*" />
@@ -218,189 +246,165 @@
                                                 </div>
                                             @endif
                                         </div>
-                                        @error('img') <div class="text-danger fs-8 mt-1">{{ $message }}</div> @enderror
                                     </div>
-
-                                    <!-- Multilingual Details -->
-                                    @foreach (config('langs', ['ar' => 'العربية', 'en' => 'English']) as $locale => $language)
-                                        <div class="col-md-6">
-                                            <label class="modern-form-label">
-                                                {{ $language }} - {{ __('basicdata::models/db_products.fields.details') }}
-                                            </label>
-                                            <textarea wire:model="details.{{ $locale }}" 
-                                                      class="form-control modern-input" 
-                                                      rows="2" 
-                                                      placeholder="{{ __('basicdata::models/db_products.placeholders.details') }} ({{ $language }})"></textarea>
-                                        </div>
-                                    @endforeach
                                 </div>
                             </div>
 
-                            <!-- TAB 2: MULTIPLE UNITS -->
-                            <div x-show="activeTab === 'units'" x-transition.opacity.duration.150ms style="display: none;">
-                                <div class="d-flex justify-content-between align-items-center mb-4">
-                                    <div>
-                                        <h6 class="fw-bold text-gray-900 mb-1 fs-6">{{ __('basicdata::models/db_products.sections.units') }}</h6>
-                                        <span class="text-muted fs-8">{{ __('basicdata::models/db_products.unit.conversion_factor') }}</span>
-                                    </div>
-                                    <button type="button" class="btn btn-sm btn-light-primary fw-bold rounded-2 px-3" wire:click="addUnitRow">
-                                        <i class="fas fa-plus fs-8 me-1"></i> {{ __('basicdata::models/db_products.sections.add_unit') }}
-                                    </button>
-                                </div>
-
-                                <div class="d-flex flex-column gap-3">
-                                    @foreach ($units as $index => $unit)
-                                        <div class="modern-unit-card d-flex flex-wrap align-items-center justify-content-between gap-3" wire:key="unit-row-{{ $index }}">
-                                            <div class="row g-3 flex-grow-1 align-items-center">
-                                                <div class="col-md-5">
-                                                    <label class="modern-form-label fs-8 mb-1">{{ __('basicdata::models/db_products.unit.unit_id') }}:</label>
-                                                    <select wire:model="units.{{ $index }}.unit_id" class="form-select modern-input form-select-sm fs-7">
-                                                        <option value="">-- @lang('basicdata::lang.select') --</option>
-                                                        @foreach($unitsList as $uId => $uName)
-                                                            <option value="{{ $uId }}">{{ $uName }}</option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
-
-                                                <div class="col-md-4">
-                                                    <label class="modern-form-label fs-8 mb-1">{{ __('basicdata::models/db_products.unit.conversion_factor') }}:</label>
-                                                    <input type="number" 
-                                                           step="0.01" 
-                                                           min="0" 
-                                                           wire:model="units.{{ $index }}.conversion_factor" 
-                                                           class="form-control modern-input form-control-sm fs-7" 
-                                                           placeholder="1.00" />
-                                                </div>
-
-                                                <div class="col-md-3">
-                                                    <label class="modern-form-label fs-8 mb-1">{{ __('basicdata::models/db_products.unit.is_base') }}:</label>
-                                                    <div class="form-check form-switch mt-1">
-                                                        <input class="form-check-input cursor-pointer" type="checkbox" wire:model="units.{{ $index }}.is_base" id="is_base_{{ $index }}" style="width: 2.2rem; height: 1.2rem;">
-                                                        <label class="form-check-label fs-8 text-gray-700 fw-semibold cursor-pointer ms-2" for="is_base_{{ $index }}">
-                                                            {{ __('basicdata::models/db_products.unit.is_base') }}
-                                                        </label>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div>
-                                                @if(count($units) > 1)
-                                                    <button type="button" class="btn btn-icon btn-sm btn-light-danger rounded-circle" wire:click="removeUnitRow({{ $index }})" title="@lang('crud.delete')">
-                                                        <i class="fas fa-trash-can fs-8"></i>
-                                                    </button>
-                                                @endif
-                                            </div>
-                                        </div>
-                                    @endforeach
-                                </div>
-                            </div>
-
-                            <!-- TAB 3: SIZES & VARIATIONS -->
-                            <div x-show="activeTab === 'sizes'" x-transition.opacity.duration.150ms style="display: none;">
-                                <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
-                                    <div class="form-check form-switch d-flex align-items-center gap-2">
-                                        <input class="form-check-input cursor-pointer" type="checkbox" wire:model.live="have_sizes" id="have_sizes_switch" style="width: 2.5rem; height: 1.35rem;">
-                                        <label class="form-check-label fw-bold fs-7 text-gray-900 cursor-pointer" for="have_sizes_switch">
-                                            {{ __('basicdata::models/db_products.fields.have_sizes') }}
-                                        </label>
-                                    </div>
-                                    @if($have_sizes)
-                                        <button type="button" class="btn btn-sm btn-light-primary fw-bold rounded-2 px-3" wire:click="addSizeRow">
-                                            <i class="fas fa-plus fs-8 me-1"></i> {{ __('basicdata::models/db_products.sections.add_size') }}
+                            @if($type != 2)
+                                <!-- TAB 2: MULTIPLE UNITS (Products Only) -->
+                                <div x-show="activeTab === 'units'" x-transition.opacity.duration.150ms>
+                                    <div class="d-flex align-items-center justify-content-between mb-3">
+                                        <h6 class="fw-bold text-gray-800 fs-7 mb-0">
+                                            <i class="fa-solid fa-boxes-packing text-success me-2"></i>جدول وحدات القياس والتحويل
+                                        </h6>
+                                        <button type="button" wire:click="addUnit" class="btn btn-sm btn-light-success d-inline-flex align-items-center gap-1 fs-8 py-1 px-3 rounded-2">
+                                            <i class="fa-solid fa-plus fs-9"></i> إضافة وحدة
                                         </button>
-                                    @endif
-                                </div>
+                                    </div>
 
-                                @if($have_sizes)
-                                    <div class="table-responsive border rounded-3 overflow-hidden">
-                                        <table class="table table-row-dashed table-row-gray-200 align-middle gs-4 gy-3 mb-0">
-                                            <thead class="bg-light">
-                                                <tr class="text-start text-gray-700 fw-bold fs-8 text-uppercase">
-                                                    @foreach (config('langs', ['ar' => 'العربية', 'en' => 'English']) as $locale => $language)
-                                                        <th>{{ $language . ' - ' . __('basicdata::models/db_products.size.name') }}</th>
-                                                    @endforeach
-                                                    <th>{{ __('basicdata::models/db_products.size.cost_price') }}</th>
-                                                    <th>{{ __('basicdata::models/db_products.size.sale_price') }}</th>
-                                                    <th>{{ __('basicdata::models/db_products.size.barcode') }}</th>
-                                                    <th style="width: 40px;"></th>
+                                    <div class="table-responsive border rounded-3 mb-0">
+                                        <table class="table table-row-dashed table-row-gray-200 align-middle gs-4 gy-3 mb-0" style="font-size: 13px;">
+                                            <thead class="bg-light text-muted fw-bold fs-8 text-uppercase">
+                                                <tr>
+                                                    <th style="min-width: 180px;">الوحدة</th>
+                                                    <th style="width: 140px;">معامل التحويل</th>
+                                                    <th style="width: 140px;" class="text-center">الوحدة الأساسية</th>
+                                                    <th style="width: 60px;" class="text-end">حذف</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                @foreach ($sizes as $index => $size)
-                                                    <tr wire:key="size-row-{{ $index }}">
-                                                        @foreach (config('langs', ['ar' => 'العربية', 'en' => 'English']) as $locale => $language)
-                                                            <td>
-                                                                <input type="text" 
-                                                                       wire:model="sizes.{{ $index }}.{{ $locale }}.name" 
-                                                                       class="form-control modern-input form-control-sm fs-8" 
-                                                                       placeholder="{{ __('basicdata::models/db_products.placeholders.size_name') }}" />
-                                                            </td>
-                                                        @endforeach
+                                                @foreach($units as $index => $unitItem)
+                                                    <tr>
                                                         <td>
-                                                            <div class="input-group input-group-sm">
-                                                                <span class="input-group-text bg-light text-muted border fs-8">{{ config('app.currency', 'SAR') }}</span>
-                                                                <input type="number" 
-                                                                       step="0.01" 
-                                                                       min="0" 
-                                                                       wire:model="sizes.{{ $index }}.cost_price" 
-                                                                       class="form-control modern-input form-control-sm fs-8" 
-                                                                       placeholder="0.00" />
-                                                            </div>
+                                                            <select wire:model="units.{{ $index }}.unit_id" class="form-select form-select-sm modern-input">
+                                                                <option value="">-- اختر الوحدة --</option>
+                                                                @foreach($unitsList as $uId => $uName)
+                                                                    <option value="{{ $uId }}">{{ $uName }}</option>
+                                                                @endforeach
+                                                            </select>
                                                         </td>
                                                         <td>
-                                                            <div class="input-group input-group-sm">
-                                                                <span class="input-group-text bg-light text-primary fw-bold border fs-8">{{ config('app.currency', 'SAR') }}</span>
-                                                                <input type="number" 
-                                                                       step="0.01" 
-                                                                       min="0" 
-                                                                       wire:model="sizes.{{ $index }}.sale_price" 
-                                                                       class="form-control modern-input form-control-sm fs-8" 
-                                                                       placeholder="0.00" />
-                                                            </div>
-                                                        </td>
-                                                        <td>
-                                                            <input type="text" 
-                                                                   wire:model="sizes.{{ $index }}.barcode" 
-                                                                   class="form-control modern-input form-control-sm fs-8" 
-                                                                   placeholder="{{ __('basicdata::models/db_products.placeholders.barcode') }}" />
+                                                            <input type="number" 
+                                                                   step="0.001" 
+                                                                   min="0.001" 
+                                                                   wire:model="units.{{ $index }}.conversion_factor" 
+                                                                   class="form-control form-control-sm modern-input"
+                                                                   placeholder="1.000" />
                                                         </td>
                                                         <td class="text-center">
-                                                            <button type="button" class="btn btn-icon btn-sm btn-light-danger rounded-circle" wire:click="removeSizeRow({{ $index }})" title="@lang('crud.delete')">
-                                                                <i class="fas fa-trash-can fs-8"></i>
-                                                            </button>
+                                                            <div class="form-check form-check-custom form-check-solid d-inline-block">
+                                                                <input class="form-check-input" 
+                                                                       type="radio" 
+                                                                       name="base_unit_selection" 
+                                                                       wire:click="setBaseUnit({{ $index }})" 
+                                                                       {{ !empty($unitItem['is_base']) ? 'checked' : '' }} />
+                                                            </div>
+                                                        </td>
+                                                        <td class="text-end">
+                                                            @if(count($units) > 1)
+                                                                <button type="button" wire:click="removeUnit({{ $index }})" class="btn btn-icon btn-sm btn-light-danger rounded-circle">
+                                                                    <i class="fa-solid fa-trash-can fs-8"></i>
+                                                                </button>
+                                                            @endif
                                                         </td>
                                                     </tr>
                                                 @endforeach
                                             </tbody>
                                         </table>
                                     </div>
-                                @else
-                                    <div class="text-center py-5 text-muted">
-                                        <div class="d-inline-flex align-items-center justify-content-center rounded-circle bg-light mb-2" style="width: 50px; height: 50px;">
-                                            <i class="fa-solid fa-ruler-combined fs-4 text-gray-400"></i>
+                                </div>
+
+                                <!-- TAB 3: SIZES (Products Only) -->
+                                <div x-show="activeTab === 'sizes'" x-transition.opacity.duration.150ms>
+                                    <div class="d-flex align-items-center justify-content-between p-3 rounded-3 mb-4 bg-light border">
+                                        <div class="d-flex align-items-center gap-3">
+                                            <div class="form-check form-switch form-check-custom form-check-solid">
+                                                <input class="form-check-input" type="checkbox" wire:model.live="have_sizes" id="have_sizes_switch" />
+                                            </div>
+                                            <label class="form-check-label fw-bold text-gray-800 fs-7 cursor-pointer" for="have_sizes_switch">
+                                                تفعيل المقاسات والأحجام لهذا المنتج
+                                            </label>
                                         </div>
-                                        <p class="fs-7 text-gray-600 mb-0">{{ __('basicdata::models/db_products.fields.have_sizes') }}</p>
+
+                                        @if($have_sizes)
+                                            <button type="button" wire:click="addSize" class="btn btn-sm btn-light-danger d-inline-flex align-items-center gap-1 fs-8 py-1 px-3 rounded-2">
+                                                <i class="fa-solid fa-plus fs-9"></i> إضافة مقاس
+                                            </button>
+                                        @endif
                                     </div>
-                                @endif
+
+                                    @if($have_sizes)
+                                        <div class="table-responsive border rounded-3">
+                                            <table class="table table-row-dashed table-row-gray-200 align-middle gs-4 gy-3 mb-0" style="font-size: 13px;">
+                                                <thead class="bg-light text-muted fw-bold fs-8 text-uppercase">
+                                                    <tr>
+                                                        <th style="min-width: 140px;">اسم المقاس (عربي)</th>
+                                                        <th style="min-width: 140px;">اسم المقاس (EN)</th>
+                                                        <th style="width: 110px;">سعر التكلفة</th>
+                                                        <th style="width: 110px;">سعر البيع</th>
+                                                        <th style="width: 130px;">الباركود</th>
+                                                        <th style="width: 50px;" class="text-end">حذف</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach($sizes as $sIndex => $sizeItem)
+                                                        <tr>
+                                                            <td>
+                                                                <input type="text" wire:model="sizes.{{ $sIndex }}.ar.name" class="form-control form-control-sm modern-input" placeholder="مثال: كبير" />
+                                                            </td>
+                                                            <td>
+                                                                <input type="text" wire:model="sizes.{{ $sIndex }}.en.name" class="form-control form-control-sm modern-input" placeholder="e.g. Large" />
+                                                            </td>
+                                                            <td>
+                                                                <input type="number" step="0.01" min="0" wire:model="sizes.{{ $sIndex }}.cost_price" class="form-control form-control-sm modern-input" placeholder="0.00" />
+                                                            </td>
+                                                            <td>
+                                                                <input type="number" step="0.01" min="0" wire:model="sizes.{{ $sIndex }}.sale_price" class="form-control form-control-sm modern-input" placeholder="0.00" />
+                                                            </td>
+                                                            <td>
+                                                                <input type="text" wire:model="sizes.{{ $sIndex }}.barcode" class="form-control form-control-sm modern-input" placeholder="اختياري" />
+                                                            </td>
+                                                            <td class="text-end">
+                                                                <button type="button" wire:click="removeSize({{ $sIndex }})" class="btn btn-icon btn-sm btn-light-danger rounded-circle">
+                                                                    <i class="fa-solid fa-trash-can fs-8"></i>
+                                                                </button>
+                                                            </td>
+                                                        </tr>
+                                                    @endforeach
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    @endif
+                                </div>
+                            @endif
+
+                            <!-- TAB: DETAILS / DESCRIPTION -->
+                            <div x-show="activeTab === 'details'" x-transition.opacity.duration.150ms>
+                                <div class="row g-4">
+                                    @foreach (config('langs', ['ar' => 'العربية', 'en' => 'English']) as $locale => $language)
+                                        <div class="col-md-6">
+                                            <label class="modern-form-label">
+                                                {{ $language }} - {{ __('basicdata::models/db_products.fields.details') }}
+                                            </label>
+                                            <textarea wire:model="details.{{ $locale }}" 
+                                                      rows="5" 
+                                                      class="form-control modern-input" 
+                                                      placeholder="أدخل وصفاً تفصيلياً ({{ $language }})..."></textarea>
+                                        </div>
+                                    @endforeach
+                                </div>
                             </div>
 
                         </div>
 
                         <!-- Modal Footer -->
-                        <div class="modal-footer py-4 px-6 border-top d-flex justify-content-between align-items-center bg-light-subtle">
-                            <button type="button" class="btn btn-sm btn-light text-gray-700 fw-semibold fs-7 px-4 rounded-2" wire:click="closeModal">
-                                <i class="fa-solid fa-xmark fs-8 me-1"></i>
+                        <div class="modal-footer py-3 px-6 border-top d-flex justify-content-between align-items-center" style="background: #f8fafc;">
+                            <button type="button" class="btn btn-sm btn-light fs-7 px-4 rounded-2" wire:click="closeModal">
                                 @lang('crud.cancel')
                             </button>
-                            <button type="submit" class="btn btn-sm btn-save-gradient fs-7 px-5" wire:loading.attr="disabled">
-                                <span wire:loading.remove>
-                                    <i class="fa-solid fa-check fs-8 me-1"></i>
-                                    @lang('crud.save')
-                                </span>
-                                <span wire:loading>
-                                    <i class="fa-solid fa-spinner fa-spin fs-8 me-1"></i>
-                                    @lang('basicdata::lang.saving')
-                                </span>
+                            <button type="submit" class="btn btn-sm btn-save-gradient fs-7 px-5 rounded-2">
+                                <i class="fa-solid fa-check fs-8 me-1"></i>
+                                @lang('crud.save')
                             </button>
                         </div>
                     </form>

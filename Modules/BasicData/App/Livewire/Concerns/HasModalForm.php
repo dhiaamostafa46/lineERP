@@ -85,7 +85,7 @@ trait HasModalForm
     /**
      * Common save pipeline with flash and SPA redirect
      */
-    protected function saveRecord(array $data, string $modelTranslationKey, string $redirectRoute)
+    protected function saveRecord(array $data, string $modelTranslationKey, string $redirectRoute, array $routeParams = [])
     {
         if ($this->is_edit && $this->model_id) {
             if (method_exists($this->repository, 'updateWithRelations')) {
@@ -104,6 +104,6 @@ trait HasModalForm
         }
 
         $this->closeModal();
-        return $this->redirect(route($redirectRoute), navigate: true);
+        return $this->redirect(route($redirectRoute, $routeParams), navigate: true);
     }
 }

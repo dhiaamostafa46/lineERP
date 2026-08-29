@@ -156,6 +156,9 @@ class ProductModal extends Component
     public function openCreate($type = 1): void
     {
         $this->resetFields();
+        if (is_array($type) && isset($type['type'])) {
+            $type = $type['type'];
+        }
         $this->type = in_array((int)$type, [1, 2]) ? (int)$type : 1;
         
         $unitsList = $this->repository->units();
@@ -278,7 +281,7 @@ class ProductModal extends Component
             }
 
             $modelKey = $this->type == 2 ? 'basicdata::models/db_products.service' : 'basicdata::models/db_products.product';
-            return $this->saveRecord($data, $modelKey, 'basicdata.products.index');
+            return $this->saveRecord($data, $modelKey, 'basicdata.products.index', ['type' => $this->type]);
 
         } catch (\Exception $e) {
             $this->addError('save_error', 'حدث خطأ أثناء الحفظ: ' . $e->getMessage());

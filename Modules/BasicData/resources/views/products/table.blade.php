@@ -7,11 +7,10 @@
                         <input class="form-check-input" type="checkbox" id="check-all" title="تحديد الكل" />
                     </div>
                 </th>
-                <th class="ps-2"><x-table-sort column="name" :title="__('basicdata::models/db_products.fields.name')" /></th>
+                <th class="ps-2"><x-table-sort column="name" :title="($type ?? request('type', 1)) == 2 ? 'اسم الخدمة' : __('basicdata::models/db_products.fields.name')" /></th>
                 <th><x-table-sort column="category_id" :title="__('basicdata::models/db_products.fields.category_id')" /></th>
-                <th><x-table-sort column="type" :title="__('basicdata::models/db_products.fields.type')" /></th>
-                <th><x-table-sort column="cost_price" :title="__('basicdata::models/db_products.fields.cost_price')" /></th>
-                <th><x-table-sort column="prod_price" :title="__('basicdata::models/db_products.fields.prod_price')" /></th>
+                <th><x-table-sort column="cost_price" :title="($type ?? request('type', 1)) == 2 ? 'تكلفة الخدمة' : __('basicdata::models/db_products.fields.cost_price')" /></th>
+                <th><x-table-sort column="prod_price" :title="($type ?? request('type', 1)) == 2 ? 'سعر الخدمة' : __('basicdata::models/db_products.fields.prod_price')" /></th>
                 <th><x-table-sort column="status" :title="__('basicdata::models/db_products.fields.status')" /></th>
                 <th class="pe-4 text-end">@lang('crud.action')</th>
             </tr>
@@ -26,15 +25,19 @@
                         </div>
                     </td>
 
-                    <!-- Product Avatar & Name & Barcode -->
+                    <!-- Product/Service Avatar & Name & Barcode -->
                     <td class="ps-2">
                         <div class="d-flex align-items-center gap-3">
-                            <div class="symbol symbol-30px symbol-circle flex-shrink-0">
+                            <div class="symbol symbol-34px symbol-circle flex-shrink-0">
                                 @if($product->imgThumbPath)
-                                    <img src="{{ $product->imgThumbPath }}" class="rounded-circle object-fit-cover w-30px h-30px border" alt="{{ $product->name }}" />
+                                    <img src="{{ $product->imgThumbPath }}" class="rounded-circle object-fit-cover w-34px h-34px border shadow-xs" alt="{{ $product->name }}" />
                                 @else
-                                    <div class="symbol-label bg-soft-primary text-primary fw-bold fs-8 rounded-circle w-30px h-30px d-flex align-items-center justify-content-center">
-                                        {{ mb_substr($product->name, 0, 1, 'utf-8') }}
+                                    <div class="symbol-label {{ $product->type == 2 ? 'bg-light-success text-success' : 'bg-light-primary text-primary' }} fw-bold fs-7 rounded-circle w-34px h-34px d-flex align-items-center justify-content-center border">
+                                        @if($product->type == 2)
+                                            <i class="fa-solid fa-bell-concierge fs-8"></i>
+                                        @else
+                                            <i class="fa-solid fa-box fs-8"></i>
+                                        @endif
                                     </div>
                                 @endif
                             </div>
@@ -45,19 +48,16 @@
                                    class="text-gray-900 fw-bold text-hover-primary text-decoration-none fs-7 mb-0">
                                     {{ $product->name }}
                                 </a>
-                                <span class="text-muted fs-8 font-monospace">{{ $product->barcode ?? '—' }}</span>
+                                @if($product->type != 2 && $product->barcode)
+                                    <span class="text-muted fs-8 font-monospace">{{ $product->barcode }}</span>
+                                @endif
                             </div>
                         </div>
                     </td>
 
                     <!-- Category -->
                     <td>
-                        <span class="text-gray-800 fw-medium fs-7">{{ $product->category->name ?? '—' }}</span>
-                    </td>
-
-                    <!-- Type -->
-                    <td>
-                        <span class="text-gray-600 fs-7">{{ $product->type_text }}</span>
+                        <span class="badge bg-light-secondary text-gray-700 fs-8">{{ $product->category->name ?? '—' }}</span>
                     </td>
 
                     <!-- Cost Price -->
@@ -115,9 +115,14 @@
                 </tr>
             @empty
                 <tr>
-                    <td colspan="8" class="text-center py-5 text-muted">
-                        <i class="fa-solid fa-box-open fs-1 text-gray-300 mb-3 d-block"></i>
-                        @lang('crud.no_data_found')
+                    <td colspan="7" class="text-center py-5 text-muted">
+                        @if(($type ?? request('type', 1)) == 2)
+                            <i class="fa-solid fa-bell-concierge fs-1 text-gray-300 mb-3 d-block"></i>
+                            لا توجد خدمات مسجلة
+                        @else
+                            <i class="fa-solid fa-boxes-stacked fs-1 text-gray-300 mb-3 d-block"></i>
+                            @lang('crud.no_data_found')
+                        @endif
                     </td>
                 </tr>
             @endforelse
