@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::group(['middleware' => ['auth', 'permissionHandler']], function () {
     
-    // Macro to register standard resource routes with export endpoints
+    // Macro to register standard resource routes with export and bulk endpoints
     Route::macro('resourceWithExport', function ($uri, $controller) {
         Route::prefix($uri)
             ->name("{$uri}.")
@@ -23,6 +23,7 @@ Route::group(['middleware' => ['auth', 'permissionHandler']], function () {
                 Route::get('importTemplate', "{$controller}@importTemplate")->name('importTemplate');
                 Route::post('importSave', "{$controller}@importsave")->name('importSave');
                 Route::post('bulk-delete', "{$controller}@bulkDelete")->name('bulkDelete');
+                Route::post('bulk-status', "{$controller}@bulkStatus")->name('bulkStatus');
                 Route::get('scopedaccess', "{$controller}@scopedaccess")->name('scopedaccess');
                 Route::get('draft', "{$controller}@draft")->name('draft');
                 Route::get('approve', "{$controller}@approve")->name('approve');

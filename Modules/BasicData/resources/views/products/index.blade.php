@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', __('basicdata::models/db_products.plural'))
+@section('title', request('type') == 2 ? __('basicdata::models/db_products.services') : __('basicdata::models/db_products.products'))
 
 @section('content')
 <div class="d-flex flex-column flex-column-fluid">
@@ -10,57 +10,62 @@
         <div id="kt_app_toolbar_container" class="app-container container-xxl d-flex align-items-center justify-content-between">
             <div class="page-title d-flex flex-column justify-content-center">
                 <h1 class="page-heading text-gray-900 fw-bold fs-4 my-0">
-                    @lang('basicdata::models/db_products.plural')
+                    {{ request('type') == 2 ? __('basicdata::models/db_products.services') : __('basicdata::models/db_products.products') }}
                 </h1>
                 <ul class="breadcrumb breadcrumb-separatorless fw-semibold fs-8 my-0 pt-1">
                     <li class="breadcrumb-item text-muted">
-                        <a href="{{ route('dashboard') }}" class="text-muted text-hover-primary" wire:navigate>
+                        <a href="{{ route('dashboard') }}" class="text-muted text-hover-primary">
                             @lang('lang.dashboard')
                         </a>
                     </li>
                     <li class="breadcrumb-item"><span class="bullet bg-gray-400 w-4px h-1px mx-2"></span></li>
-                    <li class="breadcrumb-item text-muted">@lang('basicdata::lang.basicdata')</li>
+                    <li class="breadcrumb-item text-muted">
+                        <a href="{{ route('basicdata.products.index') }}" class="text-muted text-hover-primary">
+                            @lang('basicdata::lang.basicdata')
+                        </a>
+                    </li>
                     <li class="breadcrumb-item"><span class="bullet bg-gray-400 w-4px h-1px mx-2"></span></li>
-                    <li class="breadcrumb-item text-muted">@lang('basicdata::models/db_products.plural')</li>
+                    <li class="breadcrumb-item text-muted">
+                        <a href="{{ route('basicdata.products.index', ['type' => request('type', 1)]) }}" class="text-muted text-hover-primary">
+                            {{ request('type') == 2 ? __('basicdata::models/db_products.services') : __('basicdata::models/db_products.products') }}
+                        </a>
+                    </li>
                 </ul>
             </div>
 
-            <!-- Header Actions -->
+            <!-- Header Actions: Icon-Only Buttons with Tooltips -->
             <div class="d-flex align-items-center gap-2">
                 @can('basicdata.products.import')
-                    <a class="btn btn-sm front-btn-filter" href="{{ route('basicdata.products.import') }}" wire:navigate>
-                        <i class="fa-solid fa-file-import fs-8 text-primary"></i>
-                        @lang('crud.import')
+                    <a class="btn btn-sm btn-icon btn-light rounded-circle shadow-xs" 
+                       href="{{ route('basicdata.products.import') }}" 
+                       title="@lang('crud.import')" 
+                       data-bs-toggle="tooltip" 
+                       wire:navigate>
+                        <i class="fa-solid fa-file-import fs-7 text-primary"></i>
                     </a>
                 @endcan
 
                 @can('basicdata.products.create')
-                    <div class="btn-group">
-                        <button type="button" class="btn btn-sm front-btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="fa-solid fa-plus fs-8"></i>
-                            @lang('crud.add_new')
-                        </button>
-                        <ul class="dropdown-menu dropdown-menu-end shadow-sm border py-2 rounded-2">
-                            <li>
-                                <a class="dropdown-item fs-7 py-2 d-flex align-items-center gap-2" 
-                                   href="javascript:void(0)" 
-                                   x-on:click="$dispatch('openCreateModal', { type: 1 })" 
-                                   onclick="if(window.Livewire) Livewire.dispatch('openCreateModal', { type: 1 })">
-                                    <i class="fa-solid fa-box text-primary fs-8"></i>
-                                    <span>@lang('basicdata::models/db_products.product')</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item fs-7 py-2 d-flex align-items-center gap-2" 
-                                   href="javascript:void(0)" 
-                                   x-on:click="$dispatch('openCreateModal', { type: 2 })" 
-                                   onclick="if(window.Livewire) Livewire.dispatch('openCreateModal', { type: 2 })">
-                                    <i class="fa-solid fa-bell-concierge text-success fs-8"></i>
-                                    <span>@lang('basicdata::models/db_products.service')</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
+                    <!-- Add Product Button (Icon Only) -->
+                    <button type="button" 
+                            class="btn btn-sm btn-icon btn-primary front-btn-primary rounded-circle shadow-xs" 
+                            title="@lang('crud.add_new') - @lang('basicdata::models/db_products.product')" 
+                            data-bs-toggle="tooltip"
+                            x-on:click="$dispatch('openCreateModal', { type: 1 })" 
+                            onclick="if(window.Livewire) Livewire.dispatch('openCreateModal', { type: 1 })">
+                        <i class="fa-solid fa-box-open fs-7"></i>
+                    </button>
+
+                    <!-- Add Service Button (Icon Only) -->
+                    <button type="button" 
+                            class="btn btn-sm btn-icon btn-success rounded-circle shadow-xs" 
+                            style="background: #10b981; border: none; color: #fff;"
+                            title="@lang('crud.add_new') - @lang('basicdata::models/db_products.service')" 
+                            data-bs-toggle="tooltip"
+                            x-on:click="$dispatch('openCreateModal', { type: 2 })" 
+                            onclick="if(window.Livewire) Livewire.dispatch('openCreateModal', { type: 2 })">
+                        <i class="fa-solid fa-bell-concierge fs-7"></i>
+                    </button>
                 @endcan
             </div>
         </div>
@@ -125,10 +130,11 @@
             <div class="front-card">
                 @include('basicdata::layouts.partials._table_header', [
                     'route' => 'basicdata.products.index',
-                    'title' => __('basicdata::models/db_products.plural'),
+                    'title' => request('type') == 2 ? __('basicdata::models/db_products.services') : __('basicdata::models/db_products.products'),
                     'placeholder' => __('basicdata::models/db_products.placeholders.name'),
                     'excelRoute' => 'basicdata.products.excel',
                     'pdfRoute' => 'basicdata.products.pdf',
+                    'hiddenInputs' => request('type') ? ['type' => request('type')] : [],
                     'statuses' => $statuses ?? [],
                     'categoriesList' => $categories ?? []
                 ])

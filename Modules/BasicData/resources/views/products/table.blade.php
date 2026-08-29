@@ -1,10 +1,10 @@
 <div class="table-responsive">
-    <table class="table front-table text-start align-middle" id="db-products-table" data-table="bulk">
+    <table class="table front-table text-start align-middle" id="db-products-table">
         <thead>
             <tr>
                 <th class="ps-4" style="width: 40px;">
                     <div class="front-form-check">
-                        <input class="form-check-input bulk-check-all" type="checkbox" id="checkAllProducts" title="تحديد الكل" />
+                        <input class="form-check-input" type="checkbox" id="check-all" title="تحديد الكل" />
                     </div>
                 </th>
                 <th class="ps-2"><x-table-sort column="name" :title="__('basicdata::models/db_products.fields.name')" /></th>
@@ -22,7 +22,7 @@
                     <!-- Row Checkbox -->
                     <td class="ps-4">
                         <div class="front-form-check">
-                            <input class="form-check-input bulk-check product-check" type="checkbox" value="{{ $product->id }}" />
+                            <input class="form-check-input row-checkbox" type="checkbox" value="{{ $product->id }}" />
                         </div>
                     </td>
 
@@ -70,7 +70,7 @@
                         <span class="text-primary fw-bold font-monospace fs-7">{{ number_format($product->prod_price, 2) }}</span>
                     </td>
 
-                    <!-- Status (Front Dashboard Legend Indicator) -->
+                    <!-- Status -->
                     <td>
                         @if($product->status == 1 || strtolower($product->status_text) == 'active' || $product->status_text == 'نشط')
                             <span class="d-inline-flex align-items-center fs-7 fw-medium text-gray-800">
@@ -85,28 +85,29 @@
                         @endif
                     </td>
 
-                    <!-- Action Link / Dropdown -->
+                    <!-- Action Link (Icon Only) -->
                     <td class="pe-4 text-end">
-                        <div class="d-inline-flex align-items-center justify-content-end gap-2">
+                        <div class="d-inline-flex align-items-center justify-content-end gap-1">
                             @can('basicdata.products.edit')
                                 <button type="button" 
                                    x-on:click="$dispatch('openEditModal', { id: {{ $product->id }} })"
                                    onclick="if(window.Livewire) Livewire.dispatch('openEditModal', { id: {{ $product->id }} })"
-                                   class="btn btn-sm btn-white text-gray-700 py-1 px-2 border rounded-2 d-inline-flex align-items-center gap-1 text-hover-primary" 
-                                   style="font-size: 12px; height: 28px;">
-                                    <i class="fa-solid fa-pen fs-9 text-muted"></i>
-                                    <span>@lang('crud.edit')</span>
+                                   class="btn btn-icon btn-sm btn-light-primary rounded-circle" 
+                                   title="@lang('crud.edit')"
+                                   data-bs-toggle="tooltip">
+                                    <i class="fa-solid fa-pen-to-square fs-8"></i>
                                 </button>
                             @endcan
 
                             @can('basicdata.products.destroy')
                                 {!! Form::open(['route' => ['basicdata.products.destroy', $product->id], 'method' => 'delete', 'class' => 'd-inline']) !!}
-                                    {!! Form::button('<i class="fa-solid fa-trash text-danger fs-9"></i>', [
-                                        'type' => 'submit',
-                                        'class' => 'btn btn-sm btn-icon btn-white border rounded-2 w-28px h-28px',
-                                        'title' => __('crud.delete'),
-                                        'onclick' => "return confirm('" . __('basicdata::lang.are_you_sure') . "')",
-                                    ]) !!}
+                                    <button type="button" 
+                                            class="btn btn-icon btn-sm btn-light-danger rounded-circle" 
+                                            title="@lang('crud.delete')"
+                                            data-bs-toggle="tooltip"
+                                            onclick="confirmDelete(this.closest('form'))">
+                                        <i class="fa-solid fa-trash-can fs-8"></i>
+                                    </button>
                                 {!! Form::close() !!}
                             @endcan
                         </div>
@@ -114,11 +115,9 @@
                 </tr>
             @empty
                 <tr>
-                    <td colspan="8" class="text-center py-10">
-                        <div class="d-flex flex-column align-items-center justify-content-center text-muted">
-                            <i class="fa-solid fa-inbox fs-2tx mb-2 text-gray-300"></i>
-                            <span class="fs-7 fw-semibold">@lang('basicdata::lang.no_data')</span>
-                        </div>
+                    <td colspan="8" class="text-center py-5 text-muted">
+                        <i class="fa-solid fa-box-open fs-1 text-gray-300 mb-3 d-block"></i>
+                        @lang('crud.no_data_found')
                     </td>
                 </tr>
             @endforelse
@@ -126,14 +125,13 @@
     </table>
 </div>
 
-<!-- Front Card Footer: Count & Pagination -->
-@if(method_exists($products, 'hasPages') && $products->hasPages())
-    <div class="front-card-footer">
-        <div class="fs-8 text-muted">
-            @lang('crud.showing') <span class="fw-bold text-gray-800">{{ $products->firstItem() ?? 0 }}</span> @lang('crud.to') <span class="fw-bold text-gray-800">{{ $products->lastItem() ?? 0 }}</span> @lang('crud.of') <span class="fw-bold text-gray-800">{{ $products->total() }}</span> @lang('crud.entries')
-        </div>
-        <div>
-            @include('adminlte-templates::common.paginate', ['records' => $products])
-        </div>
+<div class="d-flex align-items-center justify-content-between flex-wrap gap-2 px-4 py-3 border-top">
+    <div class="text-muted fs-8">
+        @if($products->total() > 0)
+            عرض {{ $products->firstItem() }} إلى {{ $products->lastItem() }} من إجمالي {{ $products->total() }} سجل
+        @endif
     </div>
-@endif
+    <div>
+        {!! $products->links() !!}
+    </div>
+</div>

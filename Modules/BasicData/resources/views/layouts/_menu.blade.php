@@ -26,17 +26,25 @@
 
         <div x-show="open" x-collapse x-cloak class="line-submenu">
             @can('basicdata.products.index')
-                <a class="line-sub-item {{ Route::is('basicdata.products*') ? 'active-sub' : '' }}" 
-                   href="{{ route('basicdata.products.index') }}" wire:navigate>
-                    <span class="line-sub-dot"></span>
-                    <span>@lang('basicdata::models/db_products.plural')</span>
+                <!-- 1. Products (المنتجات) -->
+                <a class="line-sub-item {{ Route::is('basicdata.products*') && request('type') != 2 ? 'active-sub' : '' }}" 
+                   href="{{ route('basicdata.products.index', ['type' => 1]) }}" wire:navigate>
+                    <i class="fa-solid fa-box-open fs-8 me-2 text-primary"></i>
+                    <span>@lang('basicdata::models/db_products.products')</span>
+                </a>
+
+                <!-- 2. Services (الخدمات) -->
+                <a class="line-sub-item {{ Route::is('basicdata.products*') && request('type') == 2 ? 'active-sub' : '' }}" 
+                   href="{{ route('basicdata.products.index', ['type' => 2]) }}" wire:navigate>
+                    <i class="fa-solid fa-bell-concierge fs-8 me-2 text-success"></i>
+                    <span>@lang('basicdata::models/db_products.services')</span>
                 </a>
             @endcan
 
             @can('basicdata.categories.index')
                 <a class="line-sub-item {{ Route::is('basicdata.categories*') ? 'active-sub' : '' }}" 
                    href="{{ route('basicdata.categories.index') }}" wire:navigate>
-                    <span class="line-sub-dot"></span>
+                    <i class="fa-solid fa-folder-tree fs-8 me-2 text-warning"></i>
                     <span>@lang('basicdata::models/db_categories.plural')</span>
                 </a>
             @endcan
@@ -44,7 +52,7 @@
             @can('basicdata.units.index')
                 <a class="line-sub-item {{ Route::is('basicdata.units*') ? 'active-sub' : '' }}" 
                    href="{{ route('basicdata.units.index') }}" wire:navigate>
-                    <span class="line-sub-dot"></span>
+                    <i class="fa-solid fa-scale-balanced fs-8 me-2 text-info"></i>
                     <span>@lang('basicdata::models/db_units.plural')</span>
                 </a>
             @endcan
@@ -52,7 +60,7 @@
             @can('basicdata.kitchens.index')
                 <a class="line-sub-item {{ Route::is('basicdata.kitchens*') ? 'active-sub' : '' }}" 
                    href="{{ route('basicdata.kitchens.index') }}" wire:navigate>
-                    <span class="line-sub-dot"></span>
+                    <i class="fa-solid fa-utensils fs-8 me-2 text-danger"></i>
                     <span>@lang('basicdata::models/db_kitchens.plural')</span>
                 </a>
             @endcan
@@ -60,10 +68,11 @@
             @can('basicdata.service_points.index')
                 <a class="line-sub-item {{ Route::is('basicdata.service_points*') ? 'active-sub' : '' }}" 
                    href="{{ route('basicdata.service_points.index') }}" wire:navigate>
-                    <span class="line-sub-dot"></span>
+                    <i class="fa-solid fa-location-dot fs-8 me-2 text-primary"></i>
                     <span>@lang('basicdata::models/db_service_points.plural')</span>
                 </a>
             @endcan
         </div>
     </div>
+
 @endcanany
