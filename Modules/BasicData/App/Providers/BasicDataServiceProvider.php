@@ -33,7 +33,7 @@ class BasicDataServiceProvider extends ServiceProvider
         $this->registerViews();
         $this->loadMigrationsFrom(module_path($this->moduleName, 'database/migrations'));
 
-        // Register BasicData Livewire Components
+        // Register BasicData Livewire Components (Both :: and . aliases for robust resolution)
         if (class_exists(Livewire::class)) {
             Livewire::component('basicdata::categories.category-modal', CategoryModal::class);
             Livewire::component('basicdata::units.unit-modal', UnitModal::class);
@@ -41,6 +41,13 @@ class BasicDataServiceProvider extends ServiceProvider
             Livewire::component('basicdata::service-points.service-point-modal', ServicePointModal::class);
             Livewire::component('basicdata::products.product-modal', ProductModal::class);
             Livewire::component('basicdata::products.product-import-modal', ProductImportModal::class);
+
+            Livewire::component('basicdata.categories.category-modal', CategoryModal::class);
+            Livewire::component('basicdata.units.unit-modal', UnitModal::class);
+            Livewire::component('basicdata.kitchens.kitchen-modal', KitchenModal::class);
+            Livewire::component('basicdata.service-points.service-point-modal', ServicePointModal::class);
+            Livewire::component('basicdata.products.product-modal', ProductModal::class);
+            Livewire::component('basicdata.products.product-import-modal', ProductImportModal::class);
         }
     }
 
@@ -109,23 +116,18 @@ class BasicDataServiceProvider extends ServiceProvider
 
         $this->loadViewsFrom(array_merge($this->getPublishableViewPaths(), [$sourcePath]), $this->moduleNameLower);
 
-        $componentNamespace = $this->module_namespace($this->moduleName, $this->app_path(config('modules.paths.generator.component-class.path')));
+        $componentNamespace = $this->module_namespace($this->moduleName, $this->app_path('View/Components'));
         Blade::componentNamespace($componentNamespace, $this->moduleNameLower);
     }
 
     /**
      * Get the services provided by the provider.
-     *
-     * @return array<string>
      */
     public function provides(): array
     {
         return [];
     }
 
-    /**
-     * @return array<string>
-     */
     private function getPublishableViewPaths(): array
     {
         $paths = [];
