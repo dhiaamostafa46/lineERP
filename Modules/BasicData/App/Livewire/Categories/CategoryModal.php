@@ -13,12 +13,12 @@ class CategoryModal extends Component
     use WithFileUploads, HasModalForm;
 
     public $parent_id = null;
-    public $status = 1;
-    public $type = 1;
+    public int $status = 1;
+    public int $type = 1;
     public $img;
     public $existing_img = null;
 
-    protected $repository;
+    protected DbCategoryRepository $repository;
 
     public function boot(DbCategoryRepository $repository): void
     {
@@ -57,25 +57,18 @@ class CategoryModal extends Component
         $this->existing_img = null;
     }
 
-    #[On('openCreateModal')]
-    public function openCreate(): void
-    {
-        $this->resetFields();
-        $this->openModal();
-    }
-
     #[On('openEditModal')]
     public function openEdit($id): void
     {
         $this->resetFields();
         $category = $this->repository->find($id);
         if ($category) {
-            $this->model_id = $id;
+            $this->model_id = (int)$id;
             $this->is_edit = true;
             $this->populateTranslations($category);
             $this->parent_id = $category->parent_id;
-            $this->status = $category->status;
-            $this->type = $category->type ?? 1;
+            $this->status = (int)$category->status;
+            $this->type = (int)($category->type ?? 1);
             $this->existing_img = $category->imgThumbPath;
             $this->openModal();
         }
@@ -94,16 +87,7 @@ class CategoryModal extends Component
             $data['img'] = $this->img;
         }
 
-        if ($this->is_edit && $this->model_id) {
-            $this->repository->update($data, $this->model_id);
-            flash()->success(__('messages.updated', ['model' => __('basicdata::models/db_categories.singular')]));
-        } else {
-            $this->repository->create($data);
-            flash()->success(__('messages.saved', ['model' => __('basicdata::models/db_categories.singular')]));
-        }
-
-        $this->closeModal();
-        return $this->redirect(route('basicdata.categories.index'), navigate: true);
+        return $this->saveRecord($data, 'basicdata::models/db_categories.singular', 'basicdata.categories.index');
     }
 
     public function render()

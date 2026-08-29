@@ -11,9 +11,8 @@ class UnitModal extends Component
 {
     use HasModalForm;
 
-    public $status = 1;
-
-    protected $repository;
+    public int $status = 1;
+    protected DbUnitRepository $repository;
 
     public function boot(DbUnitRepository $repository): void
     {
@@ -22,14 +21,10 @@ class UnitModal extends Component
 
     protected function rules(): array
     {
-        $rules = [
-            'status' => 'required',
-        ];
-
+        $rules = ['status' => 'required'];
         foreach (config('langs', ['ar' => 'Arabic', 'en' => 'English']) as $locale => $name) {
             $rules["name.$locale"] = 'required|string|max:255';
         }
-
         return $rules;
     }
 
@@ -45,20 +40,13 @@ class UnitModal extends Component
         $this->status = 1;
     }
 
-    #[On('openCreateModal')]
-    public function openCreate(): void
-    {
-        $this->resetFields();
-        $this->openModal();
-    }
-
     #[On('openEditModal')]
     public function openEdit($id): void
     {
         $this->resetFields();
         $unit = $this->repository->find($id);
         if ($unit) {
-            $this->model_id = $id;
+            $this->model_id = (int)$id;
             $this->is_edit = true;
             $this->populateTranslations($unit);
             $this->status = (int)$unit->status;
@@ -69,20 +57,10 @@ class UnitModal extends Component
     public function save()
     {
         $this->validate();
-
         $data = $this->formatTranslations($this->name);
         $data['status'] = $this->status;
 
-        if ($this->is_edit && $this->model_id) {
-            $this->repository->update($data, $this->model_id);
-            flash()->success(__('messages.updated', ['model' => __('basicdata::models/db_units.singular')]));
-        } else {
-            $this->repository->create($data);
-            flash()->success(__('messages.saved', ['model' => __('basicdata::models/db_units.singular')]));
-        }
-
-        $this->closeModal();
-        return $this->redirect(route('basicdata.units.index'), navigate: true);
+        return $this->saveRecord($data, 'basicdata::models/db_units.singular', 'basicdata.units.index');
     }
 
     public function render()

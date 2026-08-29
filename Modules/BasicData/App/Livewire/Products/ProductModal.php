@@ -277,16 +277,8 @@ class ProductModal extends Component
                 ];
             }
 
-            if ($this->is_edit && $this->model_id) {
-                $this->repository->updateWithRelations($data, $this->model_id);
-                flash()->success(__('messages.updated', ['model' => $this->type == 2 ? __('basicdata::models/db_products.fields.service') : __('basicdata::models/db_products.fields.product')]));
-            } else {
-                $this->repository->createWithRelations($data);
-                flash()->success(__('messages.saved', ['model' => $this->type == 2 ? __('basicdata::models/db_products.fields.service') : __('basicdata::models/db_products.fields.product')]));
-            }
-
-            $this->closeModal();
-            return $this->redirect(route('basicdata.products.index'), navigate: true);
+            $modelKey = $this->type == 2 ? 'basicdata::models/db_products.service' : 'basicdata::models/db_products.product';
+            return $this->saveRecord($data, $modelKey, 'basicdata.products.index');
 
         } catch (\Exception $e) {
             $this->addError('save_error', 'حدث خطأ أثناء الحفظ: ' . $e->getMessage());

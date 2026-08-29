@@ -15,7 +15,7 @@ class ServicePointModal extends Component
     public int $type = 1;
     public int $status = 1;
 
-    protected $repository;
+    protected DbServicePointRepository $repository;
 
     public function boot(DbServicePointRepository $repository): void
     {
@@ -51,24 +51,17 @@ class ServicePointModal extends Component
         $this->status = 1;
     }
 
-    #[On('openCreateModal')]
-    public function openCreate(): void
-    {
-        $this->resetFields();
-        $this->openModal();
-    }
-
     #[On('openEditModal')]
     public function openEdit($id): void
     {
         $this->resetFields();
         $sp = $this->repository->find($id);
         if ($sp) {
-            $this->model_id = $id;
+            $this->model_id = (int)$id;
             $this->is_edit = true;
             $this->populateTranslations($sp);
-            $this->code = (string)$sp->code;
-            $this->type = (int)$sp->type;
+            $this->code = (string)($sp->code ?? '');
+            $this->type = (int)($sp->type ?? 1);
             $this->status = (int)$sp->status;
             $this->openModal();
         }
@@ -83,16 +76,7 @@ class ServicePointModal extends Component
         $data['type'] = $this->type;
         $data['status'] = $this->status;
 
-        if ($this->is_edit && $this->model_id) {
-            $this->repository->update($data, $this->model_id);
-            flash()->success(__('messages.updated', ['model' => __('basicdata::models/db_service_points.singular')]));
-        } else {
-            $this->repository->create($data);
-            flash()->success(__('messages.saved', ['model' => __('basicdata::models/db_service_points.singular')]));
-        }
-
-        $this->closeModal();
-        return $this->redirect(route('basicdata.service_points.index'), navigate: true);
+        return $this->saveRecord($data, 'basicdata::models/db_service_points.singular', 'basicdata.service_points.index');
     }
 
     public function render()

@@ -14,7 +14,7 @@ class KitchenModal extends Component
     public string $barcode = '';
     public int $status = 1;
 
-    protected $repository;
+    protected DbKitchenRepository $repository;
 
     public function boot(DbKitchenRepository $repository): void
     {
@@ -48,23 +48,16 @@ class KitchenModal extends Component
         $this->status = 1;
     }
 
-    #[On('openCreateModal')]
-    public function openCreate(): void
-    {
-        $this->resetFields();
-        $this->openModal();
-    }
-
     #[On('openEditModal')]
     public function openEdit($id): void
     {
         $this->resetFields();
         $kitchen = $this->repository->find($id);
         if ($kitchen) {
-            $this->model_id = $id;
+            $this->model_id = (int)$id;
             $this->is_edit = true;
             $this->populateTranslations($kitchen);
-            $this->barcode = (string)$kitchen->barcode;
+            $this->barcode = (string)($kitchen->barcode ?? '');
             $this->status = (int)$kitchen->status;
             $this->openModal();
         }
@@ -78,16 +71,7 @@ class KitchenModal extends Component
         $data['barcode'] = $this->barcode ?: null;
         $data['status'] = $this->status;
 
-        if ($this->is_edit && $this->model_id) {
-            $this->repository->update($data, $this->model_id);
-            flash()->success(__('messages.updated', ['model' => __('basicdata::models/db_kitchens.singular')]));
-        } else {
-            $this->repository->create($data);
-            flash()->success(__('messages.saved', ['model' => __('basicdata::models/db_kitchens.singular')]));
-        }
-
-        $this->closeModal();
-        return $this->redirect(route('basicdata.kitchens.index'), navigate: true);
+        return $this->saveRecord($data, 'basicdata::models/db_kitchens.singular', 'basicdata.kitchens.index');
     }
 
     public function render()
