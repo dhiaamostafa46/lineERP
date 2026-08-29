@@ -6,7 +6,7 @@ use App\Http\Controllers\AppBaseController;
 use App\Repositories\BaseRepository;
 use App\Traits\HasBulkActions;
 use Illuminate\Http\Request;
-use Modules\BasicData\App\Http\Controllers\Concerns\HasExportActions;
+use Modules\BasicData\App\Helpers\HasExportActions;
 
 abstract class BasicDataResourceController extends AppBaseController
 {

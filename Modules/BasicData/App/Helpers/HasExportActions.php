@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\BasicData\App\Http\Controllers\Concerns;
+namespace Modules\BasicData\App\Helpers;
 
 use Maatwebsite\Excel\Facades\Excel;
 use Modules\BasicData\App\Exports\BasicDataExport;
@@ -58,6 +58,6 @@ trait HasExportActions
             'name' => $name,
         ]));
 
-        return $mpdf->Output();
+        return $mpdf->Output(($this->exportFileName ?? 'export') . '.pdf', 'I');
     }
 }

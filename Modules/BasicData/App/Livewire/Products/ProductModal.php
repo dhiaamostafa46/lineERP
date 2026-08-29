@@ -5,7 +5,7 @@ namespace Modules\BasicData\App\Livewire\Products;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Livewire\Attributes\On;
-use Modules\BasicData\App\Livewire\Concerns\HasModalForm;
+use Modules\BasicData\App\Helpers\HasModalForm;
 use Modules\BasicData\App\Repositories\DbProductRepository;
 
 class ProductModal extends Component

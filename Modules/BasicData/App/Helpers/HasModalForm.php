@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\BasicData\App\Livewire\Concerns;
+namespace Modules\BasicData\App\Helpers;
 
 use Livewire\Attributes\On;
 

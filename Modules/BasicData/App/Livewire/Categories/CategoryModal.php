@@ -5,7 +5,7 @@ namespace Modules\BasicData\App\Livewire\Categories;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Livewire\Attributes\On;
-use Modules\BasicData\App\Livewire\Concerns\HasModalForm;
+use Modules\BasicData\App\Helpers\HasModalForm;
 use Modules\BasicData\App\Repositories\DbCategoryRepository;
 
 class CategoryModal extends Component

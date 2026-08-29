@@ -4,7 +4,7 @@ namespace Modules\BasicData\App\Livewire\Kitchens;
 
 use Livewire\Component;
 use Livewire\Attributes\On;
-use Modules\BasicData\App\Livewire\Concerns\HasModalForm;
+use Modules\BasicData\App\Helpers\HasModalForm;
 use Modules\BasicData\App\Repositories\DbKitchenRepository;
 
 class KitchenModal extends Component
