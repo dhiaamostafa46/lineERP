@@ -7,6 +7,7 @@
     
     @include('basicdata::layouts.partials._page_toolbar', [
         'title' => __('basicdata::models/db_categories.plural'),
+        'icon' => 'fa-solid fa-folder-tree',
         'permission' => 'basicdata.categories.create'
     ])
 
@@ -20,7 +21,9 @@
                         <span class="front-stat-title">@lang('basicdata::models/db_categories.plural')</span>
                         <div class="d-flex align-items-center justify-content-between mt-1">
                             <span class="front-stat-value">{{ $totalCategoriesCount ?? 0 }}</span>
-                            <span class="badge bg-light-primary text-primary front-stat-badge">@lang('basicdata::lang.all')</span>
+                            <span class="badge bg-light-primary text-primary front-stat-badge">
+                                <i class="fa-solid fa-folder-tree fs-9 me-1"></i> @lang('basicdata::lang.all')
+                            </span>
                         </div>
                     </div>
                 </div>

@@ -23,9 +23,8 @@
                 </ul>
             </div>
             <div class="d-flex align-items-center gap-2">
-                <a href="{{ route($indexRoute) }}" class="btn btn-sm btn-light fs-7 px-4">
-                    <i class="fa-solid fa-arrow-left fs-8 me-1"></i>
-                    @lang('crud.back')
+                <a href="{{ route($indexRoute) }}" class="btn btn-sm btn-icon btn-light rounded-circle shadow-xs" title="@lang('crud.back')" data-bs-toggle="tooltip" wire:navigate>
+                    <i class="fa-solid fa-arrow-left fs-7 text-gray-700"></i>
                 </a>
             </div>
         </div>
@@ -43,11 +42,11 @@
                         @include($fieldsView)
                     </div>
                     <div class="card-footer py-4 px-6 border-top d-flex justify-content-between align-items-center bg-light-subtle">
-                        <a href="{{ route($indexRoute) }}" class="btn btn-sm btn-light fs-7 px-4">
+                        <a href="{{ route($indexRoute) }}" class="btn btn-sm btn-light fs-7 px-4 rounded-2" wire:navigate>
                             <i class="fa-solid fa-xmark fs-8 me-1"></i>
                             @lang('crud.cancel')
                         </a>
-                        <button type="submit" class="btn btn-sm btn-save-gradient fs-7 px-5">
+                        <button type="submit" class="btn btn-sm btn-save-gradient fs-7 px-5 rounded-2">
                             <i class="fa-solid fa-check fs-8 me-1"></i>
                             @lang('crud.save')
                         </button>
