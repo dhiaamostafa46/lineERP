@@ -136,6 +136,23 @@ class ProductModal extends Component
         }
     }
 
+    public function addSize(): void
+    {
+        $this->addSizeRow();
+    }
+
+    public function removeSize(int $index): void
+    {
+        $this->removeSizeRow($index);
+    }
+
+    public function updatedHaveSizes($value): void
+    {
+        if ($value && empty($this->sizes)) {
+            $this->addSizeRow();
+        }
+    }
+
     public function addUnitRow(): void
     {
         $unitsList = $this->repository->units();
@@ -150,6 +167,23 @@ class ProductModal extends Component
     {
         unset($this->units[$index]);
         $this->units = array_values($this->units);
+    }
+
+    public function addUnit(): void
+    {
+        $this->addUnitRow();
+    }
+
+    public function removeUnit(int $index): void
+    {
+        $this->removeUnitRow($index);
+    }
+
+    public function setBaseUnit(int $index): void
+    {
+        foreach ($this->units as $i => &$unit) {
+            $unit['is_base'] = ($i === $index);
+        }
     }
 
     #[On('openCreateModal')]

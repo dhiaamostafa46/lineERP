@@ -221,7 +221,7 @@
                                         <div class="d-flex align-items-center gap-3">
                                             @foreach ($statuses as $value => $label)
                                                 <label class="d-flex align-items-center gap-2 cursor-pointer p-2 px-3 rounded-2 border {{ (int)$status === (int)$value ? 'bg-light-primary border-primary text-primary fw-bold' : 'bg-light border-light text-muted' }}" style="transition: all 0.2s;">
-                                                    <input class="form-check-input mt-0" type="radio" wire:model="status" id="status_{{ $value }}" value="{{ $value }}">
+                                                    <input class="form-check-input mt-0" type="radio" wire:model.live="status" id="status_{{ $value }}" value="{{ $value }}">
                                                     <span class="fs-7">{{ $label }}</span>
                                                 </label>
                                             @endforeach
